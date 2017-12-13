@@ -51,6 +51,12 @@ def TopSophisticatedSongs(amount):
     return ""
 
 
+# TODO: write page not found html
+'''
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+'''
 
 if __name__ == '__main__':
     app.run(port=40333, host="delta-tomcat-vm", debug=True)
