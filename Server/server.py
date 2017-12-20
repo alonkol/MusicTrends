@@ -5,6 +5,16 @@ app = Flask(__name__)
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
 
+import mysql.connector
+
+cnx = mysql.connector.connect(user='MysqlDb07', password='MysqlDb07',
+                              host='127.0.0.1',
+                              database='sys')
+
+cursor = cnx.cursor(prepared=True)
+
+# dbconnection.close()
+
 @app.route('/')
 def hello_world():
     return "Wabadabadubdub!"
@@ -12,7 +22,11 @@ def hello_world():
 # TODO: get categories from db
 @app.route('/categories')
 def categories():
-    return ""
+    # statement = "SELECT * FROM categories WHERE id = %s"
+    statement = "SELECT * FROM categories"
+    # cursor.execute(statement, (5,))
+
+    return cursor.execute(statement)
 
 # TODO: query db
 @app.route('/songs/likes/top/<int:amount>')
