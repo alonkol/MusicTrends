@@ -1,11 +1,11 @@
+import mysql.connector
+
 from flask import Flask
 app = Flask(__name__)
 
 # general idea:
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
-
-import mysql.connector
 
 cnx = mysql.connector.connect(user='MysqlDb07', password='MysqlDb07',
                               host='127.0.0.1',
