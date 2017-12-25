@@ -1,5 +1,7 @@
 USE DbMysql07;
 
+-- TODO: add table for videos with fields like in YoutubeAPI/DataEnrichment.py
+
 CREATE TABLE Categories (
     category_id int AUTO_INCREMENT,
     category_name varchar(50), 
@@ -40,13 +42,15 @@ CREATE TABLE SongToArtist (
 	FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
 );
 
+-- TODO: change fields to what we get from youtube api
+-- TODO: set field limits to be identical to youtube api fields
 CREATE TABLE Comments (
-    song_id int,
+    song_id int, -- TODO: change this to video_id
     comment_text varchar(2000) NOT NULL, 
     author varchar(50) NOT NULL,
     likes int,
     dislikes int,
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id)
+    FOREIGN KEY (song_id) REFERENCES Songs(song_id) -- TODO: change this to video_id
 );
 
 CREATE TABLE CommentWordsPerSong (

@@ -68,7 +68,7 @@ def GetAllSongsAndArtistsFromDB():
 
 
 def GetAllVideoIdsFromDB():
-    statement = "SELECT videoId" \
+    statement = "SELECT video_id" \
                 "FROM Videos; "
     config.unsafe_cursor.execute(statement)
     results = config.unsafe_cursor.fetchall()
