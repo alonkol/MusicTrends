@@ -1,76 +1,148 @@
 import mysql.connector
-
+import json
 from flask import Flask
-app = Flask(__name__)
+from flask import render_template
 
 # general idea:
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
 
-cnx = mysql.connector.connect(user='MysqlDb07', password='MysqlDb07',
-                              host='127.0.0.1',
+# Local
+# host = "localhost"
+# dbhost = "localhost"
+# user = "root"
+# password = "DbMysql07"
+
+# Production
+host = "delta-tomcat-vm"
+dbhost = "mysqlsrv.cs.tau.ac.il"
+user = "DbMysql07"
+password = "DbMysql07"
+
+app = Flask(__name__)
+port = 40335
+
+cnx = mysql.connector.connect(user=user, password=password,
+                              host=dbhost,
                               database='sys')
 
 cursor = cnx.cursor(prepared=True)
 
-# dbconnection.close()
 
-@app.route('/')
-def hello_world():
-    return "Wabadabadubdub!"
+###############################
+# -------- REST API --------- #
+###############################
 
-# TODO: get categories from db
-@app.route('/categories')
-def categories():
-    # statement = "SELECT * FROM categories WHERE id = %s"
-    statement = "SELECT * FROM categories"
-    # cursor.execute(statement, (5,))
 
-    return cursor.execute(statement)
+# --- Routes --- #
+@app.route('/api')
+def ApiWelcome():
+    return render_template('api.html')
 
-# TODO: query db
-@app.route('/songs/likes/top/<int:amount>')
+
+@app.route('/api/categories')
+def Categories():
+    statement = "SELECT id, name " \
+                "FROM categories;"
+
+    return GetJSONResult(statement)
+
+
+@app.route('/api/songs/likes/top/<int:amount>')
 def TopSongLikes(amount):
-    return ""
+    statement = "SELECT * " \
+                "FROM songs " \
+                "ORDER BY likes DESC " \
+                "LIMIT %s;"
 
-# TODO: query db
-@app.route('/songs/dislikes/top/<int:amount>')
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/songs/dislikes/top/<int:amount>')
 def TopSongDislikes(amount):
-    return ""
+    statement = "SELECT * " \
+                "FROM songs " \
+                "ORDER BY dislikes DESC " \
+                "LIMIT %s;"
 
-# TODO: query db
-@app.route('/songs/views/top/<int:amount>')
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/songs/views/top/<int:amount>')
 def TopSongViews(amount):
-    return ""
+    statement = "SELECT * " \
+                "FROM songs " \
+                "ORDER BY views DESC " \
+                "LIMIT %s;"
 
-# TODO: query db
-@app.route('/songs/views/bottom/<int:amount>')
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/songs/views/bottom/<int:amount>')
 def BottomSongViews(amount):
-    return ""
+    statement = "SELECT * " \
+                "FROM songs " \
+                "ORDER BY views ASC " \
+                "LIMIT %s;"
 
-# TODO: query db
-@app.route('/words/top/<int:amount>')
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/words/top/<int:amount>')
 def TopWords(amount):
-    return ""
+    statement = "SELECT word, SUM(count) AS count " \
+                "FROM WordsPerSong " \
+                "GROUP BY word " \
+                "ORDER BY count DESC " \
+                "LIMIT %s;"
 
-# TODO: query db
-@app.route('/words/bottom/<int:amount>')
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/words/bottom/<int:amount>')
 def BottomWords(amount):
-    return ""
+    statement = "SELECT word, SUM(count) AS count " \
+                "FROM WordsPerSong " \
+                "GROUP BY word " \
+                "ORDER BY count ASC " \
+                "LIMIT %s;"
+
+    return GetJSONResult(statement, (amount,))
 
 # TODO: query db
 # create scoring system?
-@app.route('/songs/wordscore/top/<int:amount>')
+@app.route('/api/songs/wordscore/top/<int:amount>')
 def TopSophisticatedSongs(amount):
     return ""
 
 
-# TODO: write page not found html
-'''
+# --- Auxiliary --- #
+
+def GetJSONResult(statement, params=None):
+    if params is not None:
+        cursor.execute(statement, params)
+    else:
+        cursor.execute(statement)
+
+    rows = cursor.fetchall()
+
+    # converts every row from (index, ByteArray1, ByteArray2, ...) to (String1, String2, ...)
+    tuples = [row[1].decode("utf-8") for row in rows]
+
+    return json.dumps({"result": tuples})
+
+
+###############################
+# --------- Pages ----------- #
+###############################
+@app.route('/')
+def Homepage():
+    return "Wabadabadubdub!"
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
-'''
 
 if __name__ == '__main__':
-    app.run(port=40333, host="delta-tomcat-vm", debug=True)
+    app.run(port=port, host=host, debug=True)
