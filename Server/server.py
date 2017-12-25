@@ -1,40 +1,17 @@
-import mysql.connector
 import json
 from flask import Flask
 from flask import render_template
+import config
 
 # general idea:
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
 
-# Local
-# host = "localhost"
-# dbhost = "localhost"
-# user = "root"
-# password = "DbMysql07"
-# dbname = "sys"
-
-# Production
-host = "delta-tomcat-vm"
-dbhost = "mysqlsrv.cs.tau.ac.il"
-user = "DbMysql07"
-password = "DbMysql07"
-dbname = "DbMysql07"
-
 app = Flask(__name__)
-port = 40335
-
-cnx = mysql.connector.connect(user=user, password=password,
-                              host=dbhost,
-                              database=dbname)
-
-cursor = cnx.cursor(prepared=True)
-
 
 ###############################
 # -------- REST API --------- #
 ###############################
-
 
 # --- Routes --- #
 @app.route('/api')
@@ -122,11 +99,11 @@ def TopSophisticatedSongs(amount):
 
 def GetJSONResult(statement, params=None):
     if params is not None:
-        cursor.execute(statement, params)
+        config.cursor.execute(statement, params)
     else:
-        cursor.execute(statement)
+        config.cursor.execute(statement)
 
-    rows = cursor.fetchall()
+    rows = config.cursor.fetchall()
 
     # converts every row from (index, ByteArray1, ByteArray2, ...) to (String1, String2, ...)
     tuples = [row[1].decode("utf-8") for row in rows]
@@ -147,4 +124,4 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 if __name__ == '__main__':
-    app.run(port=port, host=host, debug=True)
+    app.run(port=config.port, host=config.host, debug=True)
