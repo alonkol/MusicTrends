@@ -12,19 +12,21 @@ from flask import render_template
 # dbhost = "localhost"
 # user = "root"
 # password = "DbMysql07"
+# dbname = "sys"
 
 # Production
 host = "delta-tomcat-vm"
 dbhost = "mysqlsrv.cs.tau.ac.il"
 user = "DbMysql07"
 password = "DbMysql07"
+dbname = "DbMysql07"
 
 app = Flask(__name__)
 port = 40335
 
 cnx = mysql.connector.connect(user=user, password=password,
                               host=dbhost,
-                              database='sys')
+                              database=dbname)
 
 cursor = cnx.cursor(prepared=True)
 
