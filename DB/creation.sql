@@ -10,7 +10,7 @@ CREATE TABLE Categories (
 
 CREATE TABLE Songs (
     song_id int AUTO_INCREMENT,
-    song_name varchar(100),
+    song_name varchar(200),
     likes int,
     dislikes int,
     PRIMARY KEY (song_id)
@@ -18,7 +18,7 @@ CREATE TABLE Songs (
 
 CREATE TABLE Artists (
     artist_id int AUTO_INCREMENT,
-    artist_name varchar(50), 
+    artist_name varchar(200), 
     PRIMARY KEY (artist_id)
 );
 
@@ -28,10 +28,10 @@ CREATE TABLE Lyrics (
     FOREIGN KEY (song_id) REFERENCES Songs(song_id)
 );
 
-CREATE TABLE SongToCategory (
-    song_id int,
+CREATE TABLE ArtistToCategory (
+    artist_id int,
     category_id int, 
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id),
+    FOREIGN KEY (artist_id) REFERENCES Artists(artist_id),
 	FOREIGN KEY (category_id) REFERENCES Categories(category_id)
 );
 
