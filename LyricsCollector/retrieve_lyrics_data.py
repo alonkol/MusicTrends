@@ -23,8 +23,10 @@ def retrieve_all_tracks():
 
 
 def main():
-    print retrieve_all_tracks()
-
+    with open(DATA_TO_PARSE, 'r') as data:
+        js_data = json.load(data)
+        for i in js_data['items']:
+            print i['genre']
 
 if __name__ == '__main__':
     main()
