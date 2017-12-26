@@ -11,10 +11,10 @@ API_KEY = 'secret'
 BASE_URL = 'http://ws.audioscrobbler.com/2.0/?api_key={}&method&format=json'.format(API_KEY)
 
 
-def handle_all_categories():
+def populate_categories_table():
     d = get_data_from_file('categories.json')
     for k in d:
-        insert_categories_to_db(k['name'])
+        insert_into_categories_table(k['name'])
 
 
 def get_all_categories_from_api():
@@ -29,31 +29,31 @@ def get_data_from_file(filename):
     return json.load(open(filename))
 
 
-def insert_categories_to_db(value):
+def insert_into_categories_table(value):
     sql_insert = "INSERT INTO Categories VALUES (Default, %s);"
     cursor = config.cursor
     try:
         affected_count = cursor.execute(sql_insert, (value,))
         config.dbconnection.commit()
     except MySQLdb.IntegrityError:
-        print "failed to insert values %s to Categories' " % value
+        print "failed to insert value %s into Categories' " % value
 
 
-def insert_artists_to_db(value):
+def insert_into_artists_table(value):
     sql_insert = "INSERT INTO Artists VALUES (Default, %s);"
     cursor = config.cursor
     try:
         affected_count = cursor.execute(sql_insert, (value,))
         config.dbconnection.commit()
     except MySQLdb.IntegrityError:
-        print "failed to insert values %s to Artists' " % value
+        print "failed to insert value %s into Artists' " % value
 
 
-def handle_all_artists():
+def populate_artists_table():
     artists_per_category = get_data_from_file('artists.json')
     artists = set()
-    for cat in artists_per_category.values():
-        for artist in cat:
+    for artist_list in artists_per_category.values():
+        for artist in artist_list:
             # make sure no duplicates
             if artist not in artists:
                 print(artist)
@@ -61,7 +61,7 @@ def handle_all_artists():
                 artist = artist.encode('unicode_escape')
                 print(len(artist))
                 artists.add(artist)
-                insert_artists_to_db(artist)
+                insert_into_artists_table(artist)
 
 
 def get_artists_per_category_from_api(category):
@@ -72,6 +72,7 @@ def get_artists_per_category_from_api(category):
     for k in d:
         cat_artists.append(k['name'])
     return cat_artists
+
 
 def get_all_artists_from_api():
     res = {}
@@ -149,8 +150,77 @@ def remove_duplicate_songs():
         json.dump(res, outf)
 
 
+def insert_into_songs_table(value):
+    sql_insert = "INSERT INTO Songs VALUES (Default, %s);"
+    cursor = config.cursor
+    try:
+        affected_count = cursor.execute(sql_insert, (value,))
+        config.dbconnection.commit()
+    except MySQLdb.IntegrityError:
+        print "failed to insert value %s into Songs' " % value
+
+
+def populate_songs_table():
+    songs_per_artist = get_data_from_file('songs_unique.json')
+    songs = set()
+    for songs_list in songs_per_artist.values():
+        if songs_list is not None:
+            for song in songs_list:
+                # make sure no duplicates
+                if song not in songs:
+                    # handle non-ascii characters
+                    song = song.encode('unicode_escape')
+                    songs.add(song)
+                    insert_into_songs_table(song)
+                    print len(song)
+    print max(songs)
+
+
+def insert_into_song_to_artist_table(song, artist):
+    sql_insert = "INSERT INTO SongToArtist VALUES (%s, %s);"
+    sql_get_artist_id = "SELECT artist_id FROM Artists WHERE artist_name = %s"
+    sql_get_song_id = "SELECT song_id FROM Songs WHERE song_name = %s"
+    # handle non-ascii characters
+    song = song.encode('unicode_escape')
+    artist = artist.encode('unicode_escape')
+
+    cursor = config.cursor
+    try:
+        cursor.execute(sql_get_artist_id, (artist,))
+        rows = cursor.fetchall()
+        if rows == []:
+            print song, artist
+            return
+        artist_id =  rows[0][0]
+        cursor.execute(sql_get_song_id, (song,))
+        rows = cursor.fetchall()
+        if rows == []:
+            print song, artist
+            return
+        song_id = rows[0][0]
+        cursor.execute(sql_insert, (song_id, artist_id))
+        config.dbconnection.commit()
+    except MySQLdb.IntegrityError:
+        print "failed to insert song %s  and artist %s into SongToArtist' " % (song, artist)
+
+
+def populate_song_to_artist_table():
+    songs_per_artist = get_data_from_file('songs_unique.json')
+    songs = set()
+    for artist in songs_per_artist.keys():
+        if songs_per_artist[artist] is not None:
+            for song in songs_per_artist[artist]:
+                # make sure no duplicates
+                if song not in songs:
+                    # handle non-ascii characters
+                    song = song.encode('unicode_escape')
+                    artist = artist.encode('unicode_escape')
+                    insert_into_song_to_artist_table(song,artist)
+
+
 def main():
-    assert API_KEY != 'secret'
+    #assert API_KEY != 'secret'
+    populate_song_to_artist_table()
 
 
 
