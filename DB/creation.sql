@@ -64,7 +64,7 @@ CREATE TABLE Videos (
 );
 
 CREATE TABLE Comments (
-    videoID varchar(11),
+    videoID char(11),
     commentText varchar(2000) NOT NULL,
     author varchar(50) NOT NULL,
     publishedAt DATE NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE Comments (
 );
 
 CREATE TABLE CommentWordsPerVideo (
-    videoID int,
+    videoID char(11),
     word varchar(20) NOT NULL, 
     commentWordCount int NOT NULL,
     FOREIGN KEY (videoID) REFERENCES Videos(videoID)
