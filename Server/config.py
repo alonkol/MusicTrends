@@ -21,6 +21,6 @@ dbconnection = mysql.connector.connect(user=user, password=password,
 cursor = dbconnection.cursor(prepared=True)
 unsafe_cursor = dbconnection.cursor(dictionary=True)
 
-port = 40335
+port = 40333
 
 
