@@ -1,5 +1,5 @@
-from LastFmApiHandler.retreive_data_from_last_fm import get_data_from_file
-from LyricsCollection.lyrics_analyzer import create_words_map
+from LastFmApiHandler import retreive_data_from_last_fm
+from LyricsCollection import lyrics_analyzer
 from Server import config
 
 
@@ -27,7 +27,7 @@ def insert_into_lyrics_table(song_id, lyrics):
 
 
 def insert_into_words_per_song_table(song_id, lyrics):
-    words_count = create_words_map(lyrics)
+    words_count = lyrics_analyzer.create_words_map(lyrics)
     sql_insert = "INSERT INTO WordsPerSong VALUES (%s, %s, %s);"
     cursor = config.cursor
     try:
@@ -41,7 +41,7 @@ def insert_into_words_per_song_table(song_id, lyrics):
 
 
 def main():
-    lyrics_data = get_data_from_file('../LyricsCollection/lyrics.json')
+    lyrics_data = retreive_data_from_last_fm.get_data_from_file('../LyricsCollection/lyrics.json')
     for song_title, lyrics in lyrics_data.iteritems():
         song_id = find_song_id(song_title)
         if song_id is None:
