@@ -1,6 +1,9 @@
-from LastFmApiHandler.retreive_data_from_last_fm import get_data_from_file
 from LyricsCollection.lyrics_analyzer import create_words_map
 from Server import config
+import json
+
+def get_data_from_file(filename):
+    return json.load(open(filename))
 
 
 def find_song_id(song_title):

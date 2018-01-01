@@ -1,5 +1,8 @@
-from LastFmApiHandler.retreive_data_from_last_fm import get_data_from_file
 from Server import config
+import json
+
+def get_data_from_file(filename):
+    return json.load(open(filename))
 
 
 def insert_into_categories_table(category_name):
