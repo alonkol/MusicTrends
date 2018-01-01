@@ -1,7 +1,5 @@
 USE DbMysql07;
 
--- TODO: add table for videos with fields like in YoutubeAPI/DataEnrichment.py
-
 CREATE TABLE Categories (
     categoryID int AUTO_INCREMENT,
     categoryName varchar(50), 
