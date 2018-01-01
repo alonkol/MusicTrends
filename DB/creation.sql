@@ -3,66 +3,87 @@ USE DbMysql07;
 -- TODO: add table for videos with fields like in YoutubeAPI/DataEnrichment.py
 
 CREATE TABLE Categories (
-    category_id int AUTO_INCREMENT,
-    category_name varchar(50), 
-    PRIMARY KEY (category_id)
+    categoryID int AUTO_INCREMENT,
+    categoryName varchar(50), 
+    PRIMARY KEY (categoryID)
 );
 
 CREATE TABLE Songs (
-    song_id int AUTO_INCREMENT,
-    song_name varchar(200),
-    likes int,
-    dislikes int,
-    PRIMARY KEY (song_id)
+    songID int AUTO_INCREMENT,
+    songName varchar(200),
+    PRIMARY KEY (songID)
 );
 
 CREATE TABLE Artists (
-    artist_id int AUTO_INCREMENT,
-    artist_name varchar(200), 
-    PRIMARY KEY (artist_id)
+    artistID int AUTO_INCREMENT,
+    artistName varchar(200), 
+    PRIMARY KEY (artistID)
 );
 
 CREATE TABLE Lyrics (
-    song_id int,
+    songID int,
     lyrics varchar(5000), 
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id)
+    FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
 
 CREATE TABLE ArtistToCategory (
-    artist_id int,
-    category_id int, 
-    FOREIGN KEY (artist_id) REFERENCES Artists(artist_id),
-	FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+    artistID int,
+    categoryID int, 
+    FOREIGN KEY (artistID) REFERENCES Artists(artistID),
+	FOREIGN KEY (categoryID) REFERENCES Categories(categoryID)
 );
 
 CREATE TABLE SongToArtist (
-    song_id int,
-    artist_id int, 
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id),
-	FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
+    songID int,
+    artistID int, 
+    FOREIGN KEY (songID) REFERENCES Songs(songID),
+	FOREIGN KEY (artistID) REFERENCES Artists(artistID)
 );
 
--- TODO: change fields to what we get from youtube api
--- TODO: set field limits to be identical to youtube api fields
+
+CREATE TABLE SongToCategory (
+    songID int,
+    categoryID int,
+    FOREIGN KEY (songID) REFERENCES Songs(songID),
+	FOREIGN KEY (categoryID) REFERENCES Categories(categoryID)
+);
+
+
+CREATE TABLE Videos (
+    videoID char(11),
+    songID int,
+    publishedAt DATE NOT NULL,
+    title varchar(100) NOT NULL,
+    viewCount int NOT NULL,
+    likeCount int NOT NULL,
+    dislikeCount int NOT NULL,
+    favoriteCount int,
+    commentCount int NOT NULL,
+    PRIMARY KEY (videoID),
+    FOREIGN KEY (songID) REFERENCES Songs(songID)
+);
+
 CREATE TABLE Comments (
-    song_id int, -- TODO: change this to video_id
-    comment_text varchar(2000) NOT NULL, 
+    videoID varchar(11),
+    commentText varchar(2000) NOT NULL,
     author varchar(50) NOT NULL,
-    likes int,
-    dislikes int,
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id) -- TODO: change this to video_id
+    publishedAt DATE NOT NULL,
+    viewerRating int,
+    likes int NOT NULL,
+    dislikes int NOT NULL,
+    FOREIGN KEY (videoID) REFERENCES Videos(videoID)
 );
 
-CREATE TABLE CommentWordsPerSong (
-    song_id int,
+CREATE TABLE CommentWordsPerVideo (
+    videoID int,
     word varchar(20) NOT NULL, 
-    comment_word_count int NOT NULL,
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id)
+    commentWordCount int NOT NULL,
+    FOREIGN KEY (videoID) REFERENCES Videos(videoID)
 );
 
 CREATE TABLE WordsPerSong (
-    song_id int,
+    songID int,
     word varchar(20) NOT NULL, 
-    word_count int,
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id)
+    wordCount int NOT NULL,
+    FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
