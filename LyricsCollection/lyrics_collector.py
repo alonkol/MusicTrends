@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import os
-import json
 import codecs
-import retrieve_lyrics_data
+import json
 
 import swagger_client
 from swagger_client.rest import ApiException
+
+import retrieve_lyrics_data
 
 SONGS_JSON = '../LastFmApiHandler/songs_unique.json'
 
