@@ -10,7 +10,7 @@ def find_song_id(song_title):
     cursor.execute(sql_get, (song_title,))
     rows = cursor.fetchall()
     if not rows:
-        print song_title
+        # no lyrics for this song
         return
     return rows[0][0]
 
@@ -22,8 +22,6 @@ def insert_into_lyrics_table(song_id, lyrics):
     try:
         cursor.execute(sql_insert, (song_id, lyrics))
         config.dbconnection.commit()
-    except Exception:
-        raise
     except MySQLdb.IntegrityError:
         print "failed to insert lyrics for song %s' " % song_id
 
@@ -37,8 +35,6 @@ def insert_into_words_per_song_table(song_id, lyrics):
             word = word.encode('unicode_escape')[:20]
             cursor.execute(sql_insert, (song_id, word, cnt))
         config.dbconnection.commit()
-    except Exception:
-        raise
     except MySQLdb.IntegrityError:
         print "failed to insert words for song %s' " % song_id
 

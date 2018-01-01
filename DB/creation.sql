@@ -8,13 +8,13 @@ CREATE TABLE Categories (
 
 CREATE TABLE Songs (
     songID int AUTO_INCREMENT,
-    songName varchar(200),
+    songName varchar(250),
     PRIMARY KEY (songID)
 );
 
 CREATE TABLE Artists (
     artistID int AUTO_INCREMENT,
-    artistName varchar(200), 
+    artistName varchar(250),
     PRIMARY KEY (artistID)
 );
 

@@ -48,8 +48,6 @@ def insert_into_song_to_artist_table(song_id, artist_id):
     try:
         cursor.execute(sql_insert, (song_id, artist_id))
         config.dbconnection.commit()
-    except Exception:
-        raise
     except MySQLdb.IntegrityError:
         print "failed to insert song %s and artist %s into SongToArtist' " % (song_id, artist_id)
 
@@ -60,8 +58,6 @@ def insert_into_artist_to_category_table(artist_id, category_id):
     try:
         cursor.execute(sql_insert, (artist_id, category_id) )
         config.dbconnection.commit()
-    except Exception:
-        raise
     except MySQLdb.IntegrityError:
         print "failed to insert artist %s and category %s into ArtistToCategory' " % (artist_id, category_id)
 
@@ -72,8 +68,6 @@ def insert_into_song_to_category_table(song_id, category_id):
     try:
         cursor.execute(sql_insert, (song_id, category_id))
         config.dbconnection.commit()
-    except Exception:
-        raise
     except MySQLdb.IntegrityError:
         print "failed to insert song %s and category %s into SongToCategory' " % (song_id, category_id)
 
@@ -170,25 +164,16 @@ def main():
                 artists_in_db[artist] = artist_id
             artist_id = artists_in_db[artist]
             insert_into_artist_to_category_table(artist_id, category_id)
-            for song in songs_per_artist.get(artist,[]):
-                mbid = song[1]
-                if mbid not in songs_in_db:
-                    song_id = insert_into_songs_table(song[0])
-                    songs_in_db[mbid] = song_id
-                song_id = songs_in_db[mbid]
-                insert_into_song_to_artist_table(song_id, artist_id)
-                insert_into_song_to_category_table(song_id, category_id)
-
-
-
-
-
-
-
-
-
-
-
+            songs = songs_per_artist.get(artist,[])
+            if songs is not None:
+                for song in songs:
+                    mbid = song[1]
+                    if mbid not in songs_in_db:
+                        song_id = insert_into_songs_table(song[0])
+                        songs_in_db[mbid] = song_id
+                    song_id = songs_in_db[mbid]
+                    insert_into_song_to_artist_table(song_id, artist_id)
+                    insert_into_song_to_category_table(song_id, category_id)
 
 
 if __name__ == '__main__':
