@@ -1,5 +1,3 @@
-import MySQLdb
-
 from LastFmApiHandler.retreive_data_from_last_fm import get_data_from_file
 from Server import config
 
@@ -10,7 +8,8 @@ def insert_into_categories_table(category_name):
     try:
         affected_count = cursor.execute(sql_insert, (category_name,))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert value %s into Categories' " % category_name
     return cursor.lastrowid
 
@@ -23,7 +22,8 @@ def insert_into_artists_table(artist_name):
         artist_name = artist_name.encode('unicode_escape')
         affected_count = cursor.execute(sql_insert, (artist_name,))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert value %s into Artists' " % artist_name
     return cursor.lastrowid
 
@@ -37,7 +37,8 @@ def insert_into_songs_table(song_name):
         song_name = song_name.encode('unicode_escape')
         affected_count = cursor.execute(sql_insert, (song_name,))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert value %s into Songs' " % song_name
     return cursor.lastrowid
 
@@ -48,7 +49,8 @@ def insert_into_song_to_artist_table(song_id, artist_id):
     try:
         cursor.execute(sql_insert, (song_id, artist_id))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert song %s and artist %s into SongToArtist' " % (song_id, artist_id)
 
 
@@ -58,7 +60,8 @@ def insert_into_artist_to_category_table(artist_id, category_id):
     try:
         cursor.execute(sql_insert, (artist_id, category_id) )
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert artist %s and category %s into ArtistToCategory' " % (artist_id, category_id)
 
 
@@ -68,7 +71,8 @@ def insert_into_song_to_category_table(song_id, category_id):
     try:
         cursor.execute(sql_insert, (song_id, category_id))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert song %s and category %s into SongToCategory' " % (song_id, category_id)
 
 
@@ -109,7 +113,6 @@ def populate_songs_table():
                     song = song.encode('unicode_escape')
                     insert_into_songs_table(song)
                     print len(song)
-    print max(songs)
 
 
 def populate_song_to_artist_table():

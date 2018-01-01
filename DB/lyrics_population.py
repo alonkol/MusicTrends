@@ -1,7 +1,6 @@
 from LastFmApiHandler.retreive_data_from_last_fm import get_data_from_file
 from LyricsCollection.lyrics_analyzer import create_words_map
 from Server import config
-import MySQLdb
 
 
 def find_song_id(song_title):
@@ -22,7 +21,8 @@ def insert_into_lyrics_table(song_id, lyrics):
     try:
         cursor.execute(sql_insert, (song_id, lyrics))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert lyrics for song %s' " % song_id
 
 
@@ -35,7 +35,8 @@ def insert_into_words_per_song_table(song_id, lyrics):
             word = word.encode('unicode_escape')[:20]
             cursor.execute(sql_insert, (song_id, word, cnt))
         config.dbconnection.commit()
-    except MySQLdb.IntegrityError:
+    except Exception as e:
+        print e
         print "failed to insert words for song %s' " % song_id
 
 
