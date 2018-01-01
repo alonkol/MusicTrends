@@ -27,5 +27,3 @@ def create_word_count_for_lyrics():
     with open('lyrics_count.json', 'w') as lyrics_count_file:
         json.dump(word_counts, lyrics_count_file)
 
-
-create_word_count_for_lyrics()

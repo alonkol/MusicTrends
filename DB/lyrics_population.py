@@ -1,5 +1,5 @@
 from LastFmApiHandler.retreive_data_from_last_fm import get_data_from_file
-from LyricsCollector.lyrics_analyzer import create_words_map
+from LyricsCollection.lyrics_analyzer import create_words_map
 from Server import config
 import MySQLdb
 
@@ -12,11 +12,12 @@ def find_song_id(song_title):
     if not rows:
         print song_title
         return
-    return rows[0]
+    return rows[0][0]
 
 
 def insert_into_lyrics_table(song_id, lyrics):
     sql_insert = "INSERT INTO Lyrics VALUES (%s, %s);"
+    lyrics = lyrics.encode('unicode_escape')
     cursor = config.cursor
     try:
         cursor.execute(sql_insert, (song_id, lyrics))
@@ -29,11 +30,12 @@ def insert_into_lyrics_table(song_id, lyrics):
 
 def insert_into_words_per_song_table(song_id, lyrics):
     words_count = create_words_map(lyrics)
-    sql_insert = "INSERT INTO SongToArtist VALUES (%s, %s);"
+    sql_insert = "INSERT INTO WordsPerSong VALUES (%s, %s, %s);"
     cursor = config.cursor
     try:
         for word, cnt in words_count.iteritems():
-            cursor.execute(sql_insert, (word, cnt))
+            word = word.encode('unicode_escape')[:20]
+            cursor.execute(sql_insert, (song_id, word, cnt))
         config.dbconnection.commit()
     except Exception:
         raise
@@ -42,10 +44,13 @@ def insert_into_words_per_song_table(song_id, lyrics):
 
 
 def main():
-    lyrics_data = get_data_from_file('../LyricsCollector/lyrics.json')
+    lyrics_data = get_data_from_file('../LyricsCollection/lyrics.json')
     for song_title, lyrics in lyrics_data.iteritems():
         song_id = find_song_id(song_title)
         if song_id is None:
             continue
         insert_into_lyrics_table(song_id, lyrics)
         insert_into_words_per_song_table(song_id, lyrics)
+
+if __name__ == '__main__':
+    main()
