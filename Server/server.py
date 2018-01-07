@@ -21,7 +21,7 @@ def ApiWelcome():
 
 @app.route('/api/categories')
 def Categories():
-    statement = "SELECT id, name " \
+    statement = "SELECT * " \
                 "FROM categories;"
 
     return GetJSONResult(statement)
@@ -29,9 +29,10 @@ def Categories():
 
 @app.route('/api/songs/likes/top/<int:amount>')
 def TopSongLikes(amount):
-    statement = "SELECT * " \
-                "FROM songs " \
-                "ORDER BY likes DESC " \
+    statement = "SELECT songName, likeCount " \
+                "FROM songs, videos " \
+                "WHERE songs.songID = videos.songID " \
+                "ORDER BY likeCount DESC " \
                 "LIMIT %s;"
 
     return GetJSONResult(statement, (amount,))
@@ -39,19 +40,22 @@ def TopSongLikes(amount):
 
 @app.route('/api/songs/dislikes/top/<int:amount>')
 def TopSongDislikes(amount):
-    statement = "SELECT * " \
-                "FROM songs " \
-                "ORDER BY dislikes DESC " \
+    statement = "SELECT songName, dislikeCount " \
+                "FROM songs, videos " \
+                "WHERE songs.songID = videos.songID " \
+                "ORDER BY dislikeCount DESC " \
                 "LIMIT %s;"
 
     return GetJSONResult(statement, (amount,))
 
+# TODO: create view?
 
 @app.route('/api/songs/views/top/<int:amount>')
 def TopSongViews(amount):
-    statement = "SELECT * " \
-                "FROM songs " \
-                "ORDER BY views DESC " \
+    statement = "SELECT songName, viewCount " \
+                "FROM songs, videos " \
+                "WHERE songs.songID = videos.songID " \
+                "ORDER BY viewCount DESC " \
                 "LIMIT %s;"
 
     return GetJSONResult(statement, (amount,))
@@ -59,17 +63,19 @@ def TopSongViews(amount):
 
 @app.route('/api/songs/views/bottom/<int:amount>')
 def BottomSongViews(amount):
-    statement = "SELECT * " \
-                "FROM songs " \
-                "ORDER BY views ASC " \
+    statement = "SELECT songName, viewCount " \
+                "FROM songs, videos " \
+                "WHERE songs.songID = videos.songID " \
+                "ORDER BY viewCount ASC " \
                 "LIMIT %s;"
 
     return GetJSONResult(statement, (amount,))
 
+# TODO: create view?
 
 @app.route('/api/words/top/<int:amount>')
 def TopWords(amount):
-    statement = "SELECT word, SUM(count) AS count " \
+    statement = "SELECT word, SUM(wordCount) AS count " \
                 "FROM WordsPerSong " \
                 "GROUP BY word " \
                 "ORDER BY count DESC " \
@@ -80,7 +86,7 @@ def TopWords(amount):
 
 @app.route('/api/words/bottom/<int:amount>')
 def BottomWords(amount):
-    statement = "SELECT word, SUM(count) AS count " \
+    statement = "SELECT word, SUM(wordCount) AS count " \
                 "FROM WordsPerSong " \
                 "GROUP BY word " \
                 "ORDER BY count ASC " \
@@ -106,9 +112,12 @@ def GetJSONResult(statement, params=None):
     rows = config.cursor.fetchall()
 
     # converts every row from (index, ByteArray1, ByteArray2, ...) to (String1, String2, ...)
-    tuples = [row[1].decode("utf-8") for row in rows]
+    tuples = [[str(cell).decode("utf-8") for index, cell in enumerate(row)] for row in rows]
 
-    return json.dumps({"result": tuples})
+    return json.dumps({
+        "amount": len(tuples),
+        "results": tuples}
+    )
 
 
 ###############################
