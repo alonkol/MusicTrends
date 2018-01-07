@@ -1,5 +1,8 @@
-from LastFmApiHandler import retreive_data_from_last_fm
 from Server import config
+import json
+
+def get_data_from_file(filename):
+    return json.load(open(filename))
 
 
 def insert_into_categories_table(category_name):
@@ -81,13 +84,13 @@ THE FOLLOWING FUNCTIONS ARE NOT IN USE
 """
 
 def populate_categories_table():
-    d = retreive_data_from_last_fm.get_data_from_file('categories.json')
+    d = get_data_from_file('categories.json')
     for k in d:
         insert_into_categories_table(k['name'])
 
 
 def populate_artists_table():
-    artists_per_category = retreive_data_from_last_fm.get_data_from_file('artists.json')
+    artists_per_category = get_data_from_file('artists.json')
     artists = set()
     for artist_list in artists_per_category.values():
         for artist in artist_list:
@@ -102,7 +105,7 @@ def populate_artists_table():
 
 
 def populate_songs_table():
-    songs_per_artist = retreive_data_from_last_fm.get_data_from_file('songs_with_mbid.json')
+    songs_per_artist = get_data_from_file('songs_with_mbid.json')
     mbids = set()
     for songs_list in songs_per_artist.values():
         if songs_list is not None:
@@ -116,7 +119,7 @@ def populate_songs_table():
 
 
 def populate_song_to_artist_table():
-    songs_per_artist = retreive_data_from_last_fm.get_data_from_file('songs_unique.json')
+    songs_per_artist = get_data_from_file('songs_unique.json')
     songs = set()
     i = 0
     for artist in songs_per_artist.keys():
@@ -133,7 +136,7 @@ def populate_song_to_artist_table():
 
 
 def populate_artist_to_category_table():
-    artists_per_category = retreive_data_from_last_fm.get_data_from_file('artists.json')
+    artists_per_category = get_data_from_file('artists.json')
     for category in artists_per_category.keys():
         for artist in artists_per_category[category]:
             # handle non-ascii characters
@@ -143,8 +146,8 @@ def populate_artist_to_category_table():
 
 
 def populate_song_to_category_table():
-    songs_per_artist = retreive_data_from_last_fm.get_data_from_file('songs_unique.json')
-    artists_per_category = retreive_data_from_last_fm.get_data_from_file('artists.json')
+    songs_per_artist = get_data_from_file('songs_unique.json')
+    artists_per_category = get_data_from_file('artists.json')
     for category in artists_per_category.keys():
         for artist in artists_per_category[category]:
             for song in songs_per_artist[artist]:
@@ -155,8 +158,8 @@ def populate_song_to_category_table():
 
 
 def main():
-    artists_per_category = retreive_data_from_last_fm.get_data_from_file('../LastFmApiHandler/artists.json')
-    songs_per_artist = retreive_data_from_last_fm.get_data_from_file('../LastFmApiHandler/songs_with_mbid.json')
+    artists_per_category = get_data_from_file('../LastFmApiHandler/artists.json')
+    songs_per_artist = get_data_from_file('../LastFmApiHandler/songs_with_mbid.json')
     artists_in_db = {}
     songs_in_db = {}
     for category,artists in artists_per_category.iteritems():
