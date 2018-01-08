@@ -48,7 +48,6 @@ def TopSongDislikes(amount):
 
     return GetJSONResult(statement, (amount,))
 
-# TODO: create view?
 
 @app.route('/api/songs/views/top/<int:amount>')
 def TopSongViews(amount):
@@ -71,7 +70,6 @@ def BottomSongViews(amount):
 
     return GetJSONResult(statement, (amount,))
 
-# TODO: create view?
 
 @app.route('/api/words/top/<int:amount>')
 def TopWords(amount):
@@ -111,7 +109,7 @@ def GetJSONResult(statement, params=None):
 
     rows = config.cursor.fetchall()
 
-    # converts every row from (index, ByteArray1, ByteArray2, ...) to (String1, String2, ...)
+    # Decode results to strings
     tuples = [[str(cell).decode("utf-8") for index, cell in enumerate(row)] for row in rows]
 
     return json.dumps({
