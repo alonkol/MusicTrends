@@ -99,17 +99,17 @@ def TopSophisticatedSongs(amount):
     statement = "SELECT songName, score " \
                 "FROM " \
                 "(" \
-                    "SELECT songName, SUM(wordCount)*AVERAGE(uniqueness) AS score " \
+                    "SELECT songID, SUM(wordCount)*AVERAGE(uniqueness) AS score " \
                     "FROM " \
                     "(" \
                         "SELECT word, 1/SUM(wordCount) AS uniqueness " \
                         "FROM WordsPerSong " \
                         "GROUP BY word " \
-                    ") AS wordUniqueness, WordsPerSong, Songs  " \
-                    "WHERE Songs.songID = WordsPerSong.songID " \
-                    "AND wordUniqueness.word = WordsPerSong.word " \
-                    "GROUP BY Songs.songID, songName" \
-                ") AS a " \
+                    ") AS wordUniqueness, WordsPerSong  " \
+                    "WHERE wordUniqueness.word = WordsPerSong.word " \
+                    "GROUP BY WordsPerSong.songID" \
+                ") AS a, songs " \
+                "WHERE songs.songID = a.songID " \
                 "ORDER BY score DESC " \
                 "LIMIT %s;"
 
