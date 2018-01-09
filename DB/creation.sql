@@ -66,6 +66,7 @@ CREATE TABLE Videos (
 );
 
 CREATE TABLE Comments (
+    commentID varchar(30),
     videoID char(11),
     author varchar(50) NOT NULL,
     commentText TEXT(2000) NOT NULL,
