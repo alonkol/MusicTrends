@@ -21,7 +21,7 @@ def ApiWelcome():
 
 @app.route('/api/categories')
 def Categories():
-    statement = "SELECT * " \
+    statement = "SELECT categoryID as id, categoryName as name " \
                 "FROM categories;"
 
     return GetJSONResult(statement)
@@ -109,12 +109,21 @@ def GetJSONResult(statement, params=None):
 
     rows = config.cursor.fetchall()
 
-    # Decode results to strings
-    tuples = [[str(cell).decode("utf-8") for index, cell in enumerate(row)] for row in rows]
+    # decode results to strings
+    results = []
+
+    # row to dict
+    for row in rows:
+        res = {}
+
+        for index, cell in enumerate(row):
+            res[config.cursor.column_names[index]] = str(cell).decode("utf-8")
+
+        results.append(res)
 
     return json.dumps({
-        "amount": len(tuples),
-        "results": tuples}
+        "amount": len(results),
+        "results": results}
     )
 
 
