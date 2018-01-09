@@ -72,13 +72,15 @@ def GetCommentsForVideo(videoId):
     return items
 
 def GetAllSongsAndArtistsFromDB():
-    offset = 8400
+    offset = 0
     limit = 8000
 
-    statement = "SELECT artistName, songName, songs.songID " \
+    statement = "SELECT GROUP_CONCAT(artistName SEPARATOR ' ') AS artistName, songName, songs.songID " \
                 "FROM Songs, Artists, SongToArtist " \
                 "WHERE Songs.songID = SongToArtist.songID " \
                 "AND Artists.artistID = SongToArtist.artistID " \
+                "GROUP BY songName, songs.songID " \
+                "ORDER BY songs.songID ASC " \
                 "LIMIT %d, %d;" % (offset, limit)
 
     config.unsafe_cursor.execute(statement)
@@ -101,8 +103,8 @@ def PopulateVideos():
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
     for couple in couples:
-        query = couple["artistName"] + " " + couple["songName"]
         songId = couple["songID"]
+        query = couple["artistName"] + " " + couple["songName"]
 
         video = youtube_search(query)
 
@@ -118,7 +120,12 @@ def PopulateVideos():
         inputDataList = [videoId, songId, publishedAt, title, s["viewCount"], s["likeCount"],
                          s["dislikeCount"], s["favoriteCount"], s["commentCount"]]
 
-        config.cursor.execute(statement, tuple(inputDataList))
+        try:
+            config.cursor.execute(statement, tuple(inputDataList))
+        except Exception as e:
+            print("Failed to insert video, proceeding...\n")
+            print(e)
+            continue
 
         if cnt[0] % 100 == 0:
             try:
@@ -181,7 +188,7 @@ def PopulateComments():
 
 if __name__ == "__main__":
 
-    # PopulateVideos()
-    PopulateComments()
+    PopulateVideos()
+    # PopulateComments()
 
 
