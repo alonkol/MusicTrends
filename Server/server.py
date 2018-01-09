@@ -92,12 +92,34 @@ def BottomWords(amount):
 
     return GetJSONResult(statement, (amount,))
 
-# TODO: query db
-# create scoring system?
+# Score = numberOfWords*averageUniqueness,
+# where uniqueness for a word is calculated as 1/(word frequency)
 @app.route('/api/songs/wordscore/top/<int:amount>')
 def TopSophisticatedSongs(amount):
-    return ""
+    statement = "SELECT songName, score " \
+                "FROM " \
+                "(" \
+                    "SELECT songName, SUM(wordCount)*AVERAGE(uniqueness) AS score " \
+                    "FROM " \
+                    "(" \
+                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
+                        "FROM WordsPerSong " \
+                        "GROUP BY word " \
+                    ") AS wordUniqueness, WordsPerSong, Songs  " \
+                    "WHERE Songs.songID = WordsPerSong.songID " \
+                    "AND wordUniqueness.word = WordsPerSong.word " \
+                    "GROUP BY Songs.songID, songName" \
+                ") AS a " \
+                "ORDER BY score DESC " \
+                "LIMIT %s;"
 
+
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/songs/discussionscore/top/<int:amount>')
+def TopSophisticatedSongDiscussions(amount):
+    return ""
 
 # --- Auxiliary --- #
 

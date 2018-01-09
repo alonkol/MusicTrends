@@ -133,14 +133,6 @@ def PopulateVideos():
             except:
                 config.dbconnection.rollback()
 
-        '''
-        try:
-            config.cursor.execute(statement, tuple(inputDataList))
-            config.dbconnection.commit()
-        except:
-            config.dbconnection.rollback()
-        '''
-
 
 def ConvertStringToDate(s):
     translationTable = {ord(c): None for c in [':', '-']}
