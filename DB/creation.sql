@@ -20,20 +20,23 @@ CREATE TABLE Artists (
 
 CREATE TABLE Lyrics (
     songID int,
-    lyrics varchar(5000), 
+    lyrics TEXT(5000),
+    PRIMARY KEY (songID)
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
 
 CREATE TABLE ArtistToCategory (
     artistID int,
-    categoryID int, 
+    categoryID int,
+    PRIMARY KEY (artistID, categoryID),
     FOREIGN KEY (artistID) REFERENCES Artists(artistID),
 	FOREIGN KEY (categoryID) REFERENCES Categories(categoryID)
 );
 
 CREATE TABLE SongToArtist (
     songID int,
-    artistID int, 
+    artistID int,
+    PRIMARY KEY (songID, artistID),
     FOREIGN KEY (songID) REFERENCES Songs(songID),
 	FOREIGN KEY (artistID) REFERENCES Artists(artistID)
 );
@@ -42,17 +45,18 @@ CREATE TABLE SongToArtist (
 CREATE TABLE SongToCategory (
     songID int,
     categoryID int,
+    PRIMARY KEY (songID, categoryID),
     FOREIGN KEY (songID) REFERENCES Songs(songID),
 	FOREIGN KEY (categoryID) REFERENCES Categories(categoryID)
 );
 
 
 CREATE TABLE Videos (
-    videoID char(11) UNIQUE,
+    videoID char(11),
     songID int,
     publishedAt DATE NOT NULL,
     title varchar(100) NOT NULL,
-    viewCount BIGINT NOT NULL,
+    viewCount bigint NOT NULL,
     likeCount int NOT NULL,
     dislikeCount int NOT NULL,
     favoriteCount int,
@@ -62,7 +66,6 @@ CREATE TABLE Videos (
 );
 
 CREATE TABLE Comments (
-    commentID varchar(30) UNIQUE,
     videoID char(11),
     author varchar(50) NOT NULL,
     commentText TEXT(2000) NOT NULL,
