@@ -48,11 +48,11 @@ CREATE TABLE SongToCategory (
 
 
 CREATE TABLE Videos (
-    videoID char(11),
+    videoID char(11) UNIQUE,
     songID int,
     publishedAt DATE NOT NULL,
     title varchar(100) NOT NULL,
-    viewCount int NOT NULL,
+    viewCount BIGINT NOT NULL,
     likeCount int NOT NULL,
     dislikeCount int NOT NULL,
     favoriteCount int,
@@ -62,13 +62,14 @@ CREATE TABLE Videos (
 );
 
 CREATE TABLE Comments (
+    commentID varchar(30) UNIQUE,
     videoID char(11),
-    commentText varchar(2000) NOT NULL,
     author varchar(50) NOT NULL,
+    commentText TEXT(2000) NOT NULL,
     publishedAt DATE NOT NULL,
     viewerRating int,
-    likes int NOT NULL,
-    dislikes int NOT NULL,
+    likeCount int NOT NULL,
+    PRIMARY KEY (commentID),
     FOREIGN KEY (videoID) REFERENCES Videos(videoID)
 );
 

@@ -45,7 +45,7 @@ def GetStatisticsForVideo(videoId):
 
     keys = ["viewCount", "likeCount", "dislikeCount", "favoriteCount", "commentCount"]
 
-    # Set key if does not exist, set value to null
+    # Set key if does not exist, set value to 0
     for key in keys:
         if key not in items[0]["statistics"]:
             items[0]["statistics"][key] = 0
@@ -72,16 +72,21 @@ def GetCommentsForVideo(videoId):
     return items
 
 def GetAllSongsAndArtistsFromDB():
+    offset = 8400
+    limit = 8000
+
     statement = "SELECT artistName, songName, songs.songID " \
                 "FROM Songs, Artists, SongToArtist " \
                 "WHERE Songs.songID = SongToArtist.songID " \
-                "AND Artists.artistID = SongToArtist.artistID;"
+                "AND Artists.artistID = SongToArtist.artistID " \
+                "LIMIT %d, %d;" % (offset, limit)
+
     config.unsafe_cursor.execute(statement)
     return config.unsafe_cursor.fetchall()
 
 
 def GetAllVideoIdsFromDB():
-    statement = "SELECT videoID" \
+    statement = "SELECT videoID " \
                 "FROM Videos; "
     config.unsafe_cursor.execute(statement)
     results = config.unsafe_cursor.fetchall()
@@ -105,9 +110,7 @@ def PopulateVideos():
             continue
 
         videoId = video["id"]["videoId"]
-        publishedAtString = video["snippet"]["publishedAt"]
-        translationTable = {ord(c): None for c in [':', '-']}
-        publishedAt = datetime.strptime(publishedAtString.translate(translationTable), "%Y%m%dT%H%M%S.%fZ")
+        publishedAt = ConvertStringToDate(video["snippet"]["publishedAt"])
         title = video["snippet"]["title"]
 
         # Populate video table
@@ -115,41 +118,70 @@ def PopulateVideos():
         inputDataList = [videoId, songId, publishedAt, title, s["viewCount"], s["likeCount"],
                          s["dislikeCount"], s["favoriteCount"], s["commentCount"]]
 
+        config.cursor.execute(statement, tuple(inputDataList))
+
+        if cnt[0] % 100 == 0:
+            try:
+                config.dbconnection.commit()
+            except:
+                config.dbconnection.rollback()
+
+        '''
         try:
             config.cursor.execute(statement, tuple(inputDataList))
             config.dbconnection.commit()
-
         except:
             config.dbconnection.rollback()
+        '''
+
+
+def ConvertStringToDate(s):
+    translationTable = {ord(c): None for c in [':', '-']}
+    return datetime.strptime(s.translate(translationTable), "%Y%m%dT%H%M%S.%fZ")
 
 
 def PopulateComments():
     videoIds = GetAllVideoIdsFromDB()
+    i = 0
 
     statement = "INSERT INTO comments " \
                 "VALUES (%s, %s, %s, %s, %s, %s, %s);"
 
     for videoId in videoIds:
+        i += 1
         comments = GetCommentsForVideo(videoId)
 
-        # Warning: this table will be large
+        print("#%d - Got the comments for video %s\n" % (i, videoId))
+
+
         for comment in comments:
             c = comment["snippet"]["topLevelComment"]
             s = c["snippet"]
-            inputDataList = [c["id"], s["videoId"], s["authorDisplayName"],
-                             s["textDisplay"], s["viewerRating"],
-                             s["likeCount"], s["publishedAt"]]
 
-            try:
-                config.cursor.execute(statement, tuple(inputDataList))
-                config.dbconnection.commit()
-            except:
-                config.dbconnection.rollback()
+            publishedAt = ConvertStringToDate(s["publishedAt"])
+            viewerRating = s["viewerRating"]
+            textDisplay = s["textDisplay"]
+            author = s["authorDisplayName"]
+
+            if (viewerRating == 'none'):
+                viewerRating = None
+
+            inputDataList = [c["id"], s["videoId"], author,
+                             textDisplay, publishedAt,
+                             viewerRating, s["likeCount"]]
+
+            config.cursor.execute(statement, tuple(inputDataList))
+
+            if i % 100 == 0:
+                try:
+                    config.dbconnection.commit()
+                except:
+                    config.dbconnection.rollback()
 
 
 if __name__ == "__main__":
 
-    PopulateVideos()
+    # PopulateVideos()
     PopulateComments()
 
 
