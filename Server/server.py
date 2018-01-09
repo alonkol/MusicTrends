@@ -92,14 +92,15 @@ def BottomWords(amount):
 
     return GetJSONResult(statement, (amount,))
 
-# Score = numberOfWords*averageUniqueness,
+# Score = numberOfWords/wordCount * averageUniqueness
 # where uniqueness for a word is calculated as 1/(word frequency)
+# and wordCount is the total count of words (penalty for repetitions)
 @app.route('/api/songs/wordscore/top/<int:amount>')
 def TopSophisticatedSongs(amount):
     statement = "SELECT songName, score " \
                 "FROM " \
                 "(" \
-                    "SELECT songID, SUM(wordCount)*AVERAGE(uniqueness) AS score " \
+                    "SELECT songID, COUNT(word)*AVERAGE(uniqueness)/SUM(wordCount) AS score " \
                     "FROM " \
                     "(" \
                         "SELECT word, 1/SUM(wordCount) AS uniqueness " \
@@ -123,7 +124,7 @@ def BottomSophisticatedSongs(amount):
     statement = "SELECT songName, score " \
                 "FROM " \
                 "(" \
-                    "SELECT songID, SUM(wordCount)*AVERAGE(uniqueness) AS score " \
+                    "SELECT songID, COUNT(word)*AVERAGE(uniqueness)/SUM(wordCount) AS score " \
                     "FROM " \
                     "(" \
                         "SELECT word, 1/SUM(wordCount) AS uniqueness " \
