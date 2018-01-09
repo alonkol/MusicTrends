@@ -117,6 +117,29 @@ def TopSophisticatedSongs(amount):
     return GetJSONResult(statement, (amount,))
 
 
+# TODO: put in VIEW
+@app.route('/api/songs/wordscore/bottom/<int:amount>')
+def BottomSophisticatedSongs(amount):
+    statement = "SELECT songName, score " \
+                "FROM " \
+                "(" \
+                    "SELECT songID, SUM(wordCount)*AVERAGE(uniqueness) AS score " \
+                    "FROM " \
+                    "(" \
+                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
+                        "FROM WordsPerSong " \
+                        "GROUP BY word " \
+                    ") AS wordUniqueness, WordsPerSong  " \
+                    "WHERE wordUniqueness.word = WordsPerSong.word " \
+                    "GROUP BY WordsPerSong.songID" \
+                ") AS a, songs " \
+                "WHERE songs.songID = a.songID " \
+                "ORDER BY score ASC " \
+                "LIMIT %s;"
+
+    return GetJSONResult(statement, (amount,))
+
+
 @app.route('/api/songs/discussionscore/top/<int:amount>')
 def TopSophisticatedSongDiscussions(amount):
     return ""
