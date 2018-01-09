@@ -92,12 +92,58 @@ def BottomWords(amount):
 
     return GetJSONResult(statement, (amount,))
 
-# TODO: query db
-# create scoring system?
+# Score = numberOfWords^2 * averageUniqueness / wordCount
+# where uniqueness for a word is calculated as 1/(word frequency)
+# and wordCount is the total count of words (penalty for repetitions)
 @app.route('/api/songs/wordscore/top/<int:amount>')
 def TopSophisticatedSongs(amount):
-    return ""
+    statement = "SELECT songName, score " \
+                "FROM " \
+                "(" \
+                    "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
+                    "FROM " \
+                    "(" \
+                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
+                        "FROM WordsPerSong " \
+                        "GROUP BY word " \
+                    ") AS wordUniqueness, WordsPerSong  " \
+                    "WHERE wordUniqueness.word = WordsPerSong.word " \
+                    "GROUP BY WordsPerSong.songID" \
+                ") AS a, songs " \
+                "WHERE songs.songID = a.songID " \
+                "ORDER BY score DESC " \
+                "LIMIT %s;"
 
+
+    return GetJSONResult(statement, (amount,))
+
+
+# TODO: put in VIEW
+@app.route('/api/songs/wordscore/bottom/<int:amount>')
+def BottomSophisticatedSongs(amount):
+    statement = "SELECT songName, score " \
+                "FROM " \
+                "(" \
+                    "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
+                    "FROM " \
+                    "(" \
+                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
+                        "FROM WordsPerSong " \
+                        "GROUP BY word " \
+                    ") AS wordUniqueness, WordsPerSong  " \
+                    "WHERE wordUniqueness.word = WordsPerSong.word " \
+                    "GROUP BY WordsPerSong.songID" \
+                ") AS a, songs " \
+                "WHERE songs.songID = a.songID " \
+                "ORDER BY score ASC " \
+                "LIMIT %s;"
+
+    return GetJSONResult(statement, (amount,))
+
+
+@app.route('/api/songs/discussionscore/top/<int:amount>')
+def TopSophisticatedSongDiscussions(amount):
+    return ""
 
 # --- Auxiliary --- #
 
