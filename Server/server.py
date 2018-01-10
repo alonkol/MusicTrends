@@ -190,7 +190,7 @@ def BottomWordsPerCategory(category_name, amount):
                 "FROM WordsPerSong, categories, SongToCategory " \
                 "WHERE WordsPerSong.songID = SongToCategory.songID " \
                 "AND categories.categoryID = SongToCategory.categoryID " \
-                "AND categories.categoryName = %s" \
+                "AND categories.categoryName = %s " \
                 "GROUP BY word " \
                 "ORDER BY count ASC " \
                 "LIMIT %s;"
