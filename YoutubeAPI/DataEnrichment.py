@@ -57,19 +57,22 @@ def GetStatisticsForVideo(videoId):
 # Can get up to 100 on a single page.
 # Can get more with paging if necessary.
 def GetCommentsForVideo(videoId):
-    results = youtube.commentThreads().list(
-        part="snippet",
-        videoId=videoId,
-        textFormat="plainText",
-        maxResults=10
-    ).execute()
+    try:
+        results = youtube.commentThreads().list(
+            part="snippet",
+            videoId=videoId,
+            textFormat="plainText",
+            maxResults=10
+        ).execute()
+        items = results.get("items", [])
+        if len(items) == 0:
+            return None
+        return items
 
-    items = results.get("items", [])
-
-    if len(items) == 0:
+    except Exception as e:
+        print e
         return None
 
-    return items
 
 def GetAllSongsAndArtistsFromDB():
     offset = 0
@@ -151,25 +154,27 @@ def PopulateComments():
         comments = GetCommentsForVideo(videoId)
         print("#%d - Got the comments for video %s\n" % (i, videoId))
 
-        if comments is None:
-            pass
-        for comment in comments:
-            c = comment["snippet"]["topLevelComment"]
-            s = c["snippet"]
+        if comments is not None:
+            try:
+                for comment in comments:
+                    c = comment["snippet"]["topLevelComment"]
+                    s = c["snippet"]
 
-            publishedAt = ConvertStringToDate(s["publishedAt"])
-            viewerRating = s["viewerRating"]
-            textDisplay = s["textDisplay"].encode('unicode_escape')
-            author = s["authorDisplayName"].encode('unicode_escape')
+                    publishedAt = ConvertStringToDate(s["publishedAt"])
+                    viewerRating = s["viewerRating"]
+                    textDisplay = s["textDisplay"].encode('unicode_escape')
+                    author = s["authorDisplayName"].encode('unicode_escape')
 
-            if (viewerRating == 'none'):
-                viewerRating = None
+                    if (viewerRating == 'none'):
+                        viewerRating = None
 
-            inputDataList = [c["id"], s["videoId"], author,
-                             textDisplay, publishedAt,
-                             viewerRating, s["likeCount"]]
+                    inputDataList = [c["id"], s["videoId"], author,
+                                     textDisplay, publishedAt,
+                                     viewerRating, s["likeCount"]]
 
-            config.cursor.execute(statement, tuple(inputDataList))
+                    config.cursor.execute(statement, tuple(inputDataList))
+            except Exception as e:
+                print e
 
             if i % 100 == 0:
                 try:
