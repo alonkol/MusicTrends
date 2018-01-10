@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import UpdateSongData from "./UpdateSongData";
 
 class Management extends Component {
 
@@ -10,10 +11,9 @@ class Management extends Component {
 
     render() {
         return (
-            <div>
-                Management
-            </div>
-        );
+            <UpdateSongData/>
+        )
+        ;
     }
 
     componentDidMount() {

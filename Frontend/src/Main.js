@@ -12,7 +12,7 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'trends'}
+        this.state = {current_page: 'manage'}
     }
 
     handleClick = (e) => {
