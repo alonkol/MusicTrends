@@ -286,7 +286,7 @@ def update_in_lyrics_table(artist,song,lyrics):
                 "Artists.artistID = SongToArtist.artistID AND " \
                 "Songs.songID = SongToArtist.songID); "
 
-    return GetJSONResult(statement, (lyrics, song, artist))
+    return GetUpdateResult(statement, (lyrics, song, artist))
 
 
 def insert_lyrics_into_tables(song_id, lyrics, language):
