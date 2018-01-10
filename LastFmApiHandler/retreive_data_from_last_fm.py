@@ -84,8 +84,7 @@ def get_all_songs_from_api():
             try:
                 res[artist] = get_songs_per_artist_from_api(artist)
             except Exception as e:
-                with open(SONGS_FILE, 'w') as outf:
-                    json.dump(res, outf)
+                print(e)
 
     with open(SONGS_FILE, 'w') as outf:
         json.dump(res, outf)
