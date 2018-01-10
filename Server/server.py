@@ -170,8 +170,10 @@ def songs_for_artist(artist):
     return GetJSONResult(statement, (artist,))
 
 
-@app.route('/api/blacklist_artist/<artist>')
-def blacklist_artist(artist):
+@app.route('/api/blacklist_artist')
+def blacklist_artist():
+    artist = request.args.get('artist')
+    managerKey = request.args.get('key')
     artist_id = find_artist_id_in_table(artist)
     if artist_id is None:
         return json.dumps({"success": False})
@@ -180,7 +182,8 @@ def blacklist_artist(artist):
 
     return GetUpdateResult(statement, (artist_id,))
 
-@app.route('/api/lyrics/get/', methods=['GET'])
+
+@app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
     artist = request.args.get('artist')
     song = request.args.get('song')
@@ -200,6 +203,7 @@ def update_lyrics():
     artist = request.args.get('artist')
     song = request.args.get('song')
     lyrics = request.args.get('lyrics')
+    managerKey = request.args.get('key')
     song_id = get_song_id_by_song_name_and_artist(artist, song)
     lyrics_exist = check_if_lyrics_exist(song_id)
     if lyrics_exist:
@@ -209,6 +213,27 @@ def update_lyrics():
         # currently supports only lyrics in english
         insert_lyrics_into_tables(song_id, lyrics, 'en')
 
+# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+app.route('/api/youtube/update', methods=['GET'])
+def update_youtube_data():
+    artist = request.args.get('artist')
+    song = request.args.get('song')
+    managerKey = request.args.get('key')
+    return json.dumps({
+            "success": True,
+        })
+
+
+# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+app.route('/api/songs/add', methods=['GET'])
+def add_song():
+    artist = request.args.get('artist')
+    song = request.args.get('song')
+    category = request.args.get('category')
+    managerKey = request.args.get('key')
+    return json.dumps({
+            "success": True,
+        })
 # --- Auxiliary --- #
 
 def GetJSONResult(statement, params=None):
