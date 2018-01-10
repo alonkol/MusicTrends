@@ -30,7 +30,7 @@ def Categories():
 
     return GetJSONResult(statement)
 
-@app.route('/api/songs/likes/top/<int:amount>/', methods=['GET'])
+@app.route('/api/songs/likes/top/<int:amount>', methods=['GET'])
 def TopSongLikes(amount):
     category = request.args.get('category')
     if category is not None:
@@ -58,7 +58,7 @@ def TopSongLikesPerCategory(category_name, amount):
     return GetJSONResult(statement, (category_name, amount))
 
 
-@app.route('/api/songs/dislikes/top/<int:amount>/', methods=['GET'])
+@app.route('/api/songs/dislikes/top/<int:amount>', methods=['GET'])
 def TopSongDislikes(amount):
     category = request.args.get('category')
     if category is not None:
@@ -86,7 +86,7 @@ def TopSongDislikesPerCategory(category_name, amount):
     return GetJSONResult(statement, (category_name, amount))
 
 
-@app.route('/api/songs/views/top/<int:amount>/', methods=['GET'])
+@app.route('/api/songs/views/top/<int:amount>', methods=['GET'])
 def TopSongViews(amount):
     category = request.args.get('category')
     if category is not None:
@@ -114,7 +114,7 @@ def TopSongViewsPerCategory(category_name, amount):
     return GetJSONResult(statement, (category_name, amount))
 
 
-@app.route('/api/songs/views/bottom/<int:amount>/', methods=['GET'])
+@app.route('/api/songs/views/bottom/<int:amount>', methods=['GET'])
 def BottomSongViews(amount):
     category = request.args.get('category')
     if category is not None:
@@ -142,7 +142,7 @@ def BottomSongViewsPerCategory(category_name, amount):
     return GetJSONResult(statement, (category_name, amount))
 
 
-@app.route('/api/words/top/<int:amount>/', methods=['GET'])
+@app.route('/api/words/top/<int:amount>', methods=['GET'])
 def TopWords(amount):
     category = request.args.get('category')
     if category is not None:
@@ -189,7 +189,7 @@ def BottomWordsPerCategory(category_name, amount):
     statement = "SELECT word, SUM(wordCount) AS count " \
                 "FROM WordsPerSong, categories, SongToCategory " \
                 "WHERE WordsPerSong.songID = SongToCategory.songID " \
-                "AND categories.categoryID = SongToCategory.categoryID" \
+                "AND categories.categoryID = SongToCategory.categoryID " \
                 "AND categories.categoryName = %s" \
                 "GROUP BY word " \
                 "ORDER BY count ASC " \
@@ -218,7 +218,7 @@ def TopSophisticatedSongs(amount):
                         "GROUP BY word " \
                     ") AS wordUniqueness, WordsPerSong  " \
                     "WHERE wordUniqueness.word = WordsPerSong.word " \
-                    "GROUP BY WordsPerSong.songID" \
+                    "GROUP BY WordsPerSong.songID " \
                 ") AS a, songs " \
                 "WHERE songs.songID = a.songID " \
                 "ORDER BY score DESC " \
@@ -231,14 +231,14 @@ def TopSophisticatedSongsPerCategory(category_name, amount):
     statement = "SELECT songName, score " \
                 "FROM " \
                 "(" \
-                    "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
+                    "SELECT WordsPerSong.songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
                     "FROM " \
                     "(" \
                         "SELECT word, 1/SUM(wordCount) AS uniqueness " \
-                        "FROM WordsPerSong" \
+                        "FROM WordsPerSong " \
                         "GROUP BY word " \
                     ") AS wordUniqueness, WordsPerSong, categories, SongToCategory " \
-                    "WHERE wordUniqueness.word = WordsPerSong.word" \
+                    "WHERE wordUniqueness.word = WordsPerSong.word " \
                     "AND categories.categoryName = %s " \
                     "AND SongToCategory.categoryID = categories.categoryID " \
                     "AND SongToCategory.songID = WordsPerSong.songID " \
@@ -288,7 +288,7 @@ def BottomSophisticatedSongsPerCategory(category_name, amount):
                         "FROM WordsPerSong" \
                         "GROUP BY word " \
                     ") AS wordUniqueness, WordsPerSong, categories, SongToCategory " \
-                    "WHERE wordUniqueness.word = WordsPerSong.word" \
+                    "WHERE wordUniqueness.word = WordsPerSong.word " \
                     "AND categories.categoryName = %s " \
                     "AND SongToCategory.categoryID = categories.categoryID " \
                     "AND SongToCategory.songID = WordsPerSong.songID " \
