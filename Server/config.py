@@ -14,6 +14,7 @@ user = "DbMysql07"
 password = "DbMysql07"
 dbname = "DbMysql07"
 
+
 dbconnection = mysql.connector.connect(user=user, password=password,
                               host=dbhost,
                               database=dbname)
