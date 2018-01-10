@@ -4,9 +4,9 @@ import json
 from DataAPIs.LastFM.retreive_data_from_last_fm import ARTISTS_FILE, SONGS_FILE
 from DataAPIs.MusixMatch.lyrics_collector import LYRICS_FILE
 
-LYRICS_PATH = '../MusixMatch/' + LYRICS_FILE
-ARTISTS_PATH = '../LastFM/' + ARTISTS_FILE
-SONGS_PATH = '../LastFM/' + SONGS_FILE
+LYRICS_PATH = '../../DataAPIs/MusixMatch/' + LYRICS_FILE
+ARTISTS_PATH = '../../DataAPIs/LastFM/' + ARTISTS_FILE
+SONGS_PATH = '../../DataAPIs/LastFM/' + SONGS_FILE
 
 TEST_ARTISTS_PATH = 'test_artists.json'
 TEST_SONGS_PATH = 'test_songs.json'

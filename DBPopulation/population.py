@@ -11,13 +11,13 @@ from Server.config import cursor
 from TestJsons.create_test_json import TEST_ARTISTS_PATH, TEST_SONGS_PATH, TEST_LYRICS_PATH
 from TestJsons import create_test_json
 
-CREATE_DB_PATH = '../DB/creation.sql'
-DELETE_DB_PATH = '../DB/delete_tables.sql'
-LYRICS_PATH = '../MusixMatch/' + LYRICS_FILE
-ARTISTS_PATH = '../LastFM/' + ARTISTS_FILE
-SONGS_PATH = '../LastFM/' + SONGS_FILE
+CREATE_DB_PATH = 'creation.sql'
+DELETE_DB_PATH = 'delete_tables.sql'
+LYRICS_PATH = '../DataAPIs/MusixMatch/' + LYRICS_FILE
+ARTISTS_PATH = '../DataAPIs/LastFM/' + ARTISTS_FILE
+SONGS_PATH = '../DataAPIs/LastFM/' + SONGS_FILE
 
-TEST_JSONS_PATH = '../TestJsons/'
+TEST_JSONS_PATH = 'TestJsons/'
 FULL_TEST_LYRICS_PATH = TEST_JSONS_PATH + TEST_LYRICS_PATH
 FULL_TEST_ARTISTS_PATH = TEST_JSONS_PATH + TEST_ARTISTS_PATH
 FULL_TEST_SONGS_PATH = TEST_JSONS_PATH + TEST_SONGS_PATH
