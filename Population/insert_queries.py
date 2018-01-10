@@ -15,7 +15,7 @@ def insert_into_categories_table(category_name):
 
 
 def insert_into_artists_table(artist_name):
-    sql_insert = "INSERT INTO Artists VALUES (Default, %s);"
+    sql_insert = "INSERT INTO Artists VALUES (Default, %s, Default);"
     cursor = config.cursor
     try:
         # handle non-ascii charactes

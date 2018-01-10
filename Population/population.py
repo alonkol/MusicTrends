@@ -10,9 +10,9 @@ from Population.insert_queries import insert_into_lyrics_table, insert_into_word
 #################################### FULL DATA ##########################################################
 #########################################################################################################
 
-# LYRICS_PATH = '../LyricsCollection/' + LYRICS_FILE
-# ARTISTS_PATH = '../LastFmApiHandler/' + ARTISTS_FILE
-# SONGS_PATH = '../LastFmApiHandler/' + SONGS_FILE
+#LYRICS_PATH = '../LyricsCollection/' + LYRICS_FILE
+#ARTISTS_PATH = '../LastFmApiHandler/' + ARTISTS_FILE
+#SONGS_PATH = '../LastFmApiHandler/' + SONGS_FILE
 
 #########################################################################################################
 #################################### TEST DATA ##########################################################
