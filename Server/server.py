@@ -7,8 +7,8 @@ import config
 # general idea:
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
-from LyricsCollection.lyrics_analyzer import create_words_map
-from Population.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
+
+from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
 
 app = Flask(__name__)
 
