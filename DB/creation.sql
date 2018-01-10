@@ -55,13 +55,13 @@ CREATE TABLE Videos (
     videoID char(11),
     songID int,
     publishedAt DATE NOT NULL,
-    title varchar(100) NOT NULL,
+    title varchar(500) NOT NULL,
     viewCount bigint NOT NULL,
     likeCount int NOT NULL,
     dislikeCount int NOT NULL,
     favoriteCount int,
     commentCount int NOT NULL,
-    updatedAt DATE,
+    updatedAt DATETIME ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (videoID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
@@ -69,7 +69,7 @@ CREATE TABLE Videos (
 CREATE TABLE Comments (
     commentID varchar(30),
     videoID char(11),
-    author varchar(50) NOT NULL,
+    author varchar(200) NOT NULL,
     commentText TEXT(2000) NOT NULL,
     publishedAt DATE NOT NULL,
     viewerRating int,

@@ -100,7 +100,7 @@ def PopulateVideos():
     couples = GetAllSongsAndArtistsFromDB()
 
     statement = "INSERT INTO videos " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, Default);"
 
     for couple in couples:
         songId = couple["songID"]
@@ -113,7 +113,7 @@ def PopulateVideos():
 
         videoId = video["id"]["videoId"]
         publishedAt = ConvertStringToDate(video["snippet"]["publishedAt"])
-        title = video["snippet"]["title"]
+        title = video["snippet"]["title"].encode('unicode_escape')
 
         # Populate video table
         s = GetStatisticsForVideo(videoId)
@@ -149,18 +149,18 @@ def PopulateComments():
     for videoId in videoIds:
         i += 1
         comments = GetCommentsForVideo(videoId)
-
         print("#%d - Got the comments for video %s\n" % (i, videoId))
 
-
+        if comments is None:
+            pass
         for comment in comments:
             c = comment["snippet"]["topLevelComment"]
             s = c["snippet"]
 
             publishedAt = ConvertStringToDate(s["publishedAt"])
             viewerRating = s["viewerRating"]
-            textDisplay = s["textDisplay"]
-            author = s["authorDisplayName"]
+            textDisplay = s["textDisplay"].encode('unicode_escape')
+            author = s["authorDisplayName"].encode('unicode_escape')
 
             if (viewerRating == 'none'):
                 viewerRating = None
@@ -180,7 +180,7 @@ def PopulateComments():
 
 if __name__ == "__main__":
 
-    PopulateVideos()
-    # PopulateComments()
+    #PopulateVideos()
+    PopulateComments()
 
 
