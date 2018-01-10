@@ -13,6 +13,7 @@ CREATE TABLE Songs (
 CREATE TABLE Artists (
     artistID int AUTO_INCREMENT,
     artistName varchar(250),
+    active tinyint(1) DEFAULT 1,
     PRIMARY KEY (artistID)
 );
 

@@ -148,6 +148,39 @@ def BottomSophisticatedSongs(amount):
 def TopSophisticatedSongDiscussions(amount):
     return ""
 
+
+####################################
+# --------- Admin Page ----------- #
+####################################
+
+
+@app.route('/api/artists')
+def artists():
+    statement = "SELECT artistName FROM Artists WHERE active=1;"
+
+    return GetJSONResult(statement)
+
+
+@app.route('/api/songs_for_artist/<artist>')
+def songs_for_artist(artist):
+    statement = "SELECT Songs.songName FROM Artists, SongToArtist, Songs " \
+                "WHERE artistName = %s " \
+                "and Artists.artistID = SongToArtist.artistID and Songs.songID = SongToArtist.songID;"
+
+    return GetJSONResult(statement, (artist,))
+
+
+@app.route('/api/blacklist_artist/<artist>')
+def blacklist_artist(artist):
+    artist_id = find_artistID_in_table(artist)
+    if artist_id is None:
+        return json.dumps({"success": False})
+
+    statement = "UPDATE Artists SET active=0 WHERE artistID=%s;"
+
+    return GetUpdateResult(statement, (artist_id,))
+
+
 # --- Auxiliary --- #
 
 def GetJSONResult(statement, params=None):
@@ -175,6 +208,36 @@ def GetJSONResult(statement, params=None):
         "results": results}
     )
 
+
+def GetUpdateResult(statement, params=None):
+    if params is not None:
+        config.cursor.execute(statement, params)
+    else:
+        config.cursor.execute(statement)
+
+    try:
+        config.dbconnection.commit()
+    except Exception:
+        config.dbconnection.rollback()
+        return json.dumps({
+            "success": False,
+        })
+
+    return json.dumps({
+        "success": True,
+        }
+    )
+
+
+def find_artistID_in_table(artist_name):
+    statement = "SELECT artistID FROM Artists WHERE artistName = %s;"
+    try:
+        config.cursor.execute(statement, (artist_name,))
+    except Exception:
+        raise
+        return
+    rows = config.cursor.fetchall()
+    return rows[0][0] if rows else None
 
 @app.route('/api/lyrics/get/', methods=['GET'])
 def get_lyrics():
