@@ -1,0 +1,11 @@
+drop table `DbMysql07`.`CommentWordsPerVideo`;
+drop table `DbMysql07`.`Lyrics`;
+drop table `DbMysql07`.`SongToArtist`;
+drop table `DbMysql07`.`SongToCategory`;
+drop table `DbMysql07`.`ArtistToCategory`;
+drop table `DbMysql07`.`WordsPerSong`;
+drop table `DbMysql07`.`Comments`;
+drop table `DbMysql07`.`Artists`;
+drop table `DbMysql07`.`Categories`;
+drop table `DbMysql07`.`Videos`;
+drop table `DbMysql07`.`Songs`;
