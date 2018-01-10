@@ -21,6 +21,7 @@ CREATE TABLE Artists (
 CREATE TABLE Lyrics (
     songID int,
     lyrics TEXT(5000),
+    language varchar(10),
     PRIMARY KEY (songID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
@@ -61,6 +62,7 @@ CREATE TABLE Videos (
     dislikeCount int NOT NULL,
     favoriteCount int,
     commentCount int NOT NULL,
+    updatedAt DATE,
     PRIMARY KEY (videoID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
