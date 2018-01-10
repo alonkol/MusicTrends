@@ -8,10 +8,9 @@ from swagger_client.rest import ApiException
 
 import retrieve_lyrics_data
 
-SONGS_JSON = '../LastFmApiHandler/songs_unique.json'
+SONGS_JSON = '../LastFmApiHandler/songs_with_mbid.json'
+API_KEY = '476c97d9273a03b4ef62f21a5de63b59'
 
-def main():
-    store_remaining_songs()
 
 
 def find_duplicates():
@@ -70,7 +69,7 @@ def store_remaining_songs():
 
 def get_lyrics_from_api(track_name,artist_name):
     # str | Account api key, to be used in every api call
-    api_key = 'secret'
+    api_key = API_KEY
     assert api_key != 'secret'
     swagger_client.configuration.api_key['apikey'] = api_key
     # create an instance of the API class
@@ -119,7 +118,7 @@ def remove_empty_lyrics_from_json():
 
 def get_all_lyrics():
     # str | Account api key, to be used in every api call
-    api_key = 'secret'
+    api_key = API_KEY
     assert api_key != 'secret'
     swagger_client.configuration.api_key['apikey'] = api_key
     # create an instance of the API class
@@ -139,17 +138,21 @@ def get_all_lyrics():
     none_response_list = []
     for artist in data.keys():
         if data[artist] is not None:
-            for song in data[artist]:
+            for item in data[artist]:
+                song = item[0]
+                mbid = item[1]
                 if (is_valid_asci(song)) and is_valid_asci(artist):
                     try:
                         api_response = api_instance.matcher_lyrics_get_get(format='json', q_track=song, q_artist=artist).to_dict()
                         if api_response['message']['body']['lyrics'] is not None:
                             lyrics = api_response['message']['body']['lyrics']['lyrics_body']
-                            if lyrics == "":
+                            language = api_response['message']['body']['lyrics']['lyrics_language']
+                            if lyrics == "" or language == "":
                                 empty.append(song)
                                 empty_response += 1
                             else:
-                                d[song] = lyrics
+                                d_inner = {'song_name': song, 'lyrics': lyrics, 'language': language}
+                                d[mbid] = d_inner.copy()
                                 total_lyrics += 1
                         else:
                             none_response_list.append(song)
@@ -166,16 +169,20 @@ def get_all_lyrics():
     print "Error count = {:d} ".format(err_cnt)
     print "None response = {:d} ".format(none_response)
 
-    with open('lyrics.json', 'w') as lyrics_file:
+    with open('lyrics_with_language.json', 'w') as lyrics_file:
         json.dump(d, lyrics_file)
 
-    with codecs.open('not_asci.txt', 'w', encoding='utf-8') as not_asci_file:
+    with codecs.open('not_asci_language.txt', 'w', encoding='utf-8') as not_asci_file:
         for item in not_ascii:
             not_asci_file.write("%s\n" % item)
 
-    with open('non_response.txt', 'w') as none_response_file:
+    with open('non_response_language.txt', 'w') as none_response_file:
         for item in none_response:
             none_response_file.write("%s\n" % item)
+
+    with open('empty_response_language.txt', 'w') as empty_response_file:
+        for item in empty:
+            empty_response_file.write("%s\n" % item)
 
     return True
 
@@ -219,6 +226,15 @@ def retrieve_tracks_with_none_response():
 
 
 """
+
+
+
+def main():
+    get_all_lyrics()
+
+
+
+
 
 if __name__ == '__main__':
     main()
