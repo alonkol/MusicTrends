@@ -1,5 +1,3 @@
-USE DbMysql07;
-
 CREATE TABLE Categories (
     categoryID int AUTO_INCREMENT,
     categoryName varchar(50), 

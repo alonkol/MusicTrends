@@ -17,12 +17,14 @@ from Population.insert_queries import insert_into_lyrics_table, insert_into_word
 #########################################################################################################
 #################################### TEST DATA ##########################################################
 #########################################################################################################
+from Server.config import cursor
 from TestJsons.create_test_json import TEST_ARTISTS_PATH, TEST_SONGS_PATH, TEST_LYRICS_PATH
 
 LYRICS_PATH = '../TESTJsons/' + TEST_LYRICS_PATH
 ARTISTS_PATH = '../TESTJsons/' + TEST_ARTISTS_PATH
 SONGS_PATH = '../TESTJsons/' + TEST_SONGS_PATH
-
+CREATE_DB_PATH = '../DB/creation.sql'
+DELETE_DB_PATH = '../DB/delete_tables.sql'
 ########################################################################################################
 
 
@@ -66,9 +68,30 @@ class Populator():
                         insert_into_song_to_artist_table(song_id, artist_id)
                         insert_into_song_to_category_table(song_id, category_id)
 
+    @staticmethod
+    def run_sql_file(file_path):
+        # Open and read the file as a single buffer
+        fd = open(file_path, 'r')
+        sql_file = fd.read()
+        fd.close()
+
+        # all SQL commands (split on ';')
+        sql_commands = sql_file.split(';')
+
+        # Execute every command from the input file
+        for command in sql_commands[: -1]:
+            command = command+";"
+            try:
+                cursor.execute(command)
+            except Exception as e:
+                print e
+                print "failed to initialize database"
+                return 1
+
+
 """
 THE FOLLOWING FUNCTIONS ARE NOT IN USE
-"""
+
 
 def populate_categories_table():
     d = get_data_from_file('categories.json')
@@ -142,10 +165,15 @@ def populate_song_to_category_table():
                     song_encoded = song.encode('unicode_escape')
                     category_encoded = category.encode('unicode_escape')
                     insert_into_artist_to_category_table(song_encoded, category_encoded)
-
+"""
 
 def main():
-    Populator().populate_tables()
+    populator = Populator()
+    # delete old db
+    populator.run_sql_file(DELETE_DB_PATH)
+    # create tables
+    populator.run_sql_file(CREATE_DB_PATH)
+    populator.populate_tables()
 
 
 if __name__ == '__main__':
