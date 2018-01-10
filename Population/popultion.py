@@ -1,12 +1,29 @@
 import json
 
+from LastFmApiHandler.retreive_data_from_last_fm import SONGS_FILE, ARTISTS_FILE
+from LyricsCollection.lyrics_collector import LYRICS_FILE
 from Population.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table, \
     insert_into_categories_table, insert_into_artists_table, insert_into_artist_to_category_table, \
     insert_into_songs_table, insert_into_song_to_artist_table, insert_into_song_to_category_table
 
-LYRICS_PATH = '../LyricsCollection/lyrics.json'
-ARTISTS_PATH = '../LastFmApiHandler/artists.json'
-SONGS_PATH = '../LastFmApiHandler/songs_with_mbid.json'
+#########################################################################################################
+#################################### FULL DATA ##########################################################
+#########################################################################################################
+
+# LYRICS_PATH = '../LyricsCollection/' + LYRICS_FILE
+# ARTISTS_PATH = '../LastFmApiHandler/' + ARTISTS_FILE
+# SONGS_PATH = '../LastFmApiHandler/' + SONGS_FILE
+
+#########################################################################################################
+#################################### TEST DATA ##########################################################
+#########################################################################################################
+from TestJsons.create_test_json import TEST_ARTISTS_PATH, TEST_SONGS_PATH, TEST_LYRICS_PATH
+
+LYRICS_PATH = '../TESTJsons/' + TEST_LYRICS_PATH
+ARTISTS_PATH = '../TESTJsons/' + TEST_ARTISTS_PATH
+SONGS_PATH = '../TESTJsons/' + TEST_SONGS_PATH
+
+########################################################################################################
 
 
 class Populator():

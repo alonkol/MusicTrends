@@ -6,6 +6,10 @@ import time
 API_KEY = 'bb71a65a3332770c8340f1b151d3e0ef'
 BASE_URL = 'http://ws.audioscrobbler.com/2.0/?api_key={}&method&format=json'.format(API_KEY)
 
+ARTISTS_FILE = 'artists.json'
+SONGS_FILE = 'songs_with_mbid.json'
+CATEGORIES_FILE = 'categories.json'
+
 
 def get_all_categories_from_api():
     url = BASE_URL + '&method=tag.getTopTags'
@@ -31,10 +35,10 @@ def get_artists_per_category_from_api(category):
 
 def get_all_artists_from_api():
     res = {}
-    categories = get_data_from_file('categories.json')
+    categories = get_data_from_file(CATEGORIES_FILE)
     for category in categories:
         res[category['name']] = get_artists_per_category_from_api(category['name'])
-    with open('artists.json', 'w') as outf:
+    with open(ARTISTS_FILE, 'w') as outf:
         json.dump(res,outf)
 
 
@@ -74,16 +78,16 @@ def get_songs_per_artist_from_api(artist):
 
 def get_all_songs_from_api():
     res = {}
-    artists_per_category = get_data_from_file('artists.json')
+    artists_per_category = get_data_from_file(ARTISTS_FILE)
     for cat in artists_per_category.values():
         for artist in cat:
             try:
                 res[artist] = get_songs_per_artist_from_api(artist)
             except Exception as e:
-                with open('songs_with_mbid.json', 'w') as outf:
+                with open(SONGS_FILE, 'w') as outf:
                     json.dump(res, outf)
 
-    with open('songs_with_mbid.json', 'w') as outf:
+    with open(SONGS_FILE, 'w') as outf:
         json.dump(res, outf)
 
 

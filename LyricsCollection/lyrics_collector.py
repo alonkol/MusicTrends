@@ -8,6 +8,8 @@ from swagger_client.rest import ApiException
 
 import retrieve_lyrics_data
 
+LYRICS_FILE = 'lyrics_with_language.json'
+
 SONGS_JSON = '../LastFmApiHandler/songs_with_mbid.json'
 API_KEY = '476c97d9273a03b4ef62f21a5de63b59'
 
@@ -111,7 +113,7 @@ def remove_empty_lyrics_from_json():
                 del lyrics[song]
                 removed += 1
 
-    with open('lyrics.json', 'w') as lyrics_file:
+    with open(LYRICS_FILE, 'w') as lyrics_file:
         json.dump(lyrics, lyrics_file)
     print "removed %d itmes" % removed
 
@@ -169,7 +171,7 @@ def get_all_lyrics():
     print "Error count = {:d} ".format(err_cnt)
     print "None response = {:d} ".format(none_response)
 
-    with open('lyrics_with_language.json', 'w') as lyrics_file:
+    with open(LYRICS_FILE, 'w') as lyrics_file:
         json.dump(d, lyrics_file)
 
     with codecs.open('not_asci_language.txt', 'w', encoding='utf-8') as not_asci_file:
