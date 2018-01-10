@@ -103,13 +103,11 @@ def main():
 
     populator = Populator(numOfCategories, artistsPerCategory, songsPerArtist)
 
-    try:
-        # delete old db
-        populator.run_sql_file(DELETE_DB_PATH)
-        # create tables
-        populator.run_sql_file(CREATE_DB_PATH)
-    except Exception:
-        raise
+    # delete old db
+    populator.run_sql_file(DELETE_DB_PATH)
+
+    # create tables
+    populator.run_sql_file(CREATE_DB_PATH)
 
     # populate Songs, Artists, Categories, Lyrics, SongToArtist, ArtistToCategory, SongToCategory TABLES
     populator.populate_lastfm_musixmatch_data()
