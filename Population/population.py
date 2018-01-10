@@ -20,9 +20,9 @@ from Population.insert_queries import insert_into_lyrics_table, insert_into_word
 from Server.config import cursor
 from TestJsons.create_test_json import TEST_ARTISTS_PATH, TEST_SONGS_PATH, TEST_LYRICS_PATH
 
-LYRICS_PATH = '../TESTJsons/' + TEST_LYRICS_PATH
-ARTISTS_PATH = '../TESTJsons/' + TEST_ARTISTS_PATH
-SONGS_PATH = '../TESTJsons/' + TEST_SONGS_PATH
+LYRICS_PATH = '../TestJsons/' + TEST_LYRICS_PATH
+ARTISTS_PATH = '../TestJsons/' + TEST_ARTISTS_PATH
+SONGS_PATH = '../TestJsons/' + TEST_SONGS_PATH
 CREATE_DB_PATH = '../DB/creation.sql'
 DELETE_DB_PATH = '../DB/delete_tables.sql'
 ########################################################################################################
@@ -45,7 +45,7 @@ class Populator():
         insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'], song_lyrics_data['language'])
         insert_into_words_per_song_table(song_id, song_lyrics_data['lyrics'])
 
-    def populate_tables(self):
+    def populate_lastfm_musixmatch_data(self):
         artists_in_db = {}
         songs_in_db = {}
         for category, artists in self._artists_data.iteritems():
@@ -84,9 +84,7 @@ class Populator():
             try:
                 cursor.execute(command)
             except Exception as e:
-                print e
-                print "failed to initialize database"
-                return 1
+                raise
 
 
 """
@@ -167,14 +165,20 @@ def populate_song_to_category_table():
                     insert_into_artist_to_category_table(song_encoded, category_encoded)
 """
 
+
 def main():
     populator = Populator()
-    # delete old db
-    populator.run_sql_file(DELETE_DB_PATH)
-    # create tables
-    populator.run_sql_file(CREATE_DB_PATH)
-    populator.populate_tables()
+    try:
+        # delete old db
+        populator.run_sql_file(DELETE_DB_PATH)
+        # create tables
+        populator.run_sql_file(CREATE_DB_PATH)
+    except Exception:
+        raise
+    # populate Songs, Artists, Categories, Lyrics, SongToArtist, ArtistToCategory, SongToCategory TABLES
+    populator.populate_lastfm_musixmatch_data()
 
 
 if __name__ == '__main__':
     main()
+
