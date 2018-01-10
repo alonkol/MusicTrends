@@ -28,3 +28,20 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+#components-layout-demo-responsive .logo {
+  height: 32px;
+  background: rgba(255,255,255,.2);
+  margin: 16px;
+}
+
+h1 {
+  color: #fff;
+  font-size: 50px;
+  line-height: 36px;
+  letter-spacing: -.05em;
+}
+
+h2 {
+  font-size: 30px;
+}

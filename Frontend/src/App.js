@@ -8,6 +8,9 @@ class App extends Component {
     return (
 
       <div className="App">
+          <Main/>
+      </div>
+        /*
         <header className="App-header">
             <img src={require("./images/logo.jpg")} alt="logo" width="30%"/>
         </header>
@@ -15,7 +18,7 @@ class App extends Component {
             <Main/>
         </p>
       </div>
-
+        */
     );
   }
 }

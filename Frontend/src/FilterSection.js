@@ -15,7 +15,7 @@ class FilterSection extends Component {
     render() {
         return (
             <div>
-                <h1>Filters</h1>
+                <h2>Filters</h2>
                 <form>
                     <table>
                         <tr>
