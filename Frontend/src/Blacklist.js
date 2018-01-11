@@ -5,6 +5,7 @@ import { message } from "antd";
 
 class Blacklist extends Component {
 
+
     constructor() {
         super();
         this.state = {artist: null}
@@ -22,7 +23,17 @@ class Blacklist extends Component {
         }
 
         else {
-            console.log(this.state.artist)
+            fetch("/api/blacklist_artist?key=&artist=" + this.state.artist)
+                .then(result => result.json())
+                .then(result => {
+                    if (result['success'] === true) {
+                        message.success('Artist was blacklisted.');
+                    }
+
+                    else {
+                        message.error('An error occurred.');
+                    }
+                });
         }
     }
 
@@ -41,7 +52,7 @@ class Blacklist extends Component {
                         <tr>
                             <td colSpan={3} width={250}>
                                 <ArtistsCascader
-                                handleChange={this.handleChange}
+                                    handleChange={this.handleChange}
                                 />
                             </td>
                         </tr>

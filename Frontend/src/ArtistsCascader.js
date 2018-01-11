@@ -8,8 +8,8 @@ class ArtistsCascader extends Component {
         this.state = {artists: []}
     }
 
-    onChange = (value) => {
-        this.props.handleChange(value[0]);
+    onChange = (value, selectedOptions) => {
+        this.props.handleChange(selectedOptions[0]['id']);
     }
 
     render() {
@@ -27,7 +27,7 @@ class ArtistsCascader extends Component {
         fetch("/api/artists")
             .then(results => results.json())
             .then(results => (this.setState({artists: results.results.map(artist =>
-                ({value: artist['artistName'], label: artist['artistName']}))})));
+                ({value: artist['artistName'], label: artist['artistName'], id: artist['artistID']}))})));
     }
 
 }
