@@ -1,18 +1,35 @@
 import React, { Component } from 'react';
-import Cascader from "antd/es/cascader/index";
 import Button from "antd/es/button/button";
+import ArtistsCascader from "./ArtistsCascader";
+import { message } from "antd";
 
 class Blacklist extends Component {
 
     constructor() {
         super();
-        this.state = {}
+        this.state = {artist: null}
+    }
+
+    handleChange = (value) => {
+        this.setState({
+            artist: value
+        });
+    }
+
+    onClick = () => {
+        if (this.state.artist === null) {
+            message.error('No artist has been chosen');
+        }
+
+        else {
+            console.log(this.state.artist)
+        }
     }
 
     render() {
         return (
             <div>
-                <h2>Black List</h2>
+                <h2>Blacklist</h2>
                 <form>
                     <table>
                         <tr>
@@ -22,10 +39,11 @@ class Blacklist extends Component {
                             <td><br /></td>
                         </tr>
                         <tr>
-                            <td colSpan={3} width={250}><Cascader
-                                options={this.state.categories}
-                                placeholder="Choose Artist"
-                                showSearch /></td>
+                            <td colSpan={3} width={250}>
+                                <ArtistsCascader
+                                handleChange={this.handleChange}
+                                />
+                            </td>
                         </tr>
                         <tr>
                             <td><br /></td>
@@ -33,7 +51,7 @@ class Blacklist extends Component {
                         <tr>
                             <td></td>
                             <td colSpan={3} align={'center'}>
-                                <Button type="danger" icon="delete" size={'large'}>Blacklist Artist</Button>
+                                <Button type="danger" icon="delete" size={'large'} onClick={this.onClick}>Blacklist Artist</Button>
                             </td>
                         </tr>
                     </table>

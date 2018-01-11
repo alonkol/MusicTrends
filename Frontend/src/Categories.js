@@ -20,9 +20,6 @@ class Categories extends Component {
         fetch("/api/categories")
             .then(results => results.json())
             .then(results => (this.setState({categories: results.results})));
-        /*
-                    .then(results => console.log(results)
-                    */
     }
 
     /*

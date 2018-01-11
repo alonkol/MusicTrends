@@ -4,7 +4,6 @@ import topSongs from './api/data.json';
 import TrendsChart from "./TrendsChart";
 import FilterSection from "./FilterSection";
 import { Layout, Menu, Icon } from 'antd';
-import Management from "./Management";
 import SubMenu from "antd/es/menu/SubMenu";
 import Blacklist from "./Blacklist";
 import AddSong from "./AddSong";
@@ -90,12 +89,6 @@ class Main extends Component {
                     <br/>
                     <TrendsChart topSongs={topSongs} numOfResults={5}></TrendsChart>
                 </div>
-            );
-        }
-
-        if (this.state.current_page === 'manage') {
-            return (
-                <Management/>
             );
         }
 
