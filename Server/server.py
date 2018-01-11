@@ -116,7 +116,7 @@ def TopSophisticatedSongDiscussions(amount):
 
 @app.route('/api/artists')
 def artists():
-    statement = "SELECT artistName FROM Artists WHERE active=1;"
+    statement = "SELECT artistID, artistName FROM Artists WHERE active=1;"
 
     return GetJSONResult(statement)
 
