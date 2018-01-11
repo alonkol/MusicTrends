@@ -5,6 +5,10 @@ import TrendsChart from "./TrendsChart";
 import FilterSection from "./FilterSection";
 import { Layout, Menu, Icon } from 'antd';
 import Management from "./Management";
+import SubMenu from "antd/es/menu/SubMenu";
+import Blacklist from "./Blacklist";
+import AddSong from "./AddSong";
+import UpdateSongData from "./UpdateSongData";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -12,7 +16,7 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'manage'}
+        this.state = {current_page: 'trends'}
     }
 
     handleClick = (e) => {
@@ -36,10 +40,24 @@ class Main extends Component {
                             <Icon type="area-chart" />
                             <span className="nav-text">Trends</span>
                         </Menu.Item>
-                        <Menu.Item key="manage">
-                            <Icon type="database" />
-                            <span className="nav-text">Manage</span>
-                        </Menu.Item>
+                        <SubMenu key="manage" title={<span><Icon type="database" /><span className="nav-text">Manage</span></span>}>
+                            <Menu.Item key="add-song">
+                                <Icon type="user" />
+                                <span className="nav-text">
+                                    Add Song
+                                </span>
+                            </Menu.Item>
+                            <Menu.Item key="update-song"><Icon type="edit" />
+                                <span className="nav-text">
+                                    Update Song
+                                </span>
+                            </Menu.Item>
+                            <Menu.Item key="blacklist-artist"><Icon type="delete" />
+                                <span className="nav-text">
+                                    Blacklist Artist
+                                </span>
+                            </Menu.Item>
+                        </SubMenu>
                         <Menu.Item key="about">
                             <Icon type="user" />
                             <span className="nav-text">About Us</span>
@@ -88,6 +106,25 @@ class Main extends Component {
                 </div>
             );
         }
+
+        if (this.state.current_page === 'blacklist-artist') {
+            return (
+                <Blacklist/>
+            );
+        }
+
+        if (this.state.current_page === 'add-song') {
+            return (
+                <AddSong/>
+            );
+        }
+
+        if (this.state.current_page === 'update-song') {
+            return (
+                <UpdateSongData/>
+            );
+        }
+
     }
 
 }
