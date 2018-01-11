@@ -132,11 +132,8 @@ def songs_for_artist(artist):
 
 @app.route('/api/blacklist_artist')
 def blacklist_artist():
-    artist = request.args.get('artist')
+    artist_id = request.args.get('artist')
     managerKey = request.args.get('key')
-    artist_id = find_artist_id_in_table(artist)
-    if artist_id is None:
-        return json.dumps({"success": False})
 
     statement = "UPDATE Artists SET active=0 WHERE artistID=%s;"
 
