@@ -3,6 +3,7 @@ from flask import Flask, request
 from flask import render_template
 
 import config
+import queries
 
 # general idea:
 # show trends of word usage as a function of time (song's air-date)
@@ -25,177 +26,61 @@ def ApiWelcome():
 
 @app.route('/api/categories')
 def Categories():
-    statement = "SELECT categoryID as id, categoryName as name " \
-                "FROM categories;"
+    return GetJSONResult(queries.CATEGORIES)
 
-    return GetJSONResult(statement)
 
 @app.route('/api/songs/likes/top/<int:amount>', methods=['GET'])
 def TopSongLikes(amount):
     category = request.args.get('category')
     if category is not None:
-        return TopSongLikesPerCategory(category, amount)
+        return GetJSONResult(queries.TOP_SONG_LIKES_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT songName, likeCount " \
-                "FROM songs, videos " \
-                "WHERE songs.songID = videos.songID " \
-                "ORDER BY likeCount DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def TopSongLikesPerCategory(category_name, amount):
-    statement = "SELECT songName, likeCount " \
-                "FROM songs, videos, categories, SongToCategory " \
-                "WHERE songs.songID = videos.songID " \
-                "AND SongToCategory.songID = songs.songID " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
-                "AND categories.categoryName = %s " \
-                "ORDER BY likeCount DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.TOP_SONG_LIKES, (amount,))
 
 
 @app.route('/api/songs/dislikes/top/<int:amount>', methods=['GET'])
 def TopSongDislikes(amount):
     category = request.args.get('category')
     if category is not None:
-        return TopSongDislikesPerCategory(category, amount)
+        return GetJSONResult(queries.TOP_SONG_DISLIKES_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT songName, dislikeCount " \
-                "FROM songs, videos " \
-                "WHERE songs.songID = videos.songID " \
-                "ORDER BY dislikeCount DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def TopSongDislikesPerCategory(category_name, amount):
-    statement = "SELECT songName, dislikeCount " \
-                "FROM songs, videos, categories, SongToCategory " \
-                "WHERE songs.songID = videos.songID " \
-                "AND SongToCategory.songID = songs.songID " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
-                "AND categories.categoryName = %s " \
-                "ORDER BY dislikeCount DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.TOP_SONG_DISLIKES, (amount,))
 
 
 @app.route('/api/songs/views/top/<int:amount>', methods=['GET'])
 def TopSongViews(amount):
     category = request.args.get('category')
     if category is not None:
-        return TopSongViewsPerCategory(category, amount)
+        return GetJSONResult(queries.TOP_SONG_VIEWS_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT songName, viewCount " \
-                "FROM songs, videos " \
-                "WHERE songs.songID = videos.songID " \
-                "ORDER BY viewCount DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def TopSongViewsPerCategory(category_name, amount):
-    statement = "SELECT songName, viewCount " \
-                "FROM songs, videos, categories, SongToCategory " \
-                "WHERE songs.songID = videos.songID " \
-                "AND SongToCategory.songID = songs.songID " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
-                "AND categories.categoryName = %s " \
-                "ORDER BY viewCount DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.TOP_SONG_VIEWS, (amount,))
 
 
 @app.route('/api/songs/views/bottom/<int:amount>', methods=['GET'])
 def BottomSongViews(amount):
     category = request.args.get('category')
     if category is not None:
-        return BottomSongViewsPerCategory(category, amount)
+        return GetJSONResult(queries.BOTTOM_SONG_VIEWS_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT songName, viewCount " \
-                "FROM songs, videos " \
-                "WHERE songs.songID = videos.songID " \
-                "ORDER BY viewCount ASC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def BottomSongViewsPerCategory(category_name, amount):
-    statement = "SELECT songName, viewCount " \
-                "FROM songs, videos, categories, SongToCategory " \
-                "WHERE songs.songID = videos.songID " \
-                "AND SongToCategory.songID = songs.songID " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
-                "AND categories.categoryName = %s " \
-                "ORDER BY viewCount ASC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.BOTTOM_SONG_VIEWS, (amount,))
 
 
 @app.route('/api/words/top/<int:amount>', methods=['GET'])
 def TopWords(amount):
     category = request.args.get('category')
     if category is not None:
-        return TopWordsPerCategory(category, amount)
+        return GetJSONResult(queries.TOP_WORDS_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT word, SUM(wordCount) AS count " \
-                "FROM WordsPerSong " \
-                "GROUP BY word " \
-                "ORDER BY count DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def TopWordsPerCategory(category_name, amount):
-    statement = "SELECT word, SUM(wordCount) AS count " \
-                "FROM WordsPerSong, categories, SongToCategory " \
-                "WHERE WordsPerSong.songID = SongToCategory.songID " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
-                "AND categories.categoryName = %s " \
-                "GROUP BY word " \
-                "ORDER BY count DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.TOP_WORDS, (amount,))
 
 
 @app.route('/api/words/bottom/<int:amount>', methods=['GET'])
 def BottomWords(amount):
     category = request.args.get('category')
     if category is not None:
-        return BottomWordsPerCategory(category, amount)
+        return GetJSONResult(queries.BOTTOM_WORDS_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT word, SUM(wordCount) AS count " \
-                "FROM WordsPerSong " \
-                "GROUP BY word " \
-                "ORDER BY count ASC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def BottomWordsPerCategory(category_name, amount):
-    statement = "SELECT word, SUM(wordCount) AS count " \
-                "FROM WordsPerSong, categories, SongToCategory " \
-                "WHERE WordsPerSong.songID = SongToCategory.songID " \
-                "AND categories.categoryID = SongToCategory.categoryID " \
-                "AND categories.categoryName = %s " \
-                "GROUP BY word " \
-                "ORDER BY count ASC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.BOTTOM_WORDS, (amount,))
 
 
 # Score = numberOfWords^2 * averageUniqueness / wordCount
@@ -205,101 +90,18 @@ def BottomWordsPerCategory(category_name, amount):
 def TopSophisticatedSongs(amount):
     category = request.args.get('category')
     if category is not None:
-        return TopSophisticatedSongsPerCategory(category, amount)
+        return GetJSONResult(queries.TOP_SOPHISTICATED_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT songName, score " \
-                "FROM " \
-                "(" \
-                    "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
-                    "FROM " \
-                    "(" \
-                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
-                        "FROM WordsPerSong " \
-                        "GROUP BY word " \
-                    ") AS wordUniqueness, WordsPerSong  " \
-                    "WHERE wordUniqueness.word = WordsPerSong.word " \
-                    "GROUP BY WordsPerSong.songID " \
-                ") AS a, songs " \
-                "WHERE songs.songID = a.songID " \
-                "ORDER BY score DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def TopSophisticatedSongsPerCategory(category_name, amount):
-    statement = "SELECT songName, score " \
-                "FROM " \
-                "(" \
-                    "SELECT WordsPerSong.songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
-                    "FROM " \
-                    "(" \
-                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
-                        "FROM WordsPerSong " \
-                        "GROUP BY word " \
-                    ") AS wordUniqueness, WordsPerSong, categories, SongToCategory " \
-                    "WHERE wordUniqueness.word = WordsPerSong.word " \
-                    "AND categories.categoryName = %s " \
-                    "AND SongToCategory.categoryID = categories.categoryID " \
-                    "AND SongToCategory.songID = WordsPerSong.songID " \
-                    "GROUP BY WordsPerSong.songID " \
-                ") AS a, songs " \
-                "WHERE songs.songID = a.songID " \
-                "ORDER BY score DESC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
+    return GetJSONResult(queries.TOP_SOPHISTICATED, (amount,))
 
 
 @app.route('/api/songs/wordscore/bottom/<int:amount>', methods=['GET'])
 def BottomSophisticatedSongs(amount):
     category = request.args.get('category')
     if category is not None:
-        return BottomSophisticatedSongsPerCategory(category, amount)
+        return GetJSONResult(queries.BOTTOM_SOPHISTICATED_PER_CATEGORY, (category, amount))
 
-    statement = "SELECT songName, score " \
-                "FROM " \
-                "(" \
-                    "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
-                    "FROM " \
-                    "(" \
-                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
-                        "FROM WordsPerSong " \
-                        "GROUP BY word " \
-                    ") AS wordUniqueness, WordsPerSong  " \
-                    "WHERE wordUniqueness.word = WordsPerSong.word " \
-                    "GROUP BY WordsPerSong.songID" \
-                ") AS a, songs " \
-                "WHERE songs.songID = a.songID " \
-                "ORDER BY score ASC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (amount,))
-
-
-def BottomSophisticatedSongsPerCategory(category_name, amount):
-    statement = "SELECT songName, score " \
-                "FROM " \
-                "(" \
-                    "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
-                    "FROM " \
-                    "(" \
-                        "SELECT word, 1/SUM(wordCount) AS uniqueness " \
-                        "FROM WordsPerSong" \
-                        "GROUP BY word " \
-                    ") AS wordUniqueness, WordsPerSong, categories, SongToCategory " \
-                    "WHERE wordUniqueness.word = WordsPerSong.word " \
-                    "AND categories.categoryName = %s " \
-                    "AND SongToCategory.categoryID = categories.categoryID " \
-                    "AND SongToCategory.songID = WordsPerSong.songID " \
-                    "GROUP BY WordsPerSong.songID " \
-                ") AS a, songs " \
-                "WHERE songs.songID = a.songID " \
-                "ORDER BY score ASC " \
-                "LIMIT %s;"
-
-    return GetJSONResult(statement, (category_name, amount))
-
+    return GetJSONResult(queries.BOTTOM_SOPHISTICATED, (amount,))
 
 
 @app.route('/api/songs/discussionscore/top/<int:amount>')
