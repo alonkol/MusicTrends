@@ -27,8 +27,12 @@ def create_jsons(numCat, numArtist, numSongs):
     mbids = []
     for artist_list in new_artists_data.itervalues():
         for artist in artist_list:
-            new_songs_data[artist] = songs_data[artist][:numSongs]
-            mbids.extend([song_data[1] for song_data in new_songs_data[artist]])
+            try:
+                if songs_data[artist] is not None:
+                    new_songs_data[artist] = songs_data[artist][:NUMBER_OF_SONGS_PER_ARTIST]
+                    mbids.extend([song_data[1] for song_data in new_songs_data[artist]])
+            except Exception as e:
+                print e
 
     new_lyrics_data = {}
     for mbid in mbids:
