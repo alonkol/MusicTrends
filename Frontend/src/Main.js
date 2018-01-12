@@ -8,6 +8,7 @@ import SubMenu from "antd/es/menu/SubMenu";
 import Blacklist from "./Blacklist";
 import AddSong from "./AddSong";
 import UpdateSongData from "./UpdateSongData";
+import About from "./About";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -15,7 +16,7 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'trends'}
+        this.state = {current_page: 'about'}
     }
 
     handleClick = (e) => {
@@ -59,7 +60,7 @@ class Main extends Component {
                         </SubMenu>
                         <Menu.Item key="about">
                             <Icon type="user" />
-                            <span className="nav-text">About Us</span>
+                            <span className="nav-text">The Team</span>
                         </Menu.Item>
                     </Menu>
                 </Sider>
@@ -94,9 +95,7 @@ class Main extends Component {
 
         if (this.state.current_page === 'about') {
             return (
-                <div>
-                    About us
-                </div>
+                <About />
             );
         }
 
