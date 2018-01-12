@@ -36,6 +36,8 @@
 }
 
 h1 {
+  font-family: 'open sans',arial,sans-serif;
+  font-weight: 100;
   color: #fff;
   font-size: 50px;
   line-height: 36px;

@@ -65,7 +65,7 @@ class Main extends Component {
                 </Sider>
                 <Layout>
                     <Header style={{ background: '#fff', padding: 0,  }}>
-                        <h1>Music<b>Trends</b> <Icon type="sound" style={{ color: '#08c' }} /></h1>
+                        <h1>music<b>trends</b> <Icon type="sound" style={{ color: '#08c' }} /></h1>
                     </Header>
                     <Content style={{ margin: '24px 16px 0' }}>
                         <div align="center" style={{ padding: 24, background: '#fff', minHeight: '100vh'}}>
