@@ -8,9 +8,10 @@ LYRICS_PATH = '../../DataAPIs/MusixMatch/' + LYRICS_FILE
 ARTISTS_PATH = '../../DataAPIs/LastFM/' + ARTISTS_FILE
 SONGS_PATH = '../../DataAPIs/LastFM/' + SONGS_FILE
 
-TEST_ARTISTS_PATH = 'test_artists.json'
-TEST_SONGS_PATH = 'test_songs.json'
-TEST_LYRICS_PATH = 'test_lyrics.json'
+TEST_PREFIX = 'test_'
+TEST_ARTISTS_PATH = TEST_PREFIX + ARTISTS_FILE
+TEST_SONGS_PATH = TEST_PREFIX + SONGS_FILE
+TEST_LYRICS_PATH = TEST_PREFIX + LYRICS_FILE
 
 def create_jsons(num_of_categories, num_of_artists_per_category, num_of_songs_per_artist):
     artists_data = get_data_from_file(ARTISTS_PATH)
