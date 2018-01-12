@@ -12,7 +12,8 @@ import queries
 from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
 
 app = Flask(__name__)
-
+JSON_FAIL_NOTICE = json.dumps({"success": False})
+JSON_SUCCESS_NOTICE = json.dumps({"success": True})
 
 ###############################
 # -------- REST API --------- #
@@ -116,16 +117,14 @@ def TopSophisticatedSongDiscussions(amount):
 
 @app.route('/api/artists')
 def artists():
-    statement = "SELECT artistID, artistName FROM Artists WHERE active=1;"
+    statement = queries.ARTISTS
 
     return GetJSONResult(statement)
 
 
 @app.route('/api/songs_for_artist/<artist_id>')
 def songs_for_artist(artist_id):
-    statement = "SELECT Songs.songID, Songs.songName FROM SongToArtist, Songs " \
-                "WHERE artistID = %s " \
-                "and Songs.songID = SongToArtist.songID;"
+    statement = queries.SONGS_FOR_ARTISTS
 
     return GetJSONResult(statement, (artist_id,))
 
@@ -135,7 +134,7 @@ def blacklist_artist():
     artist_id = request.args.get('artist')
     managerKey = request.args.get('key')
 
-    statement = "UPDATE Artists SET active=0 WHERE artistID=%s;"
+    statement = queries.BLACKLIST_ARTIST
 
     return GetUpdateResult(statement, (artist_id,))
 
@@ -143,10 +142,14 @@ def blacklist_artist():
 @app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
     song_id = request.args.get('song')
-    statement = "SELECT lyrics " \
-                "FROM Lyrics " \
-                "WHERE songID = %s;"
+    statement = queries.LYRICS
     return GetJSONResult(statement, (song_id,))
+
+
+def delete_all_words_for_song_id_in_words_per_song_table(song_id):
+    statement = queries.DELETE_FROM_WORDS_PER_SONG
+
+    return GetUpdateResult(statement, (song_id,))
 
 
 @app.route('/api/lyrics/update', methods=['GET'])
@@ -156,11 +159,14 @@ def update_lyrics():
     managerKey = request.args.get('key')
     lyrics_exist = check_if_lyrics_exist(song_id)
     if lyrics_exist:
-        update_in_lyrics_table(song_id, lyrics)
-        insert_into_words_per_song_table(song_id, lyrics)
-    else:
-        # currently supports only lyrics in english
-        insert_lyrics_into_tables(song_id, lyrics, 'en')
+        return update_lyrics_in_db(song_id, lyrics)
+
+    # currently supports only lyrics in english
+    result = insert_lyrics_into_tables(song_id, lyrics, 'en')
+    if result:
+        return json.dumps({"success": True})
+    return json.dumps({"success": True})
+
 
 # TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 app.route('/api/youtube/update', methods=['GET'])
@@ -220,18 +226,14 @@ def GetUpdateResult(statement, params=None):
         config.dbconnection.commit()
     except Exception:
         config.dbconnection.rollback()
-        return json.dumps({
-            "success": False,
-        })
+        return JSON_FAIL_NOTICE
 
-    return json.dumps({
-        "success": True,
-        }
-    )
+    return JSON_SUCCESS_NOTICE
+
 
 
 def find_artist_id_in_table(artist_name):
-    statement = "SELECT artistID FROM Artists WHERE artistName = %s;"
+    statement = queries.FIND_ARTIST_ID
     try:
         config.cursor.execute(statement, (artist_name,))
     except Exception:
@@ -240,41 +242,45 @@ def find_artist_id_in_table(artist_name):
     return rows[0][0] if rows else None
 
 
-def check_if_lyrics_exist(song_id):
-    statement = "SELECT lyrics " \
-                "FROM Lyrics " \
-                "WHERE " \
-                "songID = %s;"
-
-    return json.loads(GetJSONResult(statement, (song_id, )))['amount'] != 0
-
-
-def update_in_lyrics_table(song_id, lyrics):
-    statement = "UPDATE Lyrics " \
-                "SET lyrics = %s " \
-                "WHERE " \
-                "songID = %s; "
-
-    return GetUpdateResult(statement, (lyrics, song_id))
-
-
-def insert_lyrics_into_tables(song_id, lyrics, language):
-    insert_into_lyrics_table(song_id, lyrics, language)
-    insert_into_words_per_song_table(song_id, lyrics)
-
-
-def get_song_id_by_song_name_and_artist(artist, song):
-    statement = "SELECT Songs.songID " \
-                "FROM Songs, SongToArtist, Artists " \
-                "WHERE songName = %s AND " \
-                "ArtistName = %s AND " \
-                "Artists.artistID = SongToArtist.artistID AND " \
-                "Songs.songID = SongToArtist.songID; "
+def find_song_id_by_song_name_and_artist(artist, song):
+    statement = queries.FIND_SONG_ID
     res = json.loads(GetJSONResult(statement, (song, artist)))
     if res['amount'] > 0:
         return int(res['results'][0]['songID'])
     else:
         return None
+
+
+def check_if_lyrics_exist(song_id):
+    statement = queries.FIND_LYRICS
+
+    return json.loads(GetJSONResult(statement, (song_id, )))['amount'] != 0
+
+
+def update_in_lyrics_table(song_id, lyrics):
+    statement = queries.UPDATE_LYRICS
+
+    return GetUpdateResult(statement, (lyrics, song_id))
+
+
+def update_lyrics_in_db(song_id, lyrics):
+    result = update_in_lyrics_table(song_id, lyrics)
+    if result is JSON_FAIL_NOTICE:
+        return JSON_FAIL_NOTICE
+    result = delete_all_words_for_song_id_in_words_per_song_table(song_id)
+    if result is JSON_FAIL_NOTICE:
+        return JSON_FAIL_NOTICE
+    result = insert_into_words_per_song_table(song_id, lyrics)
+    if result is None:
+        return JSON_FAIL_NOTICE
+    return JSON_SUCCESS_NOTICE
+
+
+def insert_lyrics_into_tables(song_id, lyrics, language):
+    result = insert_into_lyrics_table(song_id, lyrics, language)
+    if result is None:
+        return
+    return insert_into_words_per_song_table(song_id, lyrics)
 
 
 ###############################

@@ -164,3 +164,28 @@ BOTTOM_SOPHISTICATED_PER_CATEGORY = "SELECT songName, score " \
             "WHERE songs.songID = a.songID " \
             "ORDER BY score ASC " \
             "LIMIT %s;"
+
+ARTISTS = "SELECT artistID, artistName FROM Artists WHERE active=1;"
+
+SONGS_FOR_ARTISTS = "SELECT Songs.songID, Songs.songName FROM SongToArtist, Songs " \
+                    "WHERE artistID = %s " \
+                    "and Songs.songID = SongToArtist.songID;"
+
+BLACKLIST_ARTIST = "UPDATE Artists SET active=0 WHERE artistID=%s;"
+
+LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
+
+DELETE_FROM_WORDS_PER_SONG = "DELETE FROM WordsPerSong WHERE songID = %s;"
+
+FIND_ARTIST_ID = "SELECT artistID FROM Artists WHERE artistName = %s;"
+
+FIND_LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
+
+UPDATE_LYRICS = "UPDATE Lyrics SET lyrics = %s WHERE songID = %s;"
+
+FIND_SONG_ID = "SELECT Songs.songID " \
+                "FROM Songs, SongToArtist, Artists " \
+                "WHERE songName = %s AND " \
+                "ArtistName = %s AND " \
+                "Artists.artistID = SongToArtist.artistID AND " \
+                "Songs.songID = SongToArtist.songID;"

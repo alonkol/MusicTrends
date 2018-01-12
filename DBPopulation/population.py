@@ -48,17 +48,22 @@ class Populator():
         song_lyrics_data = self._lyrics_data.get(mbid)
         if song_lyrics_data is None:
             return
-        insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'], song_lyrics_data['language'])
-        insert_into_words_per_song_table(song_id, song_lyrics_data['lyrics'])
+        result = insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'], song_lyrics_data['language'])
+        if result is not None:
+            insert_into_words_per_song_table(song_id, song_lyrics_data['lyrics'])
 
     def populate_lastfm_musixmatch_data(self):
         artists_in_db = {}
         songs_in_db = {}
         for category, artists in self._artists_data.iteritems():
             category_id = insert_into_categories_table(category)
+            if category_id is None:
+                continue
             for artist in artists:
                 if artist not in artists_in_db:
                     artist_id = insert_into_artists_table(artist)
+                    if artist_id is None:
+                        continue
                     artists_in_db[artist] = artist_id
                 artist_id = artists_in_db[artist]
                 insert_into_artist_to_category_table(artist_id, category_id)
@@ -68,12 +73,13 @@ class Populator():
                         mbid = song[1]
                         if mbid not in songs_in_db:
                             song_id = insert_into_songs_table(song[0])
+                            if song_id is None:
+                                continue
                             self._insert_lyrics_data_into_tables(song_id, mbid)
                             songs_in_db[mbid] = song_id
                         song_id = songs_in_db[mbid]
                         insert_into_song_to_artist_table(song_id, artist_id)
                         insert_into_song_to_category_table(song_id, category_id)
-
 
 
     @staticmethod
