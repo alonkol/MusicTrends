@@ -16,7 +16,7 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'add-song'}
+        this.state = {current_page: 'update-song'}
     }
 
     handleClick = (e) => {

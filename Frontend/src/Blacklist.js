@@ -50,8 +50,9 @@ class Blacklist extends Component {
                             <td><br /></td>
                         </tr>
                         <tr>
-                            <td colSpan={3} width={250}>
+                            <td align="center" colSpan={3} width={250}>
                                 <ArtistsCascader
+                                    width={'80%'}
                                     handleChange={this.handleChange}
                                 />
                             </td>

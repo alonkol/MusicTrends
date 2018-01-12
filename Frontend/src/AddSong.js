@@ -42,7 +42,6 @@ class AddSong extends Component {
                     }
                 });
         }
-
     }
 
     render() {
@@ -93,7 +92,6 @@ class AddSong extends Component {
                                     htmlType='submit'
                                     icon="plus-circle-o"
                                     size={'large'}
-                                    onClick={this.addSong}
                                 >Add Song</Button>
                             </td>
                         </tr>

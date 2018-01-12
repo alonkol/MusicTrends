@@ -19,6 +19,8 @@ class ArtistsCascader extends Component {
                 placeholder="Choose Artist"
                 showSearch={{matchInputWidth: false}}
                 onChange={this.onChange}
+                matchInputWidth={true}
+                style={{ width: this.props.width }}
             />
         );
     }
