@@ -16,7 +16,7 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'about'}
+        this.state = {current_page: 'add-song'}
     }
 
     handleClick = (e) => {
@@ -42,7 +42,7 @@ class Main extends Component {
                         </Menu.Item>
                         <SubMenu key="manage" title={<span><Icon type="database" /><span className="nav-text">Manage</span></span>}>
                             <Menu.Item key="add-song">
-                                <Icon type="user" />
+                                <Icon type="plus-circle-o" />
                                 <span className="nav-text">
                                     Add Song
                                 </span>

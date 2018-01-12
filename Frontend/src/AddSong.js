@@ -18,18 +18,19 @@ class AddSong extends Component {
                 <form>
                     <table>
                         <tr>
-                            <td colSpan={4}>Adding a new song is done by fetching data from Youtube and MusicMatch.</td>
+                            <td align="center" colSpan={4}>Adding a new song is done by fetching data from <strong>Youtube</strong> and <strong>MusicMatch</strong>.</td>
                         </tr>
                         <tr>
                             <br/>
                         </tr>
                         <tr>
-                            <td>Song Name:
+                            <td width="100">
+                                Song Name:
                             </td>
-                            <td>
+                            <td width="200">
                                 <Input placeholder="Song Name" />
                             </td>
-                            <td>
+                            <td align="center" width="70">
                             Artist:
                             </td>
                             <td><Input
@@ -43,7 +44,7 @@ class AddSong extends Component {
                         <tr>
                             <td>Category:
                             </td>
-                            <td width={250}>
+                            <td >
                                 <Input placeholder="Category" />
                             </td>
                             <td colSpan={2} align={'center'}>
