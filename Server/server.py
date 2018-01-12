@@ -121,13 +121,13 @@ def artists():
     return GetJSONResult(statement)
 
 
-@app.route('/api/songs_for_artist/<artist>')
-def songs_for_artist(artist):
-    statement = "SELECT Songs.songName FROM Artists, SongToArtist, Songs " \
-                "WHERE artistName = %s " \
-                "and Artists.artistID = SongToArtist.artistID and Songs.songID = SongToArtist.songID;"
+@app.route('/api/songs_for_artist/<artist_id>')
+def songs_for_artist(artist_id):
+    statement = "SELECT Songs.songID, Songs.songName FROM SongToArtist, Songs " \
+                "WHERE artistID = %s " \
+                "and Songs.songID = SongToArtist.songID;"
 
-    return GetJSONResult(statement, (artist,))
+    return GetJSONResult(statement, (artist_id,))
 
 
 @app.route('/api/blacklist_artist')
@@ -142,29 +142,22 @@ def blacklist_artist():
 
 @app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
-    artist = request.args.get('artist')
-    song = request.args.get('song')
+    song_id = request.args.get('song')
     statement = "SELECT lyrics " \
-                "FROM Lyrics, Songs, SongToArtist, Artists " \
+                "FROM Lyrics" \
                 "WHERE " \
-                "artistName = %s AND " \
-                "songName = %s AND " \
-                "Artists.artistID = SongToArtist.artistID  AND " \
-                "Songs.songID = SongToArtist.songID AND " \
-                "Lyrics.songID = Songs.songID;"
-    return GetJSONResult(statement, (artist, song))
+                "songID = %s;"
+    return GetJSONResult(statement, (song_id,))
 
 
 @app.route('/api/lyrics/update', methods=['GET'])
 def update_lyrics():
-    artist = request.args.get('artist')
-    song = request.args.get('song')
+    song_id = request.args.get('song')
     lyrics = request.args.get('lyrics')
     managerKey = request.args.get('key')
-    song_id = get_song_id_by_song_name_and_artist(artist, song)
     lyrics_exist = check_if_lyrics_exist(song_id)
     if lyrics_exist:
-        update_in_lyrics_table(artist, song, lyrics)
+        update_in_lyrics_table(song_id, lyrics)
         insert_into_words_per_song_table(song_id, lyrics)
     else:
         # currently supports only lyrics in english
@@ -173,8 +166,7 @@ def update_lyrics():
 # TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 app.route('/api/youtube/update', methods=['GET'])
 def update_youtube_data():
-    artist = request.args.get('artist')
-    song = request.args.get('song')
+    song_id = request.args.get('song')
     managerKey = request.args.get('key')
     return json.dumps({
             "success": True,
@@ -258,17 +250,13 @@ def check_if_lyrics_exist(song_id):
     return json.loads(GetJSONResult(statement, (song_id, )))['amount'] != 0
 
 
-def update_in_lyrics_table(artist,song,lyrics):
+def update_in_lyrics_table(song_id, lyrics):
     statement = "UPDATE lyrics " \
                 "SET lyrics = %s " \
                 "WHERE " \
-                "(SELECT Songs.songID FROM Songs, SongToArtist, Artists " \
-                "WHERE songName = %s AND " \
-                "ArtistName = %s AND " \
-                "Artists.artistID = SongToArtist.artistID AND " \
-                "Songs.songID = SongToArtist.songID); "
+                "songID = %s; "
 
-    return GetUpdateResult(statement, (lyrics, song, artist))
+    return GetUpdateResult(statement, (lyrics, song_id))
 
 
 def insert_lyrics_into_tables(song_id, lyrics, language):
