@@ -176,9 +176,8 @@ def update_lyrics():
         return json.dumps({"success": True})
     return json.dumps({"success": True})
 
-
 # TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-app.route('/api/youtube/update', methods=['GET'])
+@app.route('/api/youtube/update', methods=['GET'])
 def update_youtube_data():
     song_id = request.args.get('song')
     managerKey = request.args.get('key')
@@ -190,7 +189,7 @@ def update_youtube_data():
 
 
 # TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-app.route('/api/songs/add', methods=['GET'])
+@app.route('/api/songs/add', methods=['GET'])
 def add_song():
     artist = request.args.get('artist')
     song = request.args.get('song')
@@ -201,6 +200,7 @@ def add_song():
     return json.dumps({
             "success": True,
         })
+
 # --- Auxiliary --- #
 
 def GetJSONResult(statement, params=None):
