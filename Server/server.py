@@ -12,8 +12,14 @@ import queries
 from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
 
 app = Flask(__name__)
-JSON_FAIL_NOTICE = json.dumps({"success": False})
+JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
 JSON_SUCCESS_NOTICE = json.dumps({"success": True})
+UNAUTHORIZED_ACTION_NOICE = json.dumps({"success": False, "reason": "Manager key is incorrect"})
+
+HASHED_MANAGER_KEY = -3964674059591715977
+# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO REMOVE THIS BEFORE SUBMISSION
+IGNORE_KEY = True
+MANAGER_KEY = "Wubalubadubdub!"
 
 ###############################
 # -------- REST API --------- #
@@ -133,7 +139,8 @@ def songs_for_artist(artist_id):
 def blacklist_artist():
     artist_id = request.args.get('artist')
     managerKey = request.args.get('key')
-
+    if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
+        return UNAUTHORIZED_ACTION_NOICE
     statement = queries.BLACKLIST_ARTIST
 
     return GetUpdateResult(statement, (artist_id,))
@@ -157,6 +164,8 @@ def update_lyrics():
     song_id = request.args.get('song')
     lyrics = request.args.get('lyrics')
     managerKey = request.args.get('key')
+    if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
+        return UNAUTHORIZED_ACTION_NOICE
     lyrics_exist = check_if_lyrics_exist(song_id)
     if lyrics_exist:
         return update_lyrics_in_db(song_id, lyrics)
@@ -173,6 +182,8 @@ app.route('/api/youtube/update', methods=['GET'])
 def update_youtube_data():
     song_id = request.args.get('song')
     managerKey = request.args.get('key')
+    if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
+        return UNAUTHORIZED_ACTION_NOICE
     return json.dumps({
             "success": True,
         })
@@ -185,6 +196,8 @@ def add_song():
     song = request.args.get('song')
     category = request.args.get('category')
     managerKey = request.args.get('key')
+    if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
+        return UNAUTHORIZED_ACTION_NOICE
     return json.dumps({
             "success": True,
         })
@@ -288,7 +301,7 @@ def insert_lyrics_into_tables(song_id, lyrics, language):
 ###############################
 @app.route('/')
 def Homepage():
-    return "Wabadabadubdub!"
+    return "Wubalubadubdub!"
 
 
 @app.errorhandler(404)
