@@ -144,9 +144,8 @@ def blacklist_artist():
 def get_lyrics():
     song_id = request.args.get('song')
     statement = "SELECT lyrics " \
-                "FROM Lyrics" \
-                "WHERE " \
-                "songID = %s;"
+                "FROM Lyrics " \
+                "WHERE songID = %s;"
     return GetJSONResult(statement, (song_id,))
 
 
@@ -251,7 +250,7 @@ def check_if_lyrics_exist(song_id):
 
 
 def update_in_lyrics_table(song_id, lyrics):
-    statement = "UPDATE lyrics " \
+    statement = "UPDATE Lyrics " \
                 "SET lyrics = %s " \
                 "WHERE " \
                 "songID = %s; "
