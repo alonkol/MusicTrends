@@ -12,16 +12,16 @@ TEST_ARTISTS_PATH = 'test_artists.json'
 TEST_SONGS_PATH = 'test_songs.json'
 TEST_LYRICS_PATH = 'test_lyrics.json'
 
-def create_jsons(numCat, numArtist, numSongs):
+def create_jsons(num_of_categories, num_of_artists_per_category, num_of_songs_per_artist):
     artists_data = get_data_from_file(ARTISTS_PATH)
     songs_data = get_data_from_file(SONGS_PATH)
     lyrics_data = get_data_from_file(LYRICS_PATH)
 
     new_artists_data = {}
     for count, (category, artist_list) in enumerate(artists_data.iteritems()):
-        if count == numCat:
+        if count == num_of_categories:
             break
-        new_artists_data[category] = artist_list[:numArtist]
+        new_artists_data[category] = artist_list[:num_of_artists_per_category]
 
     new_songs_data = {}
     mbids = []
@@ -29,7 +29,7 @@ def create_jsons(numCat, numArtist, numSongs):
         for artist in artist_list:
             try:
                 if songs_data[artist] is not None:
-                    new_songs_data[artist] = songs_data[artist][:NUMBER_OF_SONGS_PER_ARTIST]
+                    new_songs_data[artist] = songs_data[artist][:num_of_songs_per_artist]
                     mbids.extend([song_data[1] for song_data in new_songs_data[artist]])
             except Exception as e:
                 print e
