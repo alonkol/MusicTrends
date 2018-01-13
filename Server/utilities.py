@@ -32,10 +32,10 @@ def get_result_for_queries(amount, query, query_per_category):
     if category is not None:
         return get_json_result(query_per_category, (category, amount))
 
-    return get_json_result(query, (amount,))
+    return get_json_result(query, (amount,), rename_result_columns=True)
 
 
-def get_json_result(statement, params=None, default_value=None):
+def get_json_result(statement, params=None, default_value=None, rename_result_columns=False):
     if params is not None:
         config.cursor.execute(statement, params)
     else:
@@ -50,8 +50,15 @@ def get_json_result(statement, params=None, default_value=None):
     for row in rows:
         res = {}
 
-        for index, cell in enumerate(row):
-            res[config.cursor.column_names[index]] = str(cell).decode("unicode_escape")
+        if rename_result_columns:
+            res['value'] = str(row[0]).decode("unicode_escape")
+            if len(row) == 1:
+                res['count'] = None
+            if len(row) == 2:
+                res['count'] = row[1]
+        else:
+            for index, cell in enumerate(row):
+                res[config.cursor.column_names[index]] = str(cell).decode("unicode_escape")
 
         results.append(res)
 
