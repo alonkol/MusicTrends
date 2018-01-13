@@ -29,7 +29,7 @@ def check_manager_key(manager_key):
 def get_result_for_queries(amount, query, query_per_category):
     category = request.args.get('category')
     if category is not None:
-        return get_json_result(query_per_category, (category, amount))
+        return get_json_result(query_per_category, (category, amount), rename_result_columns=True)
 
     return get_json_result(query, (amount,), rename_result_columns=True)
 
