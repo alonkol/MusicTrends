@@ -68,20 +68,23 @@ def store_remaining_songs():
     print "empty = %d" % len(empty)
 
 
-def get_lyrics_from_api(track_name,artist_name):
-    # str | Account api key, to be used in every api call
-    api_key = MUSIXMATCH_API_KEY
-    assert api_key != 'secret'
-    swagger_client.configuration.api_key['apikey'] = api_key
-    # create an instance of the API class
-    api_instance = swagger_client.LyricsApi()
+def get_lyrics_from_api(track_name,artist_name, api_instance=None):
+    if api_instance is None:
+        # str | Account api key, to be used in every api call
+        api_key = MUSIXMATCH_API_KEY
+        assert api_key != 'secret'
+        swagger_client.configuration.api_key['apikey'] = api_key
+        # create an instance of the API class
+        api_instance = swagger_client.LyricsApi()
     try:
         api_response = api_instance.matcher_lyrics_get_get(format='json', q_track=track_name, q_artist=artist_name).to_dict()
         if api_response['message']['body']['lyrics'] is not None:
-            return api_response['message']['body']['lyrics']['lyrics_body']
+            lyrics = api_response['message']['body']['lyrics']['lyrics_body']
+            language = api_response['message']['body']['lyrics']['lyrics_language']
+            return lyrics, language
     except ApiException as e:
         print "Exception when calling LyricsApi->matcher_lyrics_get_get: %s\n" % e
-        return None
+    return None, None
 
 
 def store_empty_lyrics_from_json(fname):
@@ -124,71 +127,36 @@ def get_all_lyrics():
     swagger_client.configuration.api_key['apikey'] = api_key
     # create an instance of the API class
     api_instance = swagger_client.LyricsApi()
-    err_cnt = 0
-    none_response = 0
-    not_ascii_cnt = 0
     total_lyrics = 0
-    empty_response = 0
     data = json.load(open(SONGS_JSON))
 
     # dictionary to store (track : lyrics)
     d = {}
-    # a list to store all the titles which contain non-asci characters
-    not_ascii = []
-    empty = []
-    none_response_list = []
     for artist in data.keys():
         if data[artist] is not None:
-            for item in data[artist]:
-                song = item[0]
-                mbid = item[1]
-                if (is_valid_asci(song)) and is_valid_asci(artist):
-                    try:
-                        api_response = api_instance.matcher_lyrics_get_get(format='json', q_track=song, q_artist=artist).to_dict()
-                        if api_response['message']['body']['lyrics'] is not None:
-                            lyrics = api_response['message']['body']['lyrics']['lyrics_body']
-                            language = api_response['message']['body']['lyrics']['lyrics_language']
-                            # response with empty fields
-                            if lyrics == "" or language == "":
-                                empty.append(song)
-                                empty_response += 1
-                            # valid response
-                            else:
-                                d_inner = {'song_name': song, 'lyrics': lyrics, 'language': language}
-                                d[mbid] = d_inner.copy()
-                                total_lyrics += 1
-                        # None response
-                        else:
-                            none_response_list.append(song)
-                            none_response += 1
-                    except ApiException as e:
-                        err_cnt += 1
-                        print "Exception when calling LyricsApi->matcher_lyrics_get_get: %s\n" % e
-                # not a valid ascii
-                else:
-                    not_ascii.append(song)
-                    not_ascii_cnt += 1
-    print "Total lyrcs count = {:d} ".format(total_lyrics)
-    print "Not ASCII count = {:d} ".format(not_ascii_cnt)
-    print "Error count = {:d} ".format(err_cnt)
-    print "None response = {:d} ".format(none_response)
+            for song_data in data[artist]:
+                song_name = song_data[0]
+                mbid = song_data[1]
+                if (is_valid_asci(song_name)) and is_valid_asci(artist):
+                        lyrics = get_lyrics_for_song(song_name, artist, api_instance)
+                        d_inner = {'song_name': song_name, 'lyrics': lyrics}
+                        d[mbid] = d_inner.copy()
+                        total_lyrics += 1
+    print "Total lyrics count = {:d} ".format(total_lyrics)
 
     with open(LYRICS_FILE, 'w') as lyrics_file:
         json.dump(d, lyrics_file)
 
-    with codecs.open('not_asci_language.txt', 'w', encoding='utf-8') as not_asci_file:
-        for item in not_ascii:
-            not_asci_file.write("%s\n" % item)
-
-    with open('non_response_language.txt', 'w') as none_response_file:
-        for item in none_response:
-            none_response_file.write("%s\n" % item)
-
-    with open('empty_response_language.txt', 'w') as empty_response_file:
-        for item in empty:
-            empty_response_file.write("%s\n" % item)
-
     return True
+
+
+def get_lyrics_for_song(song, artist, api_instance=None):
+    lyrics, language = get_lyrics_from_api(song, artist, api_instance)
+    if lyrics is None or lyrics == "" or language == "" or language != "en":
+        return None
+    if is_valid_asci(lyrics):
+        return lyrics
+    return None
 
 
 # get json of all playlists including songs
@@ -200,42 +168,8 @@ def is_valid_asci(string):
     return all(ord(c) < 128 for c in string)
 
 
-"""
-def save_tracks_with_none_response():
-    none_response = set(retrieve_tracks_with_none_response())
-    with codecs.open('none_response.txt', 'w', encoding='utf-8') as f:
-        for item in none_response:
-            f.write("%s\n" % item)
-
-
-def retrieve_tracks_with_none_response():
-    none_response = []
-    cnt = 0
-    data = json.load(open(SONGS_JSON))
-    empty = extract_empty_lyrics_from_json('lyrics.json')
-    with codecs.open('not_asci.txt', 'r', encoding='utf-8') as f:
-        not_ascii_tracks = f.readlines()
-        not_ascii_tracks = [x.strip() for x in not_ascii_tracks]
-        with open('lyrics_non_empty.json') as track_with_lyrics:
-            lyrics = json.load(track_with_lyrics)
-            for artist in data.keys():
-                if data[artist] is not None:
-                    for song in data[artist]:
-                        if (song not in lyrics) and (song not in not_ascii_tracks) and (song not in empty):
-                            none_response.append(song)
-                            cnt += 1
-    print cnt
-    return none_response
-
-
-
-"""
-
 def main():
     get_all_lyrics()
-
-
-
 
 
 if __name__ == '__main__':
