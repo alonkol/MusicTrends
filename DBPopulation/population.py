@@ -54,8 +54,6 @@ class Populator():
         if song_lyrics_data is None:
             return
         lyrics = song_lyrics_data['lyrics'][:-COPYRIGHT_SUFFIX_LEN]
-        if not is_valid_ascii(lyrics):
-            return
         result = insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'])
         if result is not None:
             insert_into_words_per_song_table(song_id, lyrics)
