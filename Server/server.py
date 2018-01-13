@@ -123,16 +123,12 @@ def top_sophisticated_song_discussions(amount):
 
 @app.route('/api/artists')
 def artists():
-    statement = queries.ARTISTS
-
-    return get_json_result(statement)
+    return get_json_result(queries.ARTISTS)
 
 
 @app.route('/api/songs_for_artist/<artist_id>')
 def songs_for_artist(artist_id):
-    statement = queries.SONGS_FOR_ARTISTS
-
-    return get_json_result(statement, (artist_id,))
+    return get_json_result(queries.SONGS_FOR_ARTISTS, (artist_id,))
 
 
 @app.route('/api/blacklist_artist')
@@ -141,22 +137,18 @@ def blacklist_artist():
     managerKey = request.args.get('key')
     if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
         return UNAUTHORIZED_ACTION_NOICE
-    statement = queries.BLACKLIST_ARTIST
 
-    return get_update_result(statement, (artist_id,))
+    return get_update_result(queries.BLACKLIST_ARTIST, (artist_id,))
 
 
 @app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
     song_id = request.args.get('song')
-    statement = queries.LYRICS
-    return get_json_result(statement, (song_id,))
+    return get_json_result(queries.LYRICS, (song_id,))
 
 
 def delete_all_words_for_song_id_in_words_per_song_table(song_id):
-    statement = queries.DELETE_FROM_WORDS_PER_SONG
-
-    return get_update_result(statement, (song_id,))
+    return get_update_result(queries.DELETE_FROM_WORDS_PER_SONG, (song_id,))
 
 
 @app.route('/api/lyrics/update', methods=['GET'])
@@ -201,8 +193,8 @@ def add_song():
             "success": True,
         })
 
-# --- Auxiliary --- #
 
+# --- Auxiliary --- #
 def get_json_result(statement, params=None):
     if params is not None:
         config.cursor.execute(statement, params)
@@ -245,9 +237,8 @@ def get_update_result(statement, params=None):
 
 
 def find_artist_id_in_table(artist_name):
-    statement = queries.FIND_ARTIST_ID
     try:
-        config.cursor.execute(statement, (artist_name,))
+        config.cursor.execute(queries.FIND_ARTIST_ID, (artist_name,))
     except Exception:
         return
     rows = config.cursor.fetchall()
@@ -255,8 +246,7 @@ def find_artist_id_in_table(artist_name):
 
 
 def find_song_id_by_song_name_and_artist(artist, song):
-    statement = queries.FIND_SONG_ID
-    res = json.loads(get_json_result(statement, (song, artist)))
+    res = json.loads(get_json_result(queries.FIND_SONG_ID, (song, artist)))
     if res['amount'] > 0:
         return int(res['results'][0]['songID'])
     else:
@@ -264,15 +254,11 @@ def find_song_id_by_song_name_and_artist(artist, song):
 
 
 def check_if_lyrics_exist(song_id):
-    statement = queries.FIND_LYRICS
-
-    return json.loads(get_json_result(statement, (song_id, )))['amount'] != 0
+    return json.loads(get_json_result(queries.FIND_LYRICS, (song_id, )))['amount'] != 0
 
 
 def update_in_lyrics_table(song_id, lyrics):
-    statement = queries.UPDATE_LYRICS
-
-    return get_update_result(statement, (lyrics, song_id))
+    return get_update_result(queries.UPDATE_LYRICS, (lyrics, song_id))
 
 
 def update_lyrics_in_db(song_id, lyrics):
@@ -299,7 +285,7 @@ def insert_lyrics_into_tables(song_id, lyrics, language):
 # --------- Pages ----------- #
 ###############################
 @app.route('/')
-def Homepage():
+def homepage():
     return "Wubalubadubdub!"
 
 
