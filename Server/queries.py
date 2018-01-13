@@ -162,9 +162,36 @@ TOP_SOPHISTICATED_SONG_DISCUSSIONS = ""
 
 TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY = ""
 
-TOP_GROUPIES = ""
+TOP_GROUPIES = "SELECT author, artistName " \
+                "FROM artists, " \
+                "(" \
+                    "SELECT author, songToArtist.artistID, videos.videoID " \
+                    "FROM comments, songToArtist, videos " \
+                    "WHERE comments.videoID = videos.videoID " \
+                    "AND videos.songID = songToArtist.songID " \
+                    "GROUP BY songToArtist.artistID, videos.videoID, author " \
+                ") AS authorComments " \
+                "WHERE artists.artistID = authorComments.artistID " \
+                "GROUP BY author, artists.artistID " \
+                "ORDER BY COUNT(*) DESC " \
+                "LIMIT %s;" \
 
-TOP_GROUPIES_PER_CATEGORY = ""
+TOP_GROUPIES_PER_CATEGORY = "SELECT author, artistName " \
+                "FROM artists, " \
+                "(" \
+                    "SELECT author, songToArtist.artistID, videos.videoID " \
+                    "FROM comments, songToArtist, videos, songToCategory " \
+                    "WHERE comments.videoID = videos.videoID " \
+                    "AND videos.songID = songToArtist.songID " \
+                    "AND songToCategory.songID = videos.songID " \
+                    "AND songToCategory.categoryID = %s " \
+                    "GROUP BY songToArtist.artistID, videos.videoID, author " \
+                ") AS authorComments " \
+                "WHERE artists.artistID = authorComments.artistID " \
+                "GROUP BY author, artists.artistID " \
+                "ORDER BY COUNT(*) DESC " \
+                "LIMIT %s;" \
+
 
 TOP_HEAD_EATERS = "SELECT artists.artistName, AVG(wordCount) AS avgWordCount " \
                 "FROM artists, songtoartist, " \
