@@ -157,10 +157,44 @@ BOTTOM_SOPHISTICATED_PER_CATEGORY = "SELECT songName, score " \
             "ORDER BY score ASC " \
             "LIMIT %s;"
 
+TOP_SOPHISTICATED_SONG_DISCUSSIONS = "SELECT songName, score " \
+            "FROM " \
+            "(" \
+                "SELECT videoID, (POW(COUNT(commentWordsPerVideo.word),2)/SUM(commentWordCount))*AVG(uniqueness) AS score " \
+                "FROM " \
+                "(" \
+				    "SELECT word, 1/SUM(commentWordCount) AS uniqueness " \
+                    "FROM commentWordsPerVideo " \
+                    "GROUP BY word " \
+                ") AS wordUniqueness, commentWordsPerVideo " \
+                "WHERE wordUniqueness.word = commentWordsPerVideo.word " \
+                "GROUP BY commentWordsPerVideo.videoID " \
+            ") AS a, songs, videos " \
+            "WHERE songs.songID = videos.songID " \
+            "AND videos.videoID = a.videoID " \
+            "ORDER BY score DESC " \
+            "LIMIT %s;"
 
-TOP_SOPHISTICATED_SONG_DISCUSSIONS = ""
-
-TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY = ""
+TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY = "SELECT songName, score " \
+            "FROM " \
+            "(" \
+                "SELECT videos.videoID, (POW(COUNT(commentWordsPerVideo.word),2)/SUM(commentWordCount))*AVG(uniqueness) AS score " \
+                "FROM " \
+                "(" \
+				    "SELECT word, 1/SUM(commentWordCount) AS uniqueness " \
+                    "FROM commentWordsPerVideo " \
+                    "GROUP BY word " \
+                ") AS wordUniqueness, commentWordsPerVideo, SongToCategory, videos " \
+                "WHERE wordUniqueness.word = commentWordsPerVideo.word " \
+                 "AND SongToCategory.categoryID = %s " \
+                 "AND SongToCategory.songID = videos.songID " \
+                 "AND videos.videoID = commentWordsPerVideo.videoID " \
+                 "GROUP BY commentWordsPerVideo.videoID " \
+            ") AS a, songs, videos " \
+            "WHERE songs.songID = videos.songID " \
+            "AND videos.videoID = a.videoID " \
+            "ORDER BY score DESC " \
+            "LIMIT %s;"
 
 TOP_GROUPIES = "SELECT author, artistName " \
                 "FROM artists, " \
