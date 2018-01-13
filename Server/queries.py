@@ -166,17 +166,55 @@ TOP_GROUPIES = ""
 
 TOP_GROUPIES_PER_CATEGORY = ""
 
-TOP_HEAD_EATERS = ""
+TOP_HEAD_EATERS = "SELECT artists.artistName, AVG(wordCount) AS avgWordCount " \
+                "FROM artists, songtoartist, " \
+                "(" \
+                    "SELECT songID, SUM(wordCount) AS wordCount " \
+                    "FROM wordspersong " \
+                    "GROUP BY songID " \
+                ") AS totalWordsPerSong " \
+                "WHERE songtoartist.artistID = artists.artistID " \
+                "AND songtoartist.songID = totalWordsPerSong.songID " \
+                "GROUP BY songtoartist.artistID, artists.artistName " \
+                "ORDER BY avgWordCount DESC " \
+                "LIMIT %s;"
 
-TOP_HEAD_EATERS_PER_CATEGORY = ""
+TOP_HEAD_EATERS_PER_CATEGORY = "SELECT artists.artistName, AVG(wordCount) AS avgWordCount " \
+                "FROM artists, songtoartist, " \
+                "(" \
+                    "SELECT wordspersong.songID, SUM(wordCount) AS wordCount " \
+                    "FROM wordspersong, songtocategory " \
+                    "WHERE wordspersong.songID = songtocategory.songID " \
+                    "AND songtocategory.categoryID = %s " \
+                    "GROUP BY wordspersong.songID " \
+                ") AS totalWordsPerSong " \
+                "WHERE songtoartist.artistID = artists.artistID " \
+                "AND songtoartist.songID = totalWordsPerSong.songID " \
+                "GROUP BY songtoartist.artistID, artists.artistName " \
+                "ORDER BY avgWordCount DESC " \
+                "LIMIT %s;"
+
 
 TOP_ARTIST_TEXT_COUPLES = ""
 
 TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = ""
 
-TOP_DAYS_COMMENTS = ""
+TOP_DAYS_COMMENTS = "SELECT DAYNAME(comments.publishedAt) AS day " \
+                    "FROM comments, videos " \
+                    "WHERE comments.videoID = videos.videoID " \
+                    "GROUP BY day " \
+                    "ORDER BY COUNT(*) DESC " \
+                    "LIMIT %s;"
 
-TOP_DAYS_COMMENTS_PER_CATEGORY = ""
+
+TOP_DAYS_COMMENTS_PER_CATEGORY = "SELECT DAYNAME(comments.publishedAt) AS day " \
+                                 "FROM comments, videos, songToCategory " \
+                                 "WHERE comments.videoID = videos.videoID " \
+                                 "AND videos.songID = songToCategory.songID " \
+                                 "AND songToCategory.categoryID = %s " \
+                                 "GROUP BY day " \
+                                 "ORDER BY COUNT(*) DESC " \
+                                 "LIMIT %s;"
 
 TOP_CONTROVERSIAL_ARTISTS = "SELECT artists.artistName, AVG(scores.score) AS score " \
                              "FROM artists, songtoartist, " \
