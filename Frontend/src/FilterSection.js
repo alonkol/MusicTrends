@@ -20,6 +20,7 @@ class FilterSection extends Component {
     }
 
     sliderOnChange = (value) => {
+        console.log(value);
         this.props.handleSliderChange(value);
     }
 

@@ -32,6 +32,7 @@ class Main extends Component {
 
     handleSliderChange = (value) => {
         this.setState({numberOfResults: value});
+        console.log(value);
     }
 
     handleCategoryChange = (value) => {
@@ -100,6 +101,7 @@ class Main extends Component {
                 <div>
                     <FilterSection
                         handleCategoryChange={this.handleCategoryChange}
+                        handleSliderChange={this.handleSliderChange}
                     />
                     <br/>
                     <br/>

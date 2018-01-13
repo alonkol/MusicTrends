@@ -13,7 +13,7 @@ class TopList extends Component {
         return (
             <div>
                 <h2>{this.props.title}</h2>
-                <ol>{this.props.items.slice(0, this.state.numberOfResults).map((item) => <li>{item['value'] + "\t" + item['count']}</li>)}</ol>
+                <ol>{this.props.items.slice(0, this.props.numberOfResults).map((item) => <li>{item['value'] + "\t" + item['count']}</li>)}</ol>
             </div>
         );
     }
