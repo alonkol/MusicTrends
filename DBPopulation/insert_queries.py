@@ -7,7 +7,7 @@ INSERT_SONG = "INSERT INTO Songs VALUES (Default, %s);"
 INSERT_SONG_TO_ARTIST = "INSERT INTO SongToArtist VALUES (%s, %s);"
 INSERT_ARTIST_TO_CATEGORY = "INSERT INTO ArtistToCategory VALUES (%s, %s);"
 INSERT_SONG_TO_CATEGORY = "INSERT INTO SongToCategory VALUES (%s, %s);"
-INSERT_LYRICS = "INSERT INTO Lyrics VALUES (%s, %s, %s);"
+INSERT_LYRICS = "INSERT INTO Lyrics VALUES (%s, %s);"
 INSERT_WORDS_PER_SONG = "INSERT INTO WordsPerSong VALUES (%s, %s, %s);"
 
 
@@ -95,11 +95,11 @@ def insert_into_song_to_category_table(song_id, category_id):
     return cursor.lastrowid
 
 
-def insert_into_lyrics_table(song_id, lyrics, language):
+def insert_into_lyrics_table(song_id, lyrics):
         sql_insert = INSERT_LYRICS
         cursor = config.cursor
         try:
-            cursor.execute(sql_insert, (song_id, lyrics, language))
+            cursor.execute(sql_insert, (song_id, lyrics))
             config.dbconnection.commit()
         except Exception as e:
             print e

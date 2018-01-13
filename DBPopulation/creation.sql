@@ -20,7 +20,6 @@ CREATE TABLE Artists (
 CREATE TABLE Lyrics (
     songID int,
     lyrics TEXT(5000),
-    lyrics_language varchar(10),
     PRIMARY KEY (songID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );

@@ -54,7 +54,9 @@ class Populator():
             return
         if not is_valid_ascii(song_lyrics_data['lyrics']):
             return
-        result = insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'], song_lyrics_data['language'])
+        if song_lyrics_data['language'] != 'en':
+            return
+        result = insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'])
         if result is not None:
             insert_into_words_per_song_table(song_id, song_lyrics_data['lyrics'])
 
@@ -109,7 +111,7 @@ class Populator():
 
 def main():
 
-    numOfCategories = 10
+    numOfCategories = 5
     artistsPerCategory = 10
     songsPerArtist = 10
 

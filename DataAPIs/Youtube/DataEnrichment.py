@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 
 from DBPopulation.insert_queries import is_valid_ascii
+from DataAPIs.MusixMatch.lyrics_analyzer import create_words_map
 from Server import config
 from datetime import datetime
 
@@ -10,6 +11,8 @@ YOUTUBE_API_VERSION = "v3"
 
 youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
                 developerKey=DEVELOPER_KEY)
+
+INSERT_COMMENT_WORDS_PER_VIDEO = "INSERT INTO CommentWordsPerVideo VALUES (%s, %s, %s);"
 
 
 def youtube_search(queryString):
@@ -144,6 +147,22 @@ def ConvertStringToDate(s):
     return datetime.strptime(s.translate(translationTable), "%Y%m%dT%H%M%S.%fZ")
 
 
+def insert_into_comment_words_per_video_table(video_id, comment_text):
+    words_count = create_words_map(comment_text)
+    sql_insert = INSERT_COMMENT_WORDS_PER_VIDEO
+    cursor = config.cursor
+    try:
+        for word, cnt in words_count.iteritems():
+            word = word[:20]
+            cursor.execute(sql_insert, (video_id, word, cnt))
+        config.dbconnection.commit()
+    except Exception as e:
+        print e
+        print "failed to insert comment words for video %s' " % video_id
+        return
+    return cursor.lastrowid
+
+
 def PopulateComments():
     videoIds = GetAllVideoIdsFromDB()
 
@@ -176,6 +195,9 @@ def PopulateComments():
                                      viewerRating, s["likeCount"]]
 
                     config.cursor.execute(statement, tuple(inputDataList))
+                    # populate CommentWordsPerVideoTable
+                    insert_into_comment_words_per_video_table(videoId, textDisplay)
+
             except Exception as e:
                 print e
 
@@ -186,9 +208,14 @@ def PopulateComments():
                     config.dbconnection.rollback()
 
 
-if __name__ == "__main__":
-
-    #PopulateVideos()
+def main():
+    PopulateVideos()
     PopulateComments()
+
+
+if __name__ == "__main__":
+    main()
+
+
 
 
