@@ -45,7 +45,6 @@ class Populator():
         self._artists_data = self._get_data_from_file(artistsPath)
         self._songs_data = self._get_data_from_file(songsPath)
 
-
     @staticmethod
     def _get_data_from_file(filename):
         return json.load(open(filename))
@@ -78,10 +77,10 @@ class Populator():
                 insert_into_artist_to_category_table(artist_id, category_id)
                 songs = self._songs_data.get(artist, [])
                 if songs is not None:
-                    for song in songs:
-                        mbid = song[1]
+                    for song_and_mbid in songs:
+                        mbid = song_and_mbid[1]
                         if mbid not in songs_in_db:
-                            song_id = insert_into_songs_table(song[0])
+                            song_id = insert_into_songs_table(song_and_mbid[0])
                             if song_id is None:
                                 continue
                             self._insert_lyrics_data_into_tables(song_id, mbid)
@@ -111,10 +110,9 @@ class Populator():
 
 
 def main():
-
-    numOfCategories = 5
-    artistsPerCategory = 10
-    songsPerArtist = 10
+    numOfCategories = 2
+    artistsPerCategory = 2
+    songsPerArtist = 2
 
     populator = Populator(numOfCategories, artistsPerCategory, songsPerArtist)
 

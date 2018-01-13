@@ -76,12 +76,12 @@ def get_songs_artists_pairs_from_db():
     offset = 0
     limit = 8000
 
-    statement = "SELECT GROUP_CONCAT(artistName SEPARATOR ' ') AS artistName, songName, songs.songID " \
+    statement = "SELECT GROUP_CONCAT(artistName SEPARATOR ' ') AS artistName, Songs.songName, Songs.songID " \
                 "FROM Songs, Artists, SongToArtist " \
                 "WHERE Songs.songID = SongToArtist.songID " \
                 "AND Artists.artistID = SongToArtist.artistID " \
-                "GROUP BY songName, songs.songID " \
-                "ORDER BY songs.songID ASC " \
+                "GROUP BY songName, Songs.songID " \
+                "ORDER BY Songs.songID ASC " \
                 "LIMIT %d, %d;" % (offset, limit)
 
     config.unsafe_cursor.execute(statement)
@@ -101,7 +101,7 @@ def populate_videos():
 
 
 def populate_video(song_id, artist_name, song_name):
-    statement = "INSERT INTO videos " \
+    statement = "INSERT INTO Videos " \
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, Default);"
     query = artist_name + " " + song_name
 
@@ -121,15 +121,15 @@ def populate_video(song_id, artist_name, song_name):
     inputDataList = [videoId, song_id, publishedAt, title, s["viewCount"], s["likeCount"],
                      s["dislikeCount"], s["favoriteCount"], s["commentCount"]]
 
-    # Populate comments data
-    populate_comment_for_video(videoId)
-
     try:
         config.cursor.execute(statement, tuple(inputDataList))
     except Exception as e:
-        print("Failed to insert video %s - %s, proceeding...\n" % song_name, artist_name)
+        print("Failed to insert video %s - %s, proceeding...\n" % (song_name, artist_name))
         print(e)
         return
+
+    # Populate comments data
+    populate_comment_for_video(videoId)
     return videoId
 
 
@@ -155,7 +155,7 @@ def insert_into_comment_words_per_video_table(video_id, comment_text):
 
 
 def populate_comment_for_video(video_id):
-    statement = "INSERT INTO comments " \
+    statement = "INSERT INTO Comments " \
                 "VALUES (%s, %s, %s, %s, %s, %s, %s);"
 
     comments = get_comments_for_video(video_id)

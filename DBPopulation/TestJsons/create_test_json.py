@@ -1,8 +1,8 @@
 import json
 
 # ORIGINAL PATHS
-from DBPopulation.population import ARTISTS_PATH, SONGS_PATH, LYRICS_PATH, TEST_ARTISTS_PATH, TEST_SONGS_PATH, \
-    TEST_LYRICS_PATH
+from DBPopulation.population import ARTISTS_PATH, SONGS_PATH, LYRICS_PATH, FULL_TEST_ARTISTS_PATH, FULL_TEST_SONGS_PATH, \
+    FULL_TEST_LYRICS_PATH
 
 
 def create_jsons(num_of_categories, num_of_artists_per_category, num_of_songs_per_artist):
@@ -34,9 +34,9 @@ def create_jsons(num_of_categories, num_of_artists_per_category, num_of_songs_pe
             continue
         new_lyrics_data[mbid] = data
 
-    write_data_to_file(new_artists_data, TEST_ARTISTS_PATH)
-    write_data_to_file(new_songs_data, TEST_SONGS_PATH)
-    write_data_to_file(new_lyrics_data, TEST_LYRICS_PATH)
+    write_data_to_file(new_artists_data, FULL_TEST_ARTISTS_PATH)
+    write_data_to_file(new_songs_data, FULL_TEST_SONGS_PATH)
+    write_data_to_file(new_lyrics_data, FULL_TEST_LYRICS_PATH)
 
 
 def get_data_from_file(filename):

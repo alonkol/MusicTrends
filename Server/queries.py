@@ -8,9 +8,9 @@ TOP_SONG_LIKES = "SELECT songName, likeCount " \
                     "LIMIT %s;"
 
 TOP_SONG_LIKES_PER_CATEGORY = "SELECT songName, likeCount " \
-            "FROM songs, videos, SongToCategory " \
-            "WHERE songs.songID = videos.songID " \
-            "AND SongToCategory.songID = songs.songID " \
+            "FROM Songs, Videos, SongToCategory " \
+            "WHERE Songs.songID = Videos.songID " \
+            "AND SongToCategory.songID = Songs.songID " \
             "AND SongToCategory.categoryID = %s " \
             "ORDER BY likeCount DESC " \
             "LIMIT %s;"
