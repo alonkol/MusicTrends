@@ -24,6 +24,8 @@ CREATE TABLE Lyrics (
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
 
+ALTER TABLE Lyrics ADD FULLTEXT (lyrics);
+
 CREATE TABLE ArtistToCategory (
     artistID int,
     categoryID int,
@@ -98,3 +100,11 @@ AND SongToArtist.artistID = Artists.artistID
 AND ArtistToCategory.artistID = artists.artistID
 GROUP BY word, artists.artistID, Artists.artistName, categoryID
 ;
+
+
+--TODO consider adding these
+--CREATE UNIQUE INDEX SongIdInVideos ON Videos (songID);
+
+--CREATE INDEX WordInSongs ON WordsPerSong (word);
+
+--CREATE INDEX WordInComments ON CommentWordsPerVideo (commentWordCount);

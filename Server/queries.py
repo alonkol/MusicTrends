@@ -328,3 +328,9 @@ FIND_VIDEO_ID_BY_SONG_ID = "SELECT videoID From Videos WHERE songID = %s"
 
 UPDATE_VIDEOS_DATA = "UPDATE Videos SET viewCount = %s, likeCount = %s, dislikeCount = %s, favoriteCount = %s, " \
                      "commentCount = %s WHERE videoID = %s"
+
+FIND_FIVE_MATCHING_SONG_NAMES = "SELECT songName " \
+                                "FROM " \
+                                "Songs, (SELECT songID, MATCH (lyrics) AGAINST (%s IN NATURAL LANGUAGE MODE) " \
+                                "as score FROM Lyrics ORDER BY score DESC LIMIT 5) as BestMatches " \
+                                "WHERE BestMatches.songID = Songs.songID;"

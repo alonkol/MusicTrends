@@ -193,6 +193,16 @@ def add_song():
 
     return JSON_SUCCESS_NOTICE
 
+
+####################################
+# ----- FULL TEXT SEARCH --------- #
+####################################
+
+@app.route('/api/lyrics/search', methods=['GET'])
+def find_best_matching_song_to_given_text():
+    text = request.args.get('text')
+    return get_json_result(queries.FIND_FIVE_MATCHING_SONG_NAMES, (text, ))
+
 ###############################
 # --------- Pages ----------- #
 ###############################
