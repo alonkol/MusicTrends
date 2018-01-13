@@ -33,28 +33,28 @@ class TrendsChart extends Component {
         return (
             <table>
                 <tr>
-                    <td><TopList title={this.state.topWords.title} items={this.state.topWords.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.worstWords.title} items={this.state.worstWords.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topLiked.title} items={this.state.topLiked.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topWords.title} items={this.state.topWords.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.worstWords.title} items={this.state.worstWords.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topLiked.title} items={this.state.topLiked.items} numberOfResults={this.props.numberOfResults}/></td>
                 </tr>
                 <tr>
-                    <td><TopList title={this.state.topDisliked.title} items={this.state.topDisliked.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topViews.title} items={this.state.worstViews.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topWordScore.title} items={this.state.topWordScore.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topDisliked.title} items={this.state.topDisliked.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topViews.title} items={this.state.worstViews.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topWordScore.title} items={this.state.topWordScore.items} numberOfResults={this.props.numberOfResults}/></td>
                 </tr>
                 <tr>
-                    <td><TopList title={this.state.worstWordScore.title} items={this.state.worstWordScore.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topDiscScore.title} items={this.state.topDiscScore.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topGroupies.title} items={this.state.topGroupies.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.worstWordScore.title} items={this.state.worstWordScore.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topDiscScore.title} items={this.state.topDiscScore.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topGroupies.title} items={this.state.topGroupies.items} numberOfResults={this.props.numberOfResults}/></td>
                 </tr>
                 <tr>
-                    <td><TopList title={this.state.topHeadEaters.title} items={this.state.topHeadEaters.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topSameTextCouples.title} items={this.state.topSameTextCouples.items} numberOfResults={this.state.numberOfResults}/></td>
-                    <td><TopList title={this.state.topCommentedDays.title} items={this.state.topCommentedDays.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topHeadEaters.title} items={this.state.topHeadEaters.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topSameTextCouples.title} items={this.state.topSameTextCouples.items} numberOfResults={this.props.numberOfResults}/></td>
+                    <td><TopList title={this.state.topCommentedDays.title} items={this.state.topCommentedDays.items} numberOfResults={this.props.numberOfResults}/></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><TopList title={this.state.topControversial.title} items={this.state.topControversial.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topControversial.title} items={this.state.topControversial.items} numberOfResults={this.props.numberOfResults}/></td>
                     <td></td>
                 </tr>
             </table>
@@ -144,13 +144,14 @@ class TrendsChart extends Component {
                         {items: results.results}
                     )})));
 
+        /*
         fetch("/api/artists/same_text_couples/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topSameTextCouples: Object.assign(this.state.topSameTextCouples,
                         {items: results.results}
                     )})));
-
+*/
         fetch("/api/songs/days_with_most_comments/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(

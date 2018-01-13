@@ -2,13 +2,21 @@ import React, { Component } from 'react';
 import { Slider, InputNumber, Row, Col } from 'antd';
 
 class IntegerStep extends Component {
-    state = {
-        inputValue: 5,
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            inputValue: 5
+        }
     }
+
     onChange = (value) => {
         this.setState({
             inputValue: value,
         });
+
+        this.props.onChange(value);
     }
     render() {
         return (
