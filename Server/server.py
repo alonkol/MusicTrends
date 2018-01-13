@@ -6,14 +6,9 @@ import queries
 from Server.server_utils import get_result_for_queries, get_json_result, get_update_result, \
     find_artist_name_by_id_in_table, find_video_id_based_on_song_id, update_stats_for_video, check_if_lyrics_exist, \
     update_lyrics_in_db, insert_lyrics_into_tables, add_song_to_db, find_lyrics_for_song, insert_song_youtube_data, \
-    JSON_FAIL_NOTICE, JSON_SUCCESS_NOTICE, UNAUTHORIZED_ACTION_NOICE
+    JSON_FAIL_NOTICE, JSON_SUCCESS_NOTICE, UNAUTHORIZED_ACTION_NOTICE, check_manager_key
 
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')
-
-HASHED_MANAGER_KEY = -3964674059591715977
-# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO REMOVE THIS BEFORE SUBMISSION
-IGNORE_KEY = True
-MANAGER_KEY = "Wubalubadubdub!"
 
 # general idea:
 # show trends of word usage as a function of time (song's air-date)
@@ -125,14 +120,12 @@ def top_controversial_artists(amount):
 ####################################
 # --------- Admin Page ----------- #
 ####################################
-
 @app.route('/api/blacklist_artist')
 def blacklist_artist():
     artist_id = request.args.get('artist')
     manager_key = request.args.get('key')
-    if not IGNORE_KEY and hash(manager_key) != HASHED_MANAGER_KEY:
-        return UNAUTHORIZED_ACTION_NOICE
-
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
     return get_update_result(queries.BLACKLIST_ARTIST, (artist_id,))
 
 
@@ -147,8 +140,8 @@ def update_lyrics():
     song_id = request.args.get('song')
     lyrics = request.args.get('lyrics')
     manager_key = request.args.get('key')
-    if not IGNORE_KEY and hash(manager_key) != HASHED_MANAGER_KEY:
-        return UNAUTHORIZED_ACTION_NOICE
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
     lyrics_exist = check_if_lyrics_exist(song_id)
     if lyrics_exist:
         return update_lyrics_in_db(song_id, lyrics)
@@ -164,8 +157,8 @@ def update_lyrics():
 def update_youtube_data():
     song_id = request.args.get('song')
     manager_key = request.args.get('key')
-    if not IGNORE_KEY and hash(manager_key) != HASHED_MANAGER_KEY:
-        return UNAUTHORIZED_ACTION_NOICE
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
     video_id = find_video_id_based_on_song_id(song_id)
     if video_id is None:
         return JSON_FAIL_NOTICE
@@ -178,8 +171,8 @@ def add_song():
     song_name = request.args.get('song')
     category_id = request.args.get('category')
     manager_key = request.args.get('key')
-    if not IGNORE_KEY and hash(manager_key) != HASHED_MANAGER_KEY:
-        return UNAUTHORIZED_ACTION_NOICE
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
 
     artist_name = find_artist_name_by_id_in_table(artist_id)
     print(artist_name)

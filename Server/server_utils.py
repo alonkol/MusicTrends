@@ -1,3 +1,4 @@
+import hashlib
 import json
 
 from flask import request
@@ -8,9 +9,22 @@ from DataAPIs.MusixMatch.lyrics_collector import get_lyrics_for_song
 from DataAPIs.Youtube.DataEnrichment import get_statistics_for_video, populate_video
 from Server import config, queries
 
+HASHED_MANAGER_KEY = '4d0fb6ddc0b9a9a7d8d8e33ab46b06de97deea482ec854f0f3fe606452bf1119'
+# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO REMOVE THIS BEFORE SUBMISSION
+IGNORE_KEY = True
+MANAGER_KEY = "Wubalubadubdub!"
+
 JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
 JSON_SUCCESS_NOTICE = json.dumps({"success": True})
-UNAUTHORIZED_ACTION_NOICE = json.dumps({"success": False, "reason": "Manager key is incorrect"})
+UNAUTHORIZED_ACTION_NOTICE = json.dumps({"success": False, "reason": "Manager key is incorrect"})
+
+
+def check_manager_key(manager_key):
+    if IGNORE_KEY:
+        return True
+    hash_object = hashlib.sha256(manager_key)
+    hex_dig = hash_object.hexdigest()
+    return hex_dig == HASHED_MANAGER_KEY
 
 
 def get_result_for_queries(amount, query, query_per_category):
