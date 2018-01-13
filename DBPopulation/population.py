@@ -23,6 +23,8 @@ FULL_TEST_LYRICS_PATH = TEST_JSONS_PATH + TEST_LYRICS_PATH
 FULL_TEST_ARTISTS_PATH = TEST_JSONS_PATH + TEST_ARTISTS_PATH
 FULL_TEST_SONGS_PATH = TEST_JSONS_PATH + TEST_SONGS_PATH
 
+COPYRIGHT_SUFFIX_LEN = 53
+
 from Server.config import cursor
 from TestJsons.create_test_json import create_jsons
 
@@ -52,11 +54,12 @@ class Populator():
         song_lyrics_data = self._lyrics_data.get(mbid)
         if song_lyrics_data is None:
             return
-        if not is_valid_ascii(song_lyrics_data['lyrics']):
+        lyrics = song_lyrics_data['lyrics'][:-COPYRIGHT_SUFFIX_LEN]
+        if not is_valid_ascii(lyrics):
             return
         result = insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'])
         if result is not None:
-            insert_into_words_per_song_table(song_id, song_lyrics_data['lyrics'])
+            insert_into_words_per_song_table(song_id, lyrics)
 
     def populate_lastfm_musixmatch_data(self):
         artists_in_db = {}
