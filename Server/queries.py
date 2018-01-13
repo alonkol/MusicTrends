@@ -196,7 +196,7 @@ TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY = "SELECT songName, score " \
             "ORDER BY score DESC " \
             "LIMIT %s;"
 
-TOP_GROUPIES = "SELECT author, artistName " \
+TOP_GROUPIES = "SELECT CONCAT(author, ' (', artistName, ')' ), COUNT(*) AS count  " \
                 "FROM artists, " \
                 "(" \
                     "SELECT author, songToArtist.artistID, videos.videoID " \
@@ -207,10 +207,10 @@ TOP_GROUPIES = "SELECT author, artistName " \
                 ") AS authorComments " \
                 "WHERE artists.artistID = authorComments.artistID " \
                 "GROUP BY author, artists.artistID " \
-                "ORDER BY COUNT(*) DESC " \
+                "ORDER BY count DESC " \
                 "LIMIT %s;" \
 
-TOP_GROUPIES_PER_CATEGORY = "SELECT author, artistName " \
+TOP_GROUPIES_PER_CATEGORY = "SELECT CONCAT(author, ' (', artistName, ')' ), COUNT(*) AS count " \
                 "FROM artists, " \
                 "(" \
                     "SELECT author, songToArtist.artistID, videos.videoID " \
@@ -223,7 +223,7 @@ TOP_GROUPIES_PER_CATEGORY = "SELECT author, artistName " \
                 ") AS authorComments " \
                 "WHERE artists.artistID = authorComments.artistID " \
                 "GROUP BY author, artists.artistID " \
-                "ORDER BY COUNT(*) DESC " \
+                "ORDER BY count DESC " \
                 "LIMIT %s;" \
 
 TOP_HEAD_EATERS = "SELECT artists.artistName, AVG(wordCount) AS avgWordCount " \
