@@ -141,7 +141,7 @@ BOTTOM_SOPHISTICATED = "SELECT songName, score " \
 BOTTOM_SOPHISTICATED_PER_CATEGORY = "SELECT songName, score " \
             "FROM " \
             "(" \
-                "SELECT songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
+                "SELECT SongToCategory.songID, (POW(COUNT(WordsPerSong.word),2)/SUM(wordCount))*AVG(uniqueness) AS score " \
                 "FROM " \
                 "(" \
                     "SELECT word, 1/SUM(wordCount) AS uniqueness " \
@@ -313,7 +313,7 @@ TOP_CONTROVERSIAL_ARTISTS = "SELECT artists.artistName, AVG(scores.score) AS sco
 TOP_CONTROVERSIAL_ARTISTS_PER_CATEGORY = "SELECT artists.artistName, AVG(scores.score) AS score " \
                                          "FROM artists, songtoartist, " \
                                          "(" \
-                                            "SELECT songID, dislikeCount/likeCount AS score " \
+                                            "SELECT SongToCategory.songID, dislikeCount/likeCount AS score " \
                                             "FROM videos, songtocategory " \
                                             "WHERE songtocategory.categoryID = %s " \
                                             "AND songtocategory.songID = videos.songID " \
