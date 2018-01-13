@@ -22,6 +22,30 @@ IGNORE_KEY = True
 MANAGER_KEY = "Wubalubadubdub!"
 
 ###############################
+# -------- General ---------- #
+###############################
+
+
+@app.route('/api/categories')
+def categories():
+    return get_json_result(queries.CATEGORIES)
+
+
+@app.route('/api/artists')
+def artists():
+    return get_json_result(queries.ARTISTS)
+
+
+@app.route('/api/songs_for_artist/<artist_id>')
+def songs_for_artist(artist_id):
+    return get_json_result(queries.SONGS_FOR_ARTISTS, (artist_id,))
+
+
+@app.route('/api/artists_for_category/<category_id>')
+def artists_for_category(category_id):
+    return get_json_result(queries.ARTISTS_FOR_CATEGORIES, (category_id,))
+
+###############################
 # -------- REST API --------- #
 ###############################
 
@@ -29,11 +53,6 @@ MANAGER_KEY = "Wubalubadubdub!"
 @app.route('/api')
 def api_welcome():
     return render_template('api.html')
-
-
-@app.route('/api/categories')
-def categories():
-    return get_json_result(queries.CATEGORIES)
 
 
 @app.route('/api/songs/likes/top/<int:amount>', methods=['GET'])
@@ -120,17 +139,6 @@ def top_sophisticated_song_discussions(amount):
 # --------- Admin Page ----------- #
 ####################################
 
-
-@app.route('/api/artists')
-def artists():
-    return get_json_result(queries.ARTISTS)
-
-
-@app.route('/api/songs_for_artist/<artist_id>')
-def songs_for_artist(artist_id):
-    return get_json_result(queries.SONGS_FOR_ARTISTS, (artist_id,))
-
-
 @app.route('/api/blacklist_artist')
 def blacklist_artist():
     artist_id = request.args.get('artist')
@@ -145,10 +153,6 @@ def blacklist_artist():
 def get_lyrics():
     song_id = request.args.get('song')
     return get_json_result(queries.LYRICS, (song_id,))
-
-
-def delete_all_words_for_song_id_in_words_per_song_table(song_id):
-    return get_update_result(queries.DELETE_FROM_WORDS_PER_SONG, (song_id,))
 
 
 @app.route('/api/lyrics/update', methods=['GET'])
@@ -211,7 +215,7 @@ def get_json_result(statement, params=None):
         res = {}
 
         for index, cell in enumerate(row):
-            res[config.cursor.column_names[index]] = str(cell).decode("utf-8")
+            res[config.cursor.column_names[index]] = str(cell).decode("unicode_escape")
 
         results.append(res)
 
@@ -254,7 +258,13 @@ def find_song_id_by_song_name_and_artist(artist, song):
 
 
 def check_if_lyrics_exist(song_id):
+
+
     return json.loads(get_json_result(queries.FIND_LYRICS, (song_id, )))['amount'] != 0
+
+
+def delete_all_words_for_song_id_in_words_per_song_table(song_id):
+    return get_update_result(queries.DELETE_FROM_WORDS_PER_SONG, (song_id,))
 
 
 def update_in_lyrics_table(song_id, lyrics):

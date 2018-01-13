@@ -1,5 +1,5 @@
 
-CATEGORIES = "SELECT categoryID as id, categoryName as name FROM categories;"
+CATEGORIES = "SELECT categoryID as id, categoryName as name FROM Categories;"
 
 TOP_SONG_LIKES = "SELECT songName, likeCount " \
                     "FROM songs, videos " \
@@ -189,3 +189,8 @@ FIND_SONG_ID = "SELECT Songs.songID " \
                 "ArtistName = %s AND " \
                 "Artists.artistID = SongToArtist.artistID AND " \
                 "Songs.songID = SongToArtist.songID;"
+
+
+ARTISTS_FOR_CATEGORIES = "SELECT Artists.artistID, Artists.artistName FROM Artists, ArtistToCategory " \
+                         "Where Artists.artistID = ArtistToCategory.artistID AND " \
+                         "ArtistToCategory.categoryID = %s"
