@@ -6,7 +6,7 @@ LASTFM_API_KEY = 'bb71a65a3332770c8340f1b151d3e0ef'
 BASE_URL = 'http://ws.audioscrobbler.com/2.0/?api_key={}&method&format=json'.format(LASTFM_API_KEY)
 
 ARTISTS_FILE = 'artists.json'
-SONGS_FILE = 'songs_with_mbid.json'
+SONGS_FILE = 'songs.json'
 CATEGORIES_FILE = 'categories.json'
 
 
