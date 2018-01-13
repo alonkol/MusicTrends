@@ -9,6 +9,7 @@ import Blacklist from "./Blacklist";
 import AddSong from "./AddSong";
 import UpdateSongData from "./UpdateSongData";
 import About from "./About";
+import Input from "antd/es/input/Input";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -95,6 +96,9 @@ class Main extends Component {
                                 <span className="nav-text">
                                     Blacklist Artist
                                 </span>
+                            </Menu.Item>
+                            <Menu.Item key="secretKey" disabled={true}>
+                                <Input  id={'secretKey'} placeholder={"Secret Key"} type='password' />
                             </Menu.Item>
                         </SubMenu>
                         <Menu.Item key="about">

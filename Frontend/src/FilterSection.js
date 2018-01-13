@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import IntegerStep from "./IntegerStep";
 import { Cascader } from 'antd';
-import Search from "antd/es/input/Search";
-import Checkbox from "antd/es/checkbox/Checkbox";
 import Switch from "antd/es/switch/index";
 
 class FilterSection extends Component {
@@ -65,10 +63,6 @@ class FilterSection extends Component {
             .then(results => (this.setState({categories: results.results.map(category =>
                 ({value: category['name'], label: category['name'], id: category['id']}))})));
     }
-}
-
-function countryCascaderOnChange(value, selectedOptions) {
-    console.log(value, selectedOptions);
 }
 
 export default FilterSection;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Slider, InputNumber, Row, Col } from 'antd';
+import { Slider, Row, Col } from 'antd';
 
 class IntegerStep extends Component {
 

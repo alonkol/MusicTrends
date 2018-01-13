@@ -18,12 +18,14 @@ class Blacklist extends Component {
     }
 
     onClick = () => {
+        const secretKey = document.getElementById('secretKey').value;
+
         if (this.state.artist === null) {
             message.error('No artist has been chosen');
         }
 
         else {
-            fetch("/api/blacklist_artist?key=&artist=" + this.state.artist)
+            fetch("/api/blacklist_artist?key=" + secretKey + "&artist=" + this.state.artist)
                 .then(result => result.json())
                 .then(result => {
                     if (result['success'] === true) {

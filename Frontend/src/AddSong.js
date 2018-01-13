@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Cascader from "antd/es/cascader/index";
 import Button from "antd/es/button/button";
 import Input from "antd/es/input/Input";
 import Icon from "antd/es/icon/index";
@@ -19,7 +18,9 @@ class AddSong extends Component {
             artist = document.forms["add-song"]["artist"].value,
             category = document.forms["add-song"]["category"].value;
 
-        if (song === '') {
+        const secretKey = document.getElementById('secretKey').value;
+
+            if (song === '') {
             message.error("Please enter the song's name");
         }
         else if (artist=== '') {
@@ -30,7 +31,7 @@ class AddSong extends Component {
         }
 
         else {
-            fetch("/api/songs/add?key=&song=" + song + "&artist=" + artist + "&category=" + category)
+            fetch("/api/songs/add?key=" + secretKey + "&song=" + song + "&artist=" + artist + "&category=" + category)
                 .then(result => result.json())
                 .then(result => {
                     if (result['success'] === true) {

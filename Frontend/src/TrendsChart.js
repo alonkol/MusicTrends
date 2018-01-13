@@ -67,7 +67,7 @@ class TrendsChart extends Component {
 
     componentWillReceiveProps(nextProps) {
         // filter changed
-        if (this.props.selectedCategoryFilter != nextProps.selectedCategoryFilter) {
+        if (this.props.selectedCategoryFilter !== nextProps.selectedCategoryFilter) {
             categoryFilter = nextProps.selectedCategoryFilter;
             this.setState({
                 selectedCategoryFilter: nextProps.selectedCategoryFilter,

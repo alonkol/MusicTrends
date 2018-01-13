@@ -16,7 +16,7 @@ class About extends Component {
                         <Card
                             hoverable
                             style={{ width: 240 }}
-                            cover={<img src={require("./images/Anani.jpg")} />}
+                            cover={<img alt='Oz Anani' src={require("./images/Anani.jpg")} />}
                         >
                             <Meta
                                 title="Oz Anani"
@@ -28,7 +28,7 @@ class About extends Component {
                         <Card
                             hoverable
                             style={{ width: 240 }}
-                            cover={<img src={require("./images/Mansur.jpg")} />}
+                            cover={<img alt='Noam Mansur' src={require("./images/Mansur.jpg")} />}
                         >
                             <Meta
                                 title="Noam Mansur"
@@ -45,7 +45,7 @@ class About extends Component {
                         <Card
                             hoverable
                             style={{ width: 240 }}
-                            cover={<img src={require("./images/Elman.png")} />}
+                            cover={<img alt='Yossi Elman' src={require("./images/Elman.png")} />}
                         >
                             <Meta
                                 title="Yossi Elman"
@@ -57,7 +57,7 @@ class About extends Component {
                         <Card
                             hoverable
                             style={{ width: 240 }}
-                            cover={<img src={require("./images/Kollmann.jpg")} />}
+                            cover={<img alt='Alon Kollmann' src={require("./images/Kollmann.jpg")} />}
                         >
                             <Meta
                                 title="Alon Kollmann"
