@@ -55,7 +55,7 @@ def get_json_result(statement, params=None, default_value=None, rename_result_co
             if len(row) == 1:
                 res['count'] = None
             if len(row) == 2:
-                res['count'] = row[1]
+                res['count'] = str(row[1]).decode("unicode_escape")
         else:
             for index, cell in enumerate(row):
                 res[config.cursor.column_names[index]] = str(cell).decode("unicode_escape")

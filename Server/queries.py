@@ -192,7 +192,6 @@ TOP_GROUPIES_PER_CATEGORY = "SELECT author, artistName " \
                 "ORDER BY COUNT(*) DESC " \
                 "LIMIT %s;" \
 
-
 TOP_HEAD_EATERS = "SELECT artists.artistName, AVG(wordCount) AS avgWordCount " \
                 "FROM artists, songtoartist, " \
                 "(" \
