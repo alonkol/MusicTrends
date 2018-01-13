@@ -1,17 +1,9 @@
 import json
 
 # ORIGINAL PATHS
-from DataAPIs.LastFM.retreive_data_from_last_fm import ARTISTS_FILE, SONGS_FILE
-from DataAPIs.MusixMatch.lyrics_collector import LYRICS_FILE
+from DBPopulation.population import ARTISTS_PATH, SONGS_PATH, LYRICS_PATH, TEST_ARTISTS_PATH, TEST_SONGS_PATH, \
+    TEST_LYRICS_PATH
 
-LYRICS_PATH = '../../DataAPIs/MusixMatch/' + LYRICS_FILE
-ARTISTS_PATH = '../../DataAPIs/LastFM/' + ARTISTS_FILE
-SONGS_PATH = '../../DataAPIs/LastFM/' + SONGS_FILE
-
-TEST_PREFIX = 'test_'
-TEST_ARTISTS_PATH = TEST_PREFIX + ARTISTS_FILE
-TEST_SONGS_PATH = TEST_PREFIX + SONGS_FILE
-TEST_LYRICS_PATH = TEST_PREFIX + LYRICS_FILE
 
 def create_jsons(num_of_categories, num_of_artists_per_category, num_of_songs_per_artist):
     artists_data = get_data_from_file(ARTISTS_PATH)
