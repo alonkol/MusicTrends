@@ -1,15 +1,7 @@
 from flask import Flask, request, send_from_directory
 from flask import render_template
 
-import json
-import config
-import queries
-from Server.utilities import get_result_for_queries, get_json_result, get_update_result, \
-    find_artist_name_by_id_in_table, find_video_id_based_on_song_id, update_stats_for_video, check_if_lyrics_exist, \
-    update_lyrics_in_db, insert_lyrics_into_tables, add_song_to_db, find_lyrics_for_song, insert_song_youtube_data, \
-    JSON_FAIL_NOTICE, JSON_SUCCESS_NOTICE, UNAUTHORIZED_ACTION_NOTICE, check_manager_key, \
-    remove_all_occurrences_of_video_id_in_db, remove_all_occurrences_of_song_id_in_db, \
-    remove_all_occurrences_of_artist_id_in_db, find_songs_and_videos_by_artist_id
+from Server.utilities import *
 
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 

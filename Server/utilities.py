@@ -3,8 +3,7 @@ import json
 
 from flask import request
 
-from DBPopulation.insert_queries import insert_into_words_per_song_table, insert_into_lyrics_table, \
-    insert_into_songs_table, insert_into_song_to_artist_table, insert_into_song_to_category_table
+from DBPopulation.insert_queries import *
 from DataAPIs.MusixMatch.lyrics_collector import get_lyrics_for_song
 from DataAPIs.Youtube.DataEnrichment import get_statistics_for_video, populate_video
 from Server import config, queries
