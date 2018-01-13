@@ -29,7 +29,8 @@ def insert_into_artists_table(artist_name):
     cursor = config.cursor
     try:
         # handle non-ascii charactes
-        artist_name = artist_name.encode('unicode_escape')
+        if not is_valid_ascii(artist_name):
+            return
         affected_count = cursor.execute(sql_insert, (artist_name,))
         config.dbconnection.commit()
     except Exception as e:
@@ -44,7 +45,8 @@ def insert_into_songs_table(song_name):
     cursor = config.cursor
     try:
         # handle non-ascii charactes
-        song_name = song_name.encode('unicode_escape')
+        if not is_valid_ascii(song_name):
+            return
         affected_count = cursor.execute(sql_insert, (song_name,))
         config.dbconnection.commit()
     except Exception as e:
@@ -95,7 +97,6 @@ def insert_into_song_to_category_table(song_id, category_id):
 
 def insert_into_lyrics_table(song_id, lyrics, language):
         sql_insert = INSERT_LYRICS
-        lyrics = lyrics.encode('unicode_escape')
         cursor = config.cursor
         try:
             cursor.execute(sql_insert, (song_id, lyrics, language))
@@ -113,7 +114,7 @@ def insert_into_words_per_song_table(song_id, lyrics):
     cursor = config.cursor
     try:
         for word, cnt in words_count.iteritems():
-            word = word.encode('unicode_escape')[:20]
+            word = word[:20]
             cursor.execute(sql_insert, (song_id, word, cnt))
         config.dbconnection.commit()
     except Exception as e:
@@ -121,3 +122,7 @@ def insert_into_words_per_song_table(song_id, lyrics):
         print "failed to insert words for song %s' " % song_id
         return
     return cursor.lastrowid
+
+
+def is_valid_ascii(string):
+    return all(ord(c) < 128 for c in string)

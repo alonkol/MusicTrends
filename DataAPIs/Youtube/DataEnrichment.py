@@ -1,4 +1,6 @@
 from googleapiclient.discovery import build
+
+from DBPopulation.insert_queries import is_valid_ascii
 from Server import config
 from datetime import datetime
 
@@ -113,7 +115,10 @@ def PopulateVideos():
 
         videoId = video["id"]["videoId"]
         publishedAt = ConvertStringToDate(video["snippet"]["publishedAt"])
-        title = video["snippet"]["title"].encode('unicode_escape')
+        title = video["snippet"]["title"]
+        # handle non-ascii characters
+        if not is_valid_ascii(title):
+            continue
 
         # Populate video table
         s = GetStatisticsForVideo(videoId)
@@ -157,8 +162,11 @@ def PopulateComments():
 
                     publishedAt = ConvertStringToDate(s["publishedAt"])
                     viewerRating = s["viewerRating"]
-                    textDisplay = s["textDisplay"].encode('unicode_escape')
-                    author = s["authorDisplayName"].encode('unicode_escape')
+                    textDisplay = s["textDisplay"]
+                    author = s["authorDisplayName"]
+                    # handle non-ascii characters
+                    if not is_valid_ascii(author) or not is_valid_ascii(textDisplay):
+                        continue
 
                     if (viewerRating == 'none'):
                         viewerRating = None

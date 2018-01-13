@@ -5,7 +5,7 @@ from DataAPIs.MusixMatch.lyrics_collector import LYRICS_FILE
 from DataAPIs.Youtube.DataEnrichment import PopulateVideos, PopulateComments
 from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table, \
     insert_into_categories_table, insert_into_artists_table, insert_into_artist_to_category_table, \
-    insert_into_songs_table, insert_into_song_to_artist_table, insert_into_song_to_category_table
+    insert_into_songs_table, insert_into_song_to_artist_table, insert_into_song_to_category_table, is_valid_ascii
 
 from Server.config import cursor
 from TestJsons.create_test_json import TEST_ARTISTS_PATH, TEST_SONGS_PATH, TEST_LYRICS_PATH
@@ -46,6 +46,8 @@ class Populator():
 
     def _insert_lyrics_data_into_tables(self, song_id, mbid):
         song_lyrics_data = self._lyrics_data.get(mbid)
+        if not is_valid_ascii(song_lyrics_data):
+            return
         if song_lyrics_data is None:
             return
         result = insert_into_lyrics_table(song_id, song_lyrics_data['lyrics'], song_lyrics_data['language'])
