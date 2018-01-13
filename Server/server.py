@@ -27,92 +27,92 @@ MANAGER_KEY = "Wubalubadubdub!"
 
 # --- Routes --- #
 @app.route('/api')
-def ApiWelcome():
+def api_welcome():
     return render_template('api.html')
 
 
 @app.route('/api/categories')
-def Categories():
-    return GetJSONResult(queries.CATEGORIES)
+def categories():
+    return get_json_result(queries.CATEGORIES)
 
 
 @app.route('/api/songs/likes/top/<int:amount>', methods=['GET'])
-def TopSongLikes(amount):
+def top_song_likes(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.TOP_SONG_LIKES_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.TOP_SONG_LIKES_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.TOP_SONG_LIKES, (amount,))
+    return get_json_result(queries.TOP_SONG_LIKES, (amount,))
 
 
 @app.route('/api/songs/dislikes/top/<int:amount>', methods=['GET'])
-def TopSongDislikes(amount):
+def top_song_dislikes(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.TOP_SONG_DISLIKES_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.TOP_SONG_DISLIKES_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.TOP_SONG_DISLIKES, (amount,))
+    return get_json_result(queries.TOP_SONG_DISLIKES, (amount,))
 
 
 @app.route('/api/songs/views/top/<int:amount>', methods=['GET'])
-def TopSongViews(amount):
+def top_song_views(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.TOP_SONG_VIEWS_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.TOP_SONG_VIEWS_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.TOP_SONG_VIEWS, (amount,))
+    return get_json_result(queries.TOP_SONG_VIEWS, (amount,))
 
 
 @app.route('/api/songs/views/bottom/<int:amount>', methods=['GET'])
-def BottomSongViews(amount):
+def bottom_song_views(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.BOTTOM_SONG_VIEWS_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.BOTTOM_SONG_VIEWS_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.BOTTOM_SONG_VIEWS, (amount,))
+    return get_json_result(queries.BOTTOM_SONG_VIEWS, (amount,))
 
 
 @app.route('/api/words/top/<int:amount>', methods=['GET'])
-def TopWords(amount):
+def top_words(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.TOP_WORDS_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.TOP_WORDS_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.TOP_WORDS, (amount,))
+    return get_json_result(queries.TOP_WORDS, (amount,))
 
 
 @app.route('/api/words/bottom/<int:amount>', methods=['GET'])
-def BottomWords(amount):
+def bottom_words(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.BOTTOM_WORDS_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.BOTTOM_WORDS_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.BOTTOM_WORDS, (amount,))
+    return get_json_result(queries.BOTTOM_WORDS, (amount,))
 
 
 # Score = numberOfWords^2 * averageUniqueness / wordCount
 # where uniqueness for a word is calculated as 1/(word frequency)
 # and wordCount is the total count of words (penalty for repetitions)
 @app.route('/api/songs/wordscore/top/<int:amount>', methods=['GET'])
-def TopSophisticatedSongs(amount):
+def top_sophisticated_songs(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.TOP_SOPHISTICATED_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.TOP_SOPHISTICATED_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.TOP_SOPHISTICATED, (amount,))
+    return get_json_result(queries.TOP_SOPHISTICATED, (amount,))
 
 
 @app.route('/api/songs/wordscore/bottom/<int:amount>', methods=['GET'])
-def BottomSophisticatedSongs(amount):
+def bottom_sophisticated_songs(amount):
     category = request.args.get('category')
     if category is not None:
-        return GetJSONResult(queries.BOTTOM_SOPHISTICATED_PER_CATEGORY, (category, amount))
+        return get_json_result(queries.BOTTOM_SOPHISTICATED_PER_CATEGORY, (category, amount))
 
-    return GetJSONResult(queries.BOTTOM_SOPHISTICATED, (amount,))
+    return get_json_result(queries.BOTTOM_SOPHISTICATED, (amount,))
 
 
 @app.route('/api/songs/discussionscore/top/<int:amount>')
-def TopSophisticatedSongDiscussions(amount):
+def top_sophisticated_song_discussions(amount):
     return ""
 
 
@@ -125,14 +125,14 @@ def TopSophisticatedSongDiscussions(amount):
 def artists():
     statement = queries.ARTISTS
 
-    return GetJSONResult(statement)
+    return get_json_result(statement)
 
 
 @app.route('/api/songs_for_artist/<artist_id>')
 def songs_for_artist(artist_id):
     statement = queries.SONGS_FOR_ARTISTS
 
-    return GetJSONResult(statement, (artist_id,))
+    return get_json_result(statement, (artist_id,))
 
 
 @app.route('/api/blacklist_artist')
@@ -143,20 +143,20 @@ def blacklist_artist():
         return UNAUTHORIZED_ACTION_NOICE
     statement = queries.BLACKLIST_ARTIST
 
-    return GetUpdateResult(statement, (artist_id,))
+    return get_update_result(statement, (artist_id,))
 
 
 @app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
     song_id = request.args.get('song')
     statement = queries.LYRICS
-    return GetJSONResult(statement, (song_id,))
+    return get_json_result(statement, (song_id,))
 
 
 def delete_all_words_for_song_id_in_words_per_song_table(song_id):
     statement = queries.DELETE_FROM_WORDS_PER_SONG
 
-    return GetUpdateResult(statement, (song_id,))
+    return get_update_result(statement, (song_id,))
 
 
 @app.route('/api/lyrics/update', methods=['GET'])
@@ -203,7 +203,7 @@ def add_song():
 
 # --- Auxiliary --- #
 
-def GetJSONResult(statement, params=None):
+def get_json_result(statement, params=None):
     if params is not None:
         config.cursor.execute(statement, params)
     else:
@@ -229,7 +229,7 @@ def GetJSONResult(statement, params=None):
     )
 
 
-def GetUpdateResult(statement, params=None):
+def get_update_result(statement, params=None):
     if params is not None:
         config.cursor.execute(statement, params)
     else:
@@ -244,7 +244,6 @@ def GetUpdateResult(statement, params=None):
     return JSON_SUCCESS_NOTICE
 
 
-
 def find_artist_id_in_table(artist_name):
     statement = queries.FIND_ARTIST_ID
     try:
@@ -257,7 +256,7 @@ def find_artist_id_in_table(artist_name):
 
 def find_song_id_by_song_name_and_artist(artist, song):
     statement = queries.FIND_SONG_ID
-    res = json.loads(GetJSONResult(statement, (song, artist)))
+    res = json.loads(get_json_result(statement, (song, artist)))
     if res['amount'] > 0:
         return int(res['results'][0]['songID'])
     else:
@@ -267,13 +266,13 @@ def find_song_id_by_song_name_and_artist(artist, song):
 def check_if_lyrics_exist(song_id):
     statement = queries.FIND_LYRICS
 
-    return json.loads(GetJSONResult(statement, (song_id, )))['amount'] != 0
+    return json.loads(get_json_result(statement, (song_id, )))['amount'] != 0
 
 
 def update_in_lyrics_table(song_id, lyrics):
     statement = queries.UPDATE_LYRICS
 
-    return GetUpdateResult(statement, (lyrics, song_id))
+    return get_update_result(statement, (lyrics, song_id))
 
 
 def update_lyrics_in_db(song_id, lyrics):
