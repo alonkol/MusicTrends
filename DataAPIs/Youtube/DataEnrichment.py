@@ -31,9 +31,9 @@ def youtube_search(queryString):
 
 
 # Right now only gets one result
-def GetStatisticsForVideo(videoId):
+def get_statistics_for_video(video_id):
     search_response = youtube.videos().list(
-        id=videoId,
+        id=video_id,
         part="statistics",
         maxResults=1
     ).execute()
@@ -52,14 +52,13 @@ def GetStatisticsForVideo(videoId):
 
     return items[0]["statistics"]
 
-# Right now gets first 10 comments.
-# Can get up to 100 on a single page.
-# Can get more with paging if necessary.
-def GetCommentsForVideo(videoId):
+
+def get_comments_for_video(video_id):
+    # Right now gets first 10 comments, Can get up to 100 on a single page.
     try:
         results = youtube.commentThreads().list(
             part="snippet",
-            videoId=videoId,
+            videoId=video_id,
             textFormat="plainText",
             maxResults=10
         ).execute()
@@ -73,7 +72,7 @@ def GetCommentsForVideo(videoId):
         return None
 
 
-def GetAllSongsAndArtistsFromDB():
+def get_songs_artists_pairs_from_db():
     offset = 0
     limit = 8000
 
@@ -89,51 +88,11 @@ def GetAllSongsAndArtistsFromDB():
     return config.unsafe_cursor.fetchall()
 
 
-def GetAllVideoIdsFromDB():
-    statement = "SELECT videoID " \
-                "FROM Videos; "
-    config.unsafe_cursor.execute(statement)
-    results = config.unsafe_cursor.fetchall()
-
-    return [result["videoID"] for result in results]
-
-
-def PopulateVideos():
-    couples = GetAllSongsAndArtistsFromDB()
-
-    statement = "INSERT INTO videos " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, Default);"
+def populate_videos():
+    couples = get_songs_artists_pairs_from_db()
 
     for i, couple in enumerate(couples):
-        songId = couple["songID"]
-        query = couple["artistName"] + " " + couple["songName"]
-
-        video = youtube_search(query)
-
-        if not video:
-            continue
-
-        print("Got vid - #%d\n" % i)
-
-        videoId = video["id"]["videoId"]
-        publishedAt = ConvertStringToDate(video["snippet"]["publishedAt"])
-        title = video["snippet"]["title"]
-        # handle non-ascii characters
-        if not is_valid_ascii(title):
-            continue
-
-        # Populate video table
-        s = GetStatisticsForVideo(videoId)
-        inputDataList = [videoId, songId, publishedAt, title, s["viewCount"], s["likeCount"],
-                         s["dislikeCount"], s["favoriteCount"], s["commentCount"]]
-
-        try:
-            config.cursor.execute(statement, tuple(inputDataList))
-        except Exception as e:
-            print("Failed to insert video, proceeding...\n")
-            print(e)
-            continue
-
+        populate_video(couple["songID"], couple["artistName"], couple["songName"])
         if i % 100 == 0:
             try:
                 config.dbconnection.commit()
@@ -141,7 +100,40 @@ def PopulateVideos():
                 config.dbconnection.rollback()
 
 
-def ConvertStringToDate(s):
+def populate_video(song_id, artist_name, song_name):
+    statement = "INSERT INTO videos " \
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, Default);"
+    query = artist_name + " " + song_name
+
+    video = youtube_search(query)
+    if not video:
+        return
+
+    videoId = video["id"]["videoId"]
+    publishedAt = convert_string_to_date(video["snippet"]["publishedAt"])
+    title = video["snippet"]["title"]
+    # handle non-ascii characters
+    if not is_valid_ascii(title):
+        return
+
+    # Populate video table
+    s = get_statistics_for_video(videoId)
+    inputDataList = [videoId, song_id, publishedAt, title, s["viewCount"], s["likeCount"],
+                     s["dislikeCount"], s["favoriteCount"], s["commentCount"]]
+
+    # Populate comments data
+    populate_comment_for_video(videoId)
+
+    try:
+        config.cursor.execute(statement, tuple(inputDataList))
+    except Exception as e:
+        print("Failed to insert video %s - %s, proceeding...\n" % song_name, artist_name)
+        print(e)
+        return
+    return videoId
+
+
+def convert_string_to_date(s):
     translationTable = {ord(c): None for c in [':', '-']}
     return datetime.strptime(s.translate(translationTable), "%Y%m%dT%H%M%S.%fZ")
 
@@ -162,54 +154,43 @@ def insert_into_comment_words_per_video_table(video_id, comment_text):
     return cursor.lastrowid
 
 
-def PopulateComments():
-    videoIds = GetAllVideoIdsFromDB()
-
+def populate_comment_for_video(video_id):
     statement = "INSERT INTO comments " \
                 "VALUES (%s, %s, %s, %s, %s, %s, %s);"
 
-    for i, videoId in enumerate(videoIds):
-        comments = GetCommentsForVideo(videoId)
-        print("#%d - Got the comments for video %s\n" % (i, videoId))
+    comments = get_comments_for_video(video_id)
+    if comments is None:
+        return
 
-        if comments is not None:
-            try:
-                for comment in comments:
-                    c = comment["snippet"]["topLevelComment"]
-                    s = c["snippet"]
+    try:
+        for comment in comments:
+            c = comment["snippet"]["topLevelComment"]
+            s = c["snippet"]
 
-                    publishedAt = ConvertStringToDate(s["publishedAt"])
-                    viewerRating = s["viewerRating"]
-                    textDisplay = s["textDisplay"]
-                    author = s["authorDisplayName"]
-                    # handle non-ascii characters
-                    if not is_valid_ascii(author) or not is_valid_ascii(textDisplay):
-                        continue
+            publishedAt = convert_string_to_date(s["publishedAt"])
+            viewerRating = s["viewerRating"]
+            textDisplay = s["textDisplay"]
+            author = s["authorDisplayName"]
+            # handle non-ascii characters
+            if not is_valid_ascii(author) or not is_valid_ascii(textDisplay):
+                continue
 
-                    if (viewerRating == 'none'):
-                        viewerRating = None
+            if (viewerRating == 'none'):
+                viewerRating = None
 
-                    inputDataList = [c["id"], s["videoId"], author,
-                                     textDisplay, publishedAt,
-                                     viewerRating, s["likeCount"]]
+            inputDataList = [c["id"], s["videoId"], author,
+                             textDisplay, publishedAt,
+                             viewerRating, s["likeCount"]]
 
-                    config.cursor.execute(statement, tuple(inputDataList))
-                    # populate CommentWordsPerVideoTable
-                    insert_into_comment_words_per_video_table(videoId, textDisplay)
-
-            except Exception as e:
-                print e
-
-            if i % 100 == 0:
-                try:
-                    config.dbconnection.commit()
-                except:
-                    config.dbconnection.rollback()
+            config.cursor.execute(statement, tuple(inputDataList))
+            # populate CommentWordsPerVideoTable
+            insert_into_comment_words_per_video_table(video_id, textDisplay)
+    except Exception as e:
+        print e
 
 
 def main():
-    PopulateVideos()
-    PopulateComments()
+    populate_videos()
 
 
 if __name__ == "__main__":

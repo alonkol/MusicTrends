@@ -218,7 +218,7 @@ LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
 
 DELETE_FROM_WORDS_PER_SONG = "DELETE FROM WordsPerSong WHERE songID = %s;"
 
-FIND_ARTIST_ID = "SELECT artistID FROM Artists WHERE artistName = %s;"
+FIND_ARTIST_NAME = "SELECT artistName FROM Artists WHERE artistID = %s;"
 
 FIND_LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
 

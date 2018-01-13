@@ -9,8 +9,9 @@ import queries
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
 
-from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
-from DataAPIs.Youtube.DataEnrichment import GetStatisticsForVideo
+from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table, \
+    insert_into_songs_table, insert_into_song_to_artist_table, insert_into_song_to_category_table
+from DataAPIs.Youtube.DataEnrichment import get_statistics_for_video, populate_video
 
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
@@ -157,7 +158,7 @@ def update_lyrics():
         return update_lyrics_in_db(song_id, lyrics)
 
     # currently supports only lyrics in english
-    result = insert_lyrics_into_tables(song_id, lyrics, 'en')
+    result = insert_lyrics_into_tables(song_id, lyrics)
     if result:
         return JSON_SUCCESS_NOTICE
     return JSON_FAIL_NOTICE
@@ -175,15 +176,43 @@ def update_youtube_data():
     return update_stats_for_video(video_id)
 
 
-# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+def add_song_to_db(category_id, artist_id, song_name):
+    song_id = insert_into_songs_table(song_name)
+    if song_id is None:
+        return
+    insert_into_song_to_artist_table(song_id, artist_id)
+    insert_into_song_to_category_table(song_id, category_id)
+    return song_id
+
+
+def find_lyrics_for_song(artist_name, song_name):
+    return None
+
+
+def insert_song_youtube_data(song_id, artist_name, song_name):
+    return populate_video(song_id, artist_name, song_name)
+
+
 @app.route('/api/songs/add', methods=['GET'])
 def add_song():
-    artist = request.args.get('artist')
-    song = request.args.get('song')
-    category = request.args.get('category')
+    artist_id = request.args.get('artist')
+    song_name = request.args.get('song')
+    category_id = request.args.get('category')
     managerKey = request.args.get('key')
     if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
         return UNAUTHORIZED_ACTION_NOICE
+
+    artist_name = find_artist_name_by_id_in_table(artist_id)
+    print(artist_name)
+    song_id = add_song_to_db(category_id, artist_id, song_name)
+    if song_id is None:
+        return JSON_FAIL_NOTICE
+
+    lyrics = find_lyrics_for_song(artist_name, song_name)
+    if lyrics:
+        result = insert_lyrics_into_tables(song_id, lyrics)
+    result = insert_song_youtube_data(song_id, artist_name, song_name)
+
     return JSON_SUCCESS_NOTICE
 
 
@@ -237,13 +266,12 @@ def get_update_result(statement, params=None):
     return JSON_SUCCESS_NOTICE
 
 
-def find_artist_id_in_table(artist_name):
-    try:
-        config.cursor.execute(queries.FIND_ARTIST_ID, (artist_name,))
-    except Exception:
-        return
-    rows = config.cursor.fetchall()
-    return rows[0][0] if rows else None
+def find_artist_name_by_id_in_table(artist_id):
+    res = json.loads(get_json_result(queries.FIND_ARTIST_NAME, (artist_id,)))
+    if res['amount'] > 0:
+        return str(res['results'][0]['artistName'])
+    else:
+        return None
 
 
 def find_song_id_by_song_name_and_artist(artist, song):
@@ -263,10 +291,10 @@ def find_video_id_based_on_song_id(song_id):
 
 
 def update_stats_for_video(video_id):
-    s = GetStatisticsForVideo(video_id)
+    s = get_statistics_for_video(video_id)
     return get_update_result(
         queries.UPDATE_VIDEOS_DATA, (s['viewCount'], s['likeCount'], s['dislikeCount'],
-                                     s['favoriteCount'], s['commentCount'], video_id,))
+                                     s['favoriteCount'], s['commentCount'], video_id))
 
 
 def check_if_lyrics_exist(song_id):
@@ -294,8 +322,8 @@ def update_lyrics_in_db(song_id, lyrics):
     return JSON_SUCCESS_NOTICE
 
 
-def insert_lyrics_into_tables(song_id, lyrics, language):
-    result = insert_into_lyrics_table(song_id, lyrics, language)
+def insert_lyrics_into_tables(song_id, lyrics):
+    result = insert_into_lyrics_table(song_id, lyrics)
     if result is None:
         return
     return insert_into_words_per_song_table(song_id, lyrics)
