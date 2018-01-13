@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask import render_template
 
 import config
@@ -11,7 +11,7 @@ import queries
 
 from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
 JSON_SUCCESS_NOTICE = json.dumps({"success": True})
 UNAUTHORIZED_ACTION_NOICE = json.dumps({"success": False, "reason": "Manager key is incorrect"})
@@ -296,7 +296,7 @@ def insert_lyrics_into_tables(song_id, lyrics, language):
 ###############################
 @app.route('/')
 def homepage():
-    return "Wubalubadubdub!"
+    return send_from_directory('frontend-build', 'index.html')
 
 
 @app.errorhandler(404)
