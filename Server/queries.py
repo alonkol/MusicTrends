@@ -57,13 +57,15 @@ BOTTOM_SONG_VIEWS_PER_CATEGORY = "SELECT songName, viewCount " \
             "ORDER BY viewCount ASC " \
             "LIMIT %s;"
 
-TOP_WORDS = "SELECT word, SUM(wordCount) AS count " \
+TOP_WORDS = "SELECT CONCAT(UCASE(LEFT(word, 1)), SUBSTRING(word, 2)), " \
+                "SUM(wordCount) AS count " \
                 "FROM WordsPerSong " \
                 "GROUP BY word " \
                 "ORDER BY count DESC " \
                 "LIMIT %s;"
 
-TOP_WORDS_PER_CATEGORY = "SELECT word, SUM(wordCount) AS count " \
+TOP_WORDS_PER_CATEGORY = "SELECT CONCAT(UCASE(LEFT(word, 1)), SUBSTRING(word, 2)), " \
+            "SUM(wordCount) AS count " \
             "FROM WordsPerSong, SongToCategory " \
             "WHERE WordsPerSong.songID = SongToCategory.songID " \
             "AND SongToCategory.categoryID = %s " \
@@ -71,13 +73,15 @@ TOP_WORDS_PER_CATEGORY = "SELECT word, SUM(wordCount) AS count " \
             "ORDER BY count DESC " \
             "LIMIT %s;"
 
-BOTTOM_WORDS = "SELECT word, SUM(wordCount) AS count " \
+BOTTOM_WORDS = "SELECT CONCAT(UCASE(LEFT(word, 1)), SUBSTRING(word, 2)), " \
+            "SUM(wordCount) AS count " \
             "FROM WordsPerSong " \
             "GROUP BY word " \
             "ORDER BY count ASC " \
             "LIMIT %s;"
 
-BOTTOM_WORDS_PER_CATEGORY = "SELECT word, SUM(wordCount) AS count " \
+BOTTOM_WORDS_PER_CATEGORY = "SELECT CONCAT(UCASE(LEFT(word, 1)), SUBSTRING(word, 2)), " \
+            "SUM(wordCount) AS count " \
             "FROM WordsPerSong, SongToCategory " \
             "WHERE WordsPerSong.songID = SongToCategory.songID " \
             "AND SongToCategory.categoryID = %s " \
@@ -93,8 +97,8 @@ TOP_SOPHISTICATED = "SELECT songName, score " \
                 "(" \
                     "SELECT word, 1/SUM(wordCount) AS uniqueness " \
                     "FROM WordsPerSong " \
-                    "GROUP BY word " \
-                ") AS wordUniqueness, WordsPerSong  " \
+                    "GROUP BY word" \
+                ") AS wordUniqueness, WordsPerSong " \
                 "WHERE wordUniqueness.word = WordsPerSong.word " \
                 "GROUP BY WordsPerSong.songID " \
             ") AS a, songs " \
