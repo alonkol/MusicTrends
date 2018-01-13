@@ -17,7 +17,10 @@ class Main extends Component {
     constructor() {
         super();
         this.state = {current_page: 'trends',
-        numberOfResults: 5}
+            numberOfResults: 5,
+            selectedCategory: null,
+            filterSwitchOn: false
+        }
     }
 
     handleClick = (e) => {
@@ -29,6 +32,10 @@ class Main extends Component {
 
     handleSliderChange = (value) => {
         this.setState({numberOfResults: value});
+    }
+
+    handleCategoryChange = (value) => {
+        this.setState({selectedCategory: value});
     }
 
     render() {
@@ -91,10 +98,12 @@ class Main extends Component {
         if (this.state.current_page === 'trends') {
             return (
                 <div>
-                    <FilterSection/>
+                    <FilterSection
+                        handleCategoryChange={this.handleCategoryChange}
+                    />
                     <br/>
                     <br/>
-                    <TrendsChart topSongs={topSongs} numOfResults={this.state.numberOfResults}></TrendsChart>
+                    <TrendsChart topSongs={topSongs} numberOfResults={this.state.numberOfResults}></TrendsChart>
                 </div>
             );
         }

@@ -3,11 +3,17 @@ import './App.css';
 
 class TopList extends Component {
 
+    constructor(props){
+        super(props);
+
+        this.state = {numberOfResults: props.numberOfResults};
+    }
+
     render() {
         return (
             <div>
                 <h2>{this.props.title}</h2>
-                <ol>{this.props.items.map((item) => <li>{item['value'] + item['count']}</li>)}</ol>
+                <ol>{this.props.items.slice(0, this.state.numberOfResults).map((item) => <li>{item['value'] + "\t" + item['count']}</li>)}</ol>
             </div>
         );
     }

@@ -16,6 +16,7 @@ class FilterSection extends Component {
 
     categoryCascaderOnChange = (value, selectedOptions) => {
         this.setState({selectedCategory: selectedOptions[0].id});
+        this.props.handleCategoryChange(selectedOptions[0].id);
     }
 
     sliderOnChange = (value) => {
@@ -59,7 +60,6 @@ class FilterSection extends Component {
             .then(results => (this.setState({categories: results.results.map(category =>
                 ({value: category['name'], label: category['name'], id: category['id']}))})));
     }
-
 }
 
 function countryCascaderOnChange(value, selectedOptions) {

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import TopList from "./TopList2";
 
+const MAX_RESULTS_NUM = 20;
+
 class TrendsChart extends Component {
 
     constructor(props) {
@@ -21,7 +23,9 @@ class TrendsChart extends Component {
             topSameTextCouples: {title: 'Top text couples', items: []},
             topCommentedDays: {title: 'Top Commented Days', items: []},
             topControversial: {title: 'Top Controversial', items: []},
-            numOfResults: props.numOfResults
+            numberOfResults: props.numberOfResults,
+
+            selectedCategory: props.selectedCategory
         };
     }
 
@@ -29,28 +33,28 @@ class TrendsChart extends Component {
         return (
             <table>
                 <tr>
-                    <td><TopList title={this.state.topWords.title} items={this.state.topWords.items}/></td>
-                    <td><TopList title={this.state.worstWords.title} items={this.state.worstWords.items}/></td>
-                    <td><TopList title={this.state.topLiked.title} items={this.state.topLiked.items}/></td>
+                    <td><TopList title={this.state.topWords.title} items={this.state.topWords.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.worstWords.title} items={this.state.worstWords.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topLiked.title} items={this.state.topLiked.items} numberOfResults={this.state.numberOfResults}/></td>
                 </tr>
                 <tr>
-                    <td><TopList title={this.state.topDisliked.title} items={this.state.topDisliked.items}/></td>
-                    <td><TopList title={this.state.topViews.title} items={this.state.worstViews.items}/></td>
-                    <td><TopList title={this.state.topWordScore.title} items={this.state.topWordScore.items}/></td>
+                    <td><TopList title={this.state.topDisliked.title} items={this.state.topDisliked.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topViews.title} items={this.state.worstViews.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topWordScore.title} items={this.state.topWordScore.items} numberOfResults={this.state.numberOfResults}/></td>
                 </tr>
                 <tr>
-                    <td><TopList title={this.state.worstWordScore.title} items={this.state.worstWordScore.items}/></td>
-                    <td><TopList title={this.state.topDiscScore.title} items={this.state.topDiscScore.items}/></td>
-                    <td><TopList title={this.state.topGroupies.title} items={this.state.topGroupies.items}/></td>
+                    <td><TopList title={this.state.worstWordScore.title} items={this.state.worstWordScore.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topDiscScore.title} items={this.state.topDiscScore.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topGroupies.title} items={this.state.topGroupies.items} numberOfResults={this.state.numberOfResults}/></td>
                 </tr>
                 <tr>
-                    <td><TopList title={this.state.topHeadEaters.title} items={this.state.topHeadEaters.items}/></td>
-                    <td><TopList title={this.state.topSameTextCouples.title} items={this.state.topSameTextCouples.items}/></td>
-                    <td><TopList title={this.state.topCommentedDays.title} items={this.state.topCommentedDays.items}/></td>
+                    <td><TopList title={this.state.topHeadEaters.title} items={this.state.topHeadEaters.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topSameTextCouples.title} items={this.state.topSameTextCouples.items} numberOfResults={this.state.numberOfResults}/></td>
+                    <td><TopList title={this.state.topCommentedDays.title} items={this.state.topCommentedDays.items} numberOfResults={this.state.numberOfResults}/></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><TopList title={this.state.topControversial.title} items={this.state.topControversial.items}/></td>
+                    <td><TopList title={this.state.topControversial.title} items={this.state.topControversial.items} numberOfResults={this.state.numberOfResults}/></td>
                     <td></td>
                 </tr>
             </table>
@@ -60,15 +64,14 @@ class TrendsChart extends Component {
     fetchResults = () => {
         // fetch top words
 
-        fetch("/api/words/top/" + this.state.numOfResults)
+        fetch("/api/words/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topWords: Object.assign(this.state.topWords,
                         {items: results.results}
                     )})));
-        /*
 
-        fetch("/api/words/bottom/" + this.state.numOfResults)
+        fetch("/api/words/bottom/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {worstWords: Object.assign(this.state.worstWords,
@@ -76,7 +79,7 @@ class TrendsChart extends Component {
                     )})));
 
         // fetch top liked
-        fetch("/api/songs/likes/top/" + this.state.numOfResults)
+        fetch("/api/songs/likes/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topLiked: Object.assign(this.state.topLiked,
@@ -85,83 +88,83 @@ class TrendsChart extends Component {
 
 
         // fetch top disliked
-        fetch("/api/songs/dislikes/top/" + this.state.numOfResults)
+        fetch("/api/songs/dislikes/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topDisliked: Object.assign(this.state.topDisliked,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/views/top/" + this.state.numOfResults)
+        fetch("/api/songs/views/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topViews: Object.assign(this.state.topViews,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/views/bottom/" + this.state.numOfResults)
+        fetch("/api/songs/views/bottom/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {worstViews: Object.assign(this.state.worstViews,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/wordscore/top/" + this.state.numOfResults)
+        fetch("/api/songs/wordscore/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topWordScore: Object.assign(this.state.topWordScore,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/wordscore/bottom/" + this.state.numOfResults)
+        fetch("/api/songs/wordscore/bottom/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {worstWordScore: Object.assign(this.state.worstWordScore,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/discussionscore/top/" + this.state.numOfResults)
+        fetch("/api/songs/discussionscore/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topDiscScore: Object.assign(this.state.topDiscScore,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/groupies/top/" + this.state.numOfResults)
+        fetch("/api/groupies/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topGroupies: Object.assign(this.state.topGroupies,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/head_eaters/top/" + this.state.numOfResults)
+        fetch("/api/artists/head_eaters/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topHeadEaters: Object.assign(this.state.topHeadEaters,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/same_text_couples/top/" + this.state.numOfResults)
+        fetch("/api/artists/same_text_couples/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topSameTextCouples: Object.assign(this.state.topSameTextCouples,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/days_with_most_comments/top/" + this.state.numOfResults)
+        fetch("/api/songs/days_with_most_comments/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topCommentedDays: Object.assign(this.state.topCommentedDays,
                         {items: results.results}
                     )})));
 
-        fetch("/api/artists/controversial/top/" + this.state.numOfResults)
+        fetch("/api/artists/controversial/top/" + MAX_RESULTS_NUM)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topControversial: Object.assign(this.state.topControversial,
                         {items: results.results}
                     )})));
-                    */
+
     }
 
     componentDidMount() {
