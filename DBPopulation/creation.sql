@@ -60,8 +60,6 @@ CREATE TABLE Videos (
     viewCount bigint NOT NULL,
     likeCount int NOT NULL,
     dislikeCount int NOT NULL,
-    favoriteCount int,
-    commentCount int NOT NULL,
     PRIMARY KEY (videoID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
@@ -72,8 +70,6 @@ CREATE TABLE Comments (
     author varchar(200) NOT NULL,
     commentText TEXT(2000) NOT NULL,
     publishedAt DATE NOT NULL,
-    viewerRating int,
-    likeCount int NOT NULL,
     PRIMARY KEY (commentID),
     FOREIGN KEY (videoID) REFERENCES Videos(videoID)
 );
@@ -93,19 +89,11 @@ CREATE TABLE WordsPerSong (
 );
 
 CREATE VIEW ArtistsWordCount AS
-SELECT Artists.artistName, artists.artistID word, wordCount, ArtistToCategory.categoryID
+SELECT Artists.artistName, Artists.artistID, word, sum(wordCount), ArtistToCategory.categoryID
 FROM WordsPerSong, SongToArtist, Artists, ArtistToCategory
 WHERE WordsPerSong.songID = SongToArtist.songID
 AND SongToArtist.artistID = Artists.artistID
-AND ArtistToCategory.artistID = artists.artistID
-GROUP BY word, artists.artistID, Artists.artistName, categoryID
-;
+AND ArtistToCategory.artistID = Artists.artistID
+GROUP BY word, Artists.artistID, Artists.artistName, categoryID;
 
-CREATE UNIQUE INDEX SongIdInVideos ON Videos (songID);
-
---TODO consider adding these
-
-
---CREATE INDEX WordInSongs ON WordsPerSong (word);
-
---CREATE INDEX WordInComments ON CommentWordsPerVideo (commentWordCount);
+CREATE UNIQUE INDEX SongIdInVideos ON Videos(songID);

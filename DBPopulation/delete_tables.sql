@@ -1,3 +1,4 @@
+drop view  `DbMysql07`.`ArtistsWordCount`;
 drop table `DbMysql07`.`CommentWordsPerVideo`;
 drop table `DbMysql07`.`Lyrics`;
 drop table `DbMysql07`.`SongToArtist`;

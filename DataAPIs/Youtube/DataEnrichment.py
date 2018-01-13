@@ -102,7 +102,7 @@ def populate_videos():
 
 def populate_video(song_id, artist_name, song_name):
     statement = "INSERT INTO Videos " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+                "VALUES (%s, %s, %s, %s, %s, %s, %s);"
     query = artist_name + " " + song_name
 
     video = youtube_search(query)
@@ -119,7 +119,7 @@ def populate_video(song_id, artist_name, song_name):
     # Populate video table
     s = get_statistics_for_video(videoId)
     inputDataList = [videoId, song_id, publishedAt, title, s["viewCount"], s["likeCount"],
-                     s["dislikeCount"], s["favoriteCount"], s["commentCount"]]
+                     s["dislikeCount"]]
 
     try:
         config.cursor.execute(statement, tuple(inputDataList))
@@ -156,7 +156,7 @@ def insert_into_comment_words_per_video_table(video_id, comment_text):
 
 def populate_comment_for_video(video_id):
     statement = "INSERT INTO Comments " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s);"
+                "VALUES (%s, %s, %s, %s, %s);"
 
     comments = get_comments_for_video(video_id)
     if comments is None:
@@ -168,19 +168,14 @@ def populate_comment_for_video(video_id):
             s = c["snippet"]
 
             publishedAt = convert_string_to_date(s["publishedAt"])
-            viewerRating = s["viewerRating"]
             textDisplay = s["textDisplay"]
             author = s["authorDisplayName"]
             # handle non-ascii characters
             if not is_valid_ascii(author) or not is_valid_ascii(textDisplay):
                 continue
 
-            if (viewerRating == 'none'):
-                viewerRating = None
-
             inputDataList = [c["id"], s["videoId"], author,
-                             textDisplay, publishedAt,
-                             viewerRating, s["likeCount"]]
+                             textDisplay, publishedAt]
 
             config.cursor.execute(statement, tuple(inputDataList))
             # populate CommentWordsPerVideoTable
