@@ -52,7 +52,6 @@ def GetStatisticsForVideo(videoId):
 
     return items[0]["statistics"]
 
-
 # Right now gets first 10 comments.
 # Can get up to 100 on a single page.
 # Can get more with paging if necessary.

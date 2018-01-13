@@ -194,3 +194,9 @@ FIND_SONG_ID = "SELECT Songs.songID " \
 ARTISTS_FOR_CATEGORIES = "SELECT Artists.artistID, Artists.artistName FROM Artists, ArtistToCategory " \
                          "Where Artists.artistID = ArtistToCategory.artistID AND " \
                          "ArtistToCategory.categoryID = %s"
+
+
+FIND_VIDEO_ID_BY_SONG_ID = "SELECT videoID From Videos WHERE songID = %s"
+
+UPDATE_VIDEOS_DATA = "UPDATE Videos SET viewCount = %s, likeCount = %s, dislikeCount = %s, favoriteCount = %s, " \
+                     "commentCount = %s WHERE videoID = %s"

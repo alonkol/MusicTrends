@@ -10,6 +10,7 @@ import queries
 # Like in google trends, but for music
 
 from DBPopulation.insert_queries import insert_into_lyrics_table, insert_into_words_per_song_table
+from DataAPIs.Youtube.DataEnrichment import GetStatisticsForVideo
 
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
@@ -169,19 +170,20 @@ def update_lyrics():
     # currently supports only lyrics in english
     result = insert_lyrics_into_tables(song_id, lyrics, 'en')
     if result:
-        return json.dumps({"success": True})
-    return json.dumps({"success": True})
+        return JSON_SUCCESS_NOTICE
+    return JSON_FAIL_NOTICE
 
-# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
 @app.route('/api/youtube/update', methods=['GET'])
 def update_youtube_data():
     song_id = request.args.get('song')
     managerKey = request.args.get('key')
     if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
         return UNAUTHORIZED_ACTION_NOICE
-    return json.dumps({
-            "success": True,
-        })
+    video_id = find_video_id_based_on_song_id(song_id)
+    if video_id is None:
+        return JSON_FAIL_NOTICE
+    return update_stats_for_video(video_id)
 
 
 # TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -193,9 +195,7 @@ def add_song():
     managerKey = request.args.get('key')
     if not IGNORE_KEY and hash(managerKey) != HASHED_MANAGER_KEY:
         return UNAUTHORIZED_ACTION_NOICE
-    return json.dumps({
-            "success": True,
-        })
+    return JSON_SUCCESS_NOTICE
 
 
 # --- Auxiliary --- #
@@ -257,9 +257,22 @@ def find_song_id_by_song_name_and_artist(artist, song):
         return None
 
 
+def find_video_id_based_on_song_id(song_id):
+    res = json.loads(get_json_result(queries.FIND_VIDEO_ID_BY_SONG_ID, (song_id,)))
+    if res['amount'] > 0:
+        return res['results'][0]['videoID']
+    else:
+        return None
+
+
+def update_stats_for_video(video_id):
+    s = GetStatisticsForVideo(video_id)
+    return get_update_result(
+        queries.UPDATE_VIDEOS_DATA, (s['viewCount'], s['likeCount'], s['dislikeCount'],
+                                     s['favoriteCount'], s['commentCount'], video_id,))
+
+
 def check_if_lyrics_exist(song_id):
-
-
     return json.loads(get_json_result(queries.FIND_LYRICS, (song_id, )))['amount'] != 0
 
 
