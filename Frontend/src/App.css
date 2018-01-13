@@ -47,3 +47,13 @@ h1 {
 h2 {
   font-size: 30px;
 }
+
+.ant-layout-header{
+    background-color: rgb(240, 242, 245);
+    padding-top: 15px;
+}
+
+.ant-menu{
+    text-align: left;
+    background-color: #1a436b;
+}
