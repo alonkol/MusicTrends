@@ -89,3 +89,12 @@ CREATE TABLE WordsPerSong (
     wordCount int NOT NULL,
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
+
+CREATE VIEW ArtistsWordCount AS
+SELECT Artists.artistName, artists.artistID word, wordCount, ArtistToCategory.categoryID
+FROM WordsPerSong, SongToArtist, Artists, ArtistToCategory
+WHERE WordsPerSong.songID = SongToArtist.songID
+AND SongToArtist.artistID = Artists.artistID
+AND ArtistToCategory.artistID = artists.artistID
+GROUP BY word, artists.artistID, Artists.artistName, categoryID
+;

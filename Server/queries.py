@@ -222,9 +222,31 @@ TOP_HEAD_EATERS_PER_CATEGORY = "SELECT artists.artistName, AVG(wordCount) AS avg
                 "LIMIT %s;"
 
 
-TOP_ARTIST_TEXT_COUPLES = ""
+TOP_ARTIST_TEXT_COUPLES = "SELECT CONCAT(artist1, ' ~ ', artist2) AS couple, delta " \
+                            " FROM " \
+                            "(" \
+                                "SELECT wc1.artistName AS artist1, wc2.artistName AS artist2, AVG(ABS(wc1.wordCount - wc2.wordCount)) AS delta " \
+                                "FROM artistsWordCount AS wc1, artistsWordCount AS wc2 " \
+                                "WHERE wc1.word = wc2.word " \
+                                "GROUP BY wc1.artistID, wc2.artistID " \
+                            ") AS artistDeltas " \
+                            "WHERE artist1 < artist2 " \
+                            "ORDER BY delta ASC " \
+                            "LIMIT %s;" \
 
-TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = ""
+TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = "SELECT CONCAT(artist1, ' ~ ', artist2) AS couple, delta " \
+                            " FROM " \
+                            "(" \
+                                "SELECT wc1.artistName AS artist1, wc2.artistName AS artist2, AVG(ABS(wc1.wordCount - wc2.wordCount)) AS delta " \
+                                "FROM artistsWordCount AS wc1, artistsWordCount AS wc2 " \
+                                "WHERE wc1.word = wc2.word " \
+                                "AND wc1.categoryID = wc2.categoryID " \
+                                "AND wc1.categoryID = %s " \
+                                "GROUP BY wc1.artistID, wc2.artistID " \
+                            ") AS artistDeltas " \
+                            "WHERE artist1 < artist2 " \
+                            "ORDER BY delta ASC " \
+                            "LIMIT %s;"
 
 TOP_DAYS_COMMENTS = "SELECT DAYNAME(comments.publishedAt) AS day " \
                     "FROM comments, videos " \
