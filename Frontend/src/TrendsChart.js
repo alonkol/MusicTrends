@@ -4,6 +4,8 @@ import TopList from "./TopList2";
 
 const MAX_RESULTS_NUM = 20;
 
+var categoryFilter = "";
+
 class TrendsChart extends Component {
 
     constructor(props) {
@@ -25,7 +27,8 @@ class TrendsChart extends Component {
             topControversial: {title: 'Top Controversial', items: []},
             numberOfResults: props.numberOfResults,
 
-            selectedCategory: props.selectedCategory
+            selectedCategory: props.selectedCategory,
+            selectedCategoryFilter: ""
         };
     }
 
@@ -61,17 +64,32 @@ class TrendsChart extends Component {
         );
     }
 
+
+    componentWillReceiveProps(nextProps) {
+        // filter changed
+        if (this.props.selectedCategoryFilter != nextProps.selectedCategoryFilter) {
+            categoryFilter = nextProps.selectedCategoryFilter;
+            this.setState({
+                selectedCategoryFilter: nextProps.selectedCategoryFilter,
+                numberOfResults: nextProps.numberOfResults
+            })
+
+            console.log(nextProps.selectedCategoryFilter);
+            this.fetchResults();
+        }
+    }
+
     fetchResults = () => {
         // fetch top words
 
-        fetch("/api/words/top/" + MAX_RESULTS_NUM)
+        fetch("/api/words/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topWords: Object.assign(this.state.topWords,
                         {items: results.results}
                     )})));
 
-        fetch("/api/words/bottom/" + MAX_RESULTS_NUM)
+        fetch("/api/words/bottom/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {worstWords: Object.assign(this.state.worstWords,
@@ -79,7 +97,7 @@ class TrendsChart extends Component {
                     )})));
 
         // fetch top liked
-        fetch("/api/songs/likes/top/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/likes/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topLiked: Object.assign(this.state.topLiked,
@@ -88,56 +106,56 @@ class TrendsChart extends Component {
 
 
         // fetch top disliked
-        fetch("/api/songs/dislikes/top/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/dislikes/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topDisliked: Object.assign(this.state.topDisliked,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/views/top/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/views/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topViews: Object.assign(this.state.topViews,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/views/bottom/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/views/bottom/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {worstViews: Object.assign(this.state.worstViews,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/wordscore/top/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/wordscore/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topWordScore: Object.assign(this.state.topWordScore,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/wordscore/bottom/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/wordscore/bottom/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {worstWordScore: Object.assign(this.state.worstWordScore,
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/discussionscore/top/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/discussionscore/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topDiscScore: Object.assign(this.state.topDiscScore,
                         {items: results.results}
                     )})));
 
-        fetch("/api/groupies/top/" + MAX_RESULTS_NUM)
+        fetch("/api/groupies/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topGroupies: Object.assign(this.state.topGroupies,
                         {items: results.results}
                     )})));
 
-        fetch("/api/artists/head_eaters/top/" + MAX_RESULTS_NUM)
+        fetch("/api/artists/head_eaters/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topHeadEaters: Object.assign(this.state.topHeadEaters,
@@ -145,21 +163,21 @@ class TrendsChart extends Component {
                     )})));
 
         /*
-        fetch("/api/artists/same_text_couples/top/" + MAX_RESULTS_NUM)
+        fetch("/api/artists/same_text_couples/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topSameTextCouples: Object.assign(this.state.topSameTextCouples,
                         {items: results.results}
                     )})));
 */
-        fetch("/api/songs/days_with_most_comments/top/" + MAX_RESULTS_NUM)
+        fetch("/api/songs/days_with_most_comments/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topCommentedDays: Object.assign(this.state.topCommentedDays,
                         {items: results.results}
                     )})));
 
-        fetch("/api/artists/controversial/top/" + MAX_RESULTS_NUM)
+        fetch("/api/artists/controversial/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topControversial: Object.assign(this.state.topControversial,

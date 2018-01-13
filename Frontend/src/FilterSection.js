@@ -24,6 +24,10 @@ class FilterSection extends Component {
         this.props.handleSliderChange(value);
     }
 
+    switchOnChange = (value) => {
+        this.props.handleSwitchChange(value);
+    }
+
     render() {
         return (
             <div>
@@ -31,7 +35,7 @@ class FilterSection extends Component {
                 <form>
                     <table>
                         <tr>
-                            <td width={80}><Switch onChange={switchOnChange} /></td>
+                            <td width={80}><Switch onChange={this.switchOnChange} /></td>
                             <td width={150}>
                                 Category</td>
                             <td width={212}><Cascader
@@ -65,10 +69,6 @@ class FilterSection extends Component {
 
 function countryCascaderOnChange(value, selectedOptions) {
     console.log(value, selectedOptions);
-}
-
-function switchOnChange(checked) {
-    console.log(`switch to ${checked}`);
 }
 
 export default FilterSection;
