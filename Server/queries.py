@@ -8,11 +8,10 @@ TOP_SONG_LIKES = "SELECT songName, likeCount " \
                     "LIMIT %s;"
 
 TOP_SONG_LIKES_PER_CATEGORY = "SELECT songName, likeCount " \
-            "FROM songs, videos, categories, SongToCategory " \
+            "FROM songs, videos, SongToCategory " \
             "WHERE songs.songID = videos.songID " \
             "AND SongToCategory.songID = songs.songID " \
-            "AND SongToCategory.categoryID = categories.categoryID " \
-            "AND categories.categoryName = %s " \
+            "AND SongToCategory.categoryID = %s " \
             "ORDER BY likeCount DESC " \
             "LIMIT %s;"
 
@@ -23,11 +22,10 @@ TOP_SONG_DISLIKES = "SELECT songName, dislikeCount " \
             "LIMIT %s;"
 
 TOP_SONG_DISLIKES_PER_CATEGORY = "SELECT songName, dislikeCount " \
-            "FROM songs, videos, categories, SongToCategory " \
+            "FROM songs, videos, SongToCategory " \
             "WHERE songs.songID = videos.songID " \
             "AND SongToCategory.songID = songs.songID " \
-            "AND SongToCategory.categoryID = categories.categoryID " \
-            "AND categories.categoryName = %s " \
+            "AND SongToCategory.categoryID = %s " \
             "ORDER BY dislikeCount DESC " \
             "LIMIT %s;"
 
@@ -38,11 +36,10 @@ TOP_SONG_VIEWS = "SELECT songName, viewCount " \
             "LIMIT %s;"
 
 TOP_SONG_VIEWS_PER_CATEGORY = "SELECT songName, viewCount " \
-            "FROM songs, videos, categories, SongToCategory " \
+            "FROM songs, videos, SongToCategory " \
             "WHERE songs.songID = videos.songID " \
             "AND SongToCategory.songID = songs.songID " \
-            "AND SongToCategory.categoryID = categories.categoryID " \
-            "AND categories.categoryName = %s " \
+            "AND SongToCategory.categoryID = %s " \
             "ORDER BY viewCount DESC " \
             "LIMIT %s;"
 
@@ -53,11 +50,10 @@ BOTTOM_SONG_VIEWS = "SELECT songName, viewCount " \
             "LIMIT %s;"
 
 BOTTOM_SONG_VIEWS_PER_CATEGORY = "SELECT songName, viewCount " \
-            "FROM songs, videos, categories, SongToCategory " \
+            "FROM songs, videos, SongToCategory " \
             "WHERE songs.songID = videos.songID " \
             "AND SongToCategory.songID = songs.songID " \
-            "AND SongToCategory.categoryID = categories.categoryID " \
-            "AND categories.categoryName = %s " \
+            "AND SongToCategory.categoryID = %s " \
             "ORDER BY viewCount ASC " \
             "LIMIT %s;"
 
@@ -68,10 +64,9 @@ TOP_WORDS = "SELECT word, SUM(wordCount) AS count " \
                 "LIMIT %s;"
 
 TOP_WORDS_PER_CATEGORY = "SELECT word, SUM(wordCount) AS count " \
-            "FROM WordsPerSong, categories, SongToCategory " \
+            "FROM WordsPerSong, SongToCategory " \
             "WHERE WordsPerSong.songID = SongToCategory.songID " \
-            "AND SongToCategory.categoryID = categories.categoryID " \
-            "AND categories.categoryName = %s " \
+            "AND SongToCategory.categoryID = %s " \
             "GROUP BY word " \
             "ORDER BY count DESC " \
             "LIMIT %s;"
@@ -83,10 +78,9 @@ BOTTOM_WORDS = "SELECT word, SUM(wordCount) AS count " \
             "LIMIT %s;"
 
 BOTTOM_WORDS_PER_CATEGORY = "SELECT word, SUM(wordCount) AS count " \
-            "FROM WordsPerSong, categories, SongToCategory " \
+            "FROM WordsPerSong, SongToCategory " \
             "WHERE WordsPerSong.songID = SongToCategory.songID " \
-            "AND categories.categoryID = SongToCategory.categoryID " \
-            "AND categories.categoryName = %s " \
+            "AND SongToCategory.categoryID = %s " \
             "GROUP BY word " \
             "ORDER BY count ASC " \
             "LIMIT %s;"
@@ -117,10 +111,9 @@ TOP_SOPHISTICATED_PER_CATEGORY = "SELECT songName, score " \
                     "SELECT word, 1/SUM(wordCount) AS uniqueness " \
                     "FROM WordsPerSong " \
                     "GROUP BY word " \
-                ") AS wordUniqueness, WordsPerSong, categories, SongToCategory " \
+                ") AS wordUniqueness, WordsPerSong, SongToCategory " \
                 "WHERE wordUniqueness.word = WordsPerSong.word " \
-                "AND categories.categoryName = %s " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
+                "AND SongToCategory.categoryID = %s " \
                 "AND SongToCategory.songID = WordsPerSong.songID " \
                 "GROUP BY WordsPerSong.songID " \
             ") AS a, songs " \
@@ -154,16 +147,64 @@ BOTTOM_SOPHISTICATED_PER_CATEGORY = "SELECT songName, score " \
                     "SELECT word, 1/SUM(wordCount) AS uniqueness " \
                     "FROM WordsPerSong" \
                     "GROUP BY word " \
-                ") AS wordUniqueness, WordsPerSong, categories, SongToCategory " \
+                ") AS wordUniqueness, WordsPerSong, SongToCategory " \
                 "WHERE wordUniqueness.word = WordsPerSong.word " \
-                "AND categories.categoryName = %s " \
-                "AND SongToCategory.categoryID = categories.categoryID " \
+                "AND SongToCategory.categoryID = %s " \
                 "AND SongToCategory.songID = WordsPerSong.songID " \
                 "GROUP BY WordsPerSong.songID " \
             ") AS a, songs " \
             "WHERE songs.songID = a.songID " \
             "ORDER BY score ASC " \
             "LIMIT %s;"
+
+
+TOP_SOPHISTICATED_SONG_DISCUSSIONS = ""
+
+TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY = ""
+
+TOP_GROUPIES = ""
+
+TOP_GROUPIES_PER_CATEGORY = ""
+
+TOP_HEAD_EATERS = ""
+
+TOP_HEAD_EATERS_PER_CATEGORY = ""
+
+TOP_ARTIST_TEXT_COUPLES = ""
+
+TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = ""
+
+TOP_DAYS_COMMENTS = ""
+
+TOP_DAYS_COMMENTS_PER_CATEGORY = ""
+
+TOP_CONTROVERSIAL_ARTISTS = "SELECT artists.artistName, AVG(scores.score) AS score " \
+                             "FROM artists, songtoartist, " \
+                             "(" \
+                                "SELECT songID, dislikeCount/likeCount AS score " \
+                                "FROM videos " \
+                             ") AS scores " \
+                             "WHERE songtoartist.artistID = artists.artistID " \
+                             "AND songtoartist.songID = scores.songID " \
+                             "GROUP BY artists.artistID, artists.artistName " \
+                             "ORDER BY score DESC " \
+                             "LIMIT %s;"
+
+TOP_CONTROVERSIAL_ARTISTS_PER_CATEGORY = "SELECT artists.artistName, AVG(scores.score) AS score " \
+                                         "FROM artists, songtoartist, " \
+                                         "(" \
+                                            "SELECT songID, dislikeCount/likeCount AS score " \
+                                            "FROM videos, songtocategory " \
+                                            "WHERE songtocategory.categoryID = %s " \
+                                            "AND songtocategory.songID = videos.songID " \
+                                         ") AS scores " \
+                                         "WHERE songtoartist.artistID = artists.artistID " \
+                                         "AND songtoartist.songID = scores.songID " \
+                                         "GROUP BY artists.artistID, artists.artistName " \
+                                         "ORDER BY score DESC " \
+                                         "LIMIT %s;"
+
+# ADMIN PAGE QUERIES
 
 ARTISTS = "SELECT artistID, artistName FROM Artists WHERE active=1;"
 
