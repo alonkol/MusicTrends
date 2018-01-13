@@ -10,15 +10,6 @@ class App extends Component {
       <div className="App">
           <Main/>
       </div>
-        /*
-        <header className="App-header">
-            <img src={require("./images/logo.jpg")} alt="logo" width="30%"/>
-        </header>
-        <p className="App-intro">
-            <Main/>
-        </p>
-      </div>
-        */
     );
   }
 }

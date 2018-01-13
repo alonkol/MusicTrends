@@ -49,11 +49,17 @@ h2 {
 }
 
 .ant-layout-header{
-    background-color: rgb(240, 242, 245);
-    padding-top: 15px;
+    background-color: rgb(240, 242, 245) !important;
+    padding-top: 15px !important;
 }
 
 .ant-menu{
     text-align: left;
     background-color: #1a436b;
+}
+
+.num_of_results{
+    text-align: center;
+    padding: 7px 0;
+    font-weight: bold;
 }

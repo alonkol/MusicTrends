@@ -21,17 +21,11 @@ class IntegerStep extends Component {
     render() {
         return (
             <Row>
-                <Col span={12}>
+                <Col span={20}>
                     <Slider min={5} max={20} onChange={this.onChange} value={this.state.inputValue} />
                 </Col>
-                <Col span={4}>
-                    <InputNumber
-                        min={5}
-                        max={20}
-                        style={{ marginLeft: 16 }}
-                        value={this.state.inputValue}
-                        onChange={this.onChange}
-                    />
+                <Col span={4} className="num_of_results">
+                    {this.state.inputValue}
                 </Col>
             </Row>
         );

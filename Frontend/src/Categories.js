@@ -22,14 +22,6 @@ class Categories extends Component {
             .then(results => (this.setState({categories: results.results})));
     }
 
-    /*
-    async componentDidMount() {
-        const songs = await fetch("/api/categories")
-            .then(results => results.json()).then(data => )
-        console.log(songs)
-        this.setState({songs})
-    }
-    */
 }
 
 export default Categories;
