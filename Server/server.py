@@ -122,7 +122,7 @@ def top_controversial_artists(amount):
 ####################################
 # --------- Admin Page ----------- #
 ####################################
-@app.route('/api/blacklist_artist')
+@app.route('/api/blacklist_artist', methods=['GET'])
 def blacklist_artist():
     artist_id = request.args.get('artist')
     manager_key = request.args.get('key')
