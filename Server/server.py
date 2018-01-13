@@ -34,12 +34,12 @@ def artists():
     return get_json_result(queries.ARTISTS)
 
 
-@app.route('/api/songs_for_artist/<artist_id>')
+@app.route('/api/songs_for_artist/<int:artist_id>')
 def songs_for_artist(artist_id):
     return get_json_result(queries.SONGS_FOR_ARTISTS, (artist_id,))
 
 
-@app.route('/api/artists_for_category/<category_id>')
+@app.route('/api/artists_for_category/<int:category_id>')
 def artists_for_category(category_id):
     return get_json_result(queries.ARTISTS_FOR_CATEGORIES, (category_id,))
 
