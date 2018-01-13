@@ -35,7 +35,7 @@ def get_result_for_queries(amount, query, query_per_category):
     return get_json_result(query, (amount,))
 
 
-def get_json_result(statement, params=None):
+def get_json_result(statement, params=None, default_value=None):
     if params is not None:
         config.cursor.execute(statement, params)
     else:
@@ -54,6 +54,9 @@ def get_json_result(statement, params=None):
             res[config.cursor.column_names[index]] = str(cell).decode("unicode_escape")
 
         results.append(res)
+
+    if len(results) == 0 and default_value:
+        return default_value
 
     return json.dumps({
         "amount": len(results),

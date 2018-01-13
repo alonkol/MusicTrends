@@ -1,6 +1,7 @@
 from flask import Flask, request, send_from_directory
 from flask import render_template
 
+import json
 import config
 import queries
 from Server.server_utils import get_result_for_queries, get_json_result, get_update_result, \
@@ -132,7 +133,10 @@ def blacklist_artist():
 @app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
     song_id = request.args.get('song')
-    return get_json_result(queries.LYRICS, (song_id,))
+    lyrics_result = get_json_result(
+        queries.LYRICS, (song_id,),
+        default_value=json.dumps({"amount": 1, "results": [{"lyrics": ""}]}))
+    return lyrics_result
 
 
 @app.route('/api/lyrics/update', methods=['GET'])
