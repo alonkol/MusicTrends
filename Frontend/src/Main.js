@@ -16,7 +16,7 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'update-song'}
+        this.state = {current_page: 'trends'}
     }
 
     handleClick = (e) => {

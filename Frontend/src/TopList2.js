@@ -7,7 +7,7 @@ class TopList extends Component {
         return (
             <div>
                 <h2>{this.props.title}</h2>
-                <ol>{this.props.items.map((item) => <li>{item}</li>)}</ol>
+                <ol>{this.props.items.map((item) => <li>{item['value'] + item['count']}</li>)}</ol>
             </div>
         );
     }
