@@ -122,7 +122,7 @@ def check_if_lyrics_exist(song_id):
 
 
 def delete_all_words_for_song_id_in_words_per_song_table(song_id):
-    return get_update_result(queries.DELETE_FROM_WORDS_PER_SONG, (song_id,))
+    return get_update_result(queries.REMOVE_SONG_FROM_WORDS_PER_SONG, (song_id,))
 
 
 def update_in_lyrics_table(song_id, lyrics):
@@ -164,3 +164,50 @@ def find_lyrics_for_song(artist_name, song_name):
 
 def insert_song_youtube_data(song_id, artist_name, song_name):
     return populate_video(song_id, artist_name, song_name)
+
+
+def remove_all_occurrences_of_video_id_in_db(video_id):
+    try:
+        config.cursor.execute(queries.REMOVE_VIDEO_FROM_COMMENT_WORDS, (video_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_VIDEO_FROM_COMMENTS, (video_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_VIDEO_FROM_VIDEOS, (video_id,))
+        config.dbconnection.commit()
+    except Exception:
+        config.dbconnection.rollback()
+        raise
+
+
+def remove_all_occurrences_of_song_id_in_db(song_id):
+    try:
+        config.cursor.execute(queries.REMOVE_SONG_FROM_SONGS_TO_CATEGORY, (song_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_SONG_FROM_SONGS_TO_ARTIST, (song_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_SONG_FROM_WORDS_PER_SONG, (song_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_SONG_FROM_LYRICS, (song_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_SONG_FROM_SONGS, (song_id,))
+        config.dbconnection.commit()
+    except Exception:
+        config.dbconnection.rollback()
+        raise
+
+
+def remove_all_occurrences_of_artist_id_in_db(artist_id):
+    try:
+        config.cursor.execute(queries.REMOVE_ARTIST_FROM_ARTIST_TO_CATEGORY, (artist_id,))
+        config.dbconnection.commit()
+        config.cursor.execute(queries.REMOVE_ARTIST_FROM_ARTISTS, (artist_id,))
+        config.dbconnection.commit()
+    except Exception:
+        config.dbconnection.rollback()
+        raise
+
+
+def find_songs_and_videos_by_artist_id(artist_id):
+    songs = json.loads(get_json_result(queries.SONGS_FOR_ARTISTS, (artist_id,)))['results']
+    songs = [song['songID'] for song in songs]
+    return songs, json.loads(get_json_result(queries.VIDEOS_FOR_SONGS % ', '.join(songs)))['results']

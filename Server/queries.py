@@ -336,7 +336,6 @@ BLACKLIST_ARTIST = "UPDATE Artists SET active=0 WHERE artistID=%s;"
 
 LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
 
-DELETE_FROM_WORDS_PER_SONG = "DELETE FROM WordsPerSong WHERE songID = %s;"
 
 FIND_ARTIST_NAME = "SELECT artistName FROM Artists WHERE artistID = %s;"
 
@@ -367,3 +366,19 @@ FIND_FIVE_MATCHING_SONG_NAMES = "SELECT songName " \
                                 "Songs, (SELECT songID, MATCH (lyrics) AGAINST (%s IN NATURAL LANGUAGE MODE) " \
                                 "as score FROM Lyrics ORDER BY score DESC LIMIT 5) as BestMatches " \
                                 "WHERE BestMatches.songID = Songs.songID;"
+
+VIDEOS_FOR_SONGS = "SELECT videoID FROM Videos WHERE songID IN (%s)"
+
+
+REMOVE_VIDEO_FROM_COMMENT_WORDS = "DELETE FROM CommentWordsPerVideo WHERE videoID = %s; "
+REMOVE_VIDEO_FROM_COMMENTS = "DELETE FROM Comments WHERE videoID = %s; "
+REMOVE_VIDEO_FROM_VIDEOS = "DELETE FROM Videos WHERE videoID = %s "
+
+REMOVE_SONG_FROM_SONGS = "DELETE FROM Songs WHERE songID = %s "
+REMOVE_SONG_FROM_SONGS_TO_CATEGORY = "DELETE FROM SongToCategory WHERE songID = %s "
+REMOVE_SONG_FROM_SONGS_TO_ARTIST = "DELETE FROM SongToArtist WHERE songID = %s "
+REMOVE_SONG_FROM_LYRICS = "DELETE FROM Lyrics WHERE songID = %s "
+REMOVE_SONG_FROM_WORDS_PER_SONG = "DELETE FROM WordsPerSong WHERE songID = %s "
+
+REMOVE_ARTIST_FROM_ARTIST_TO_CATEGORY = "DELETE FROM ArtistToCategory WHERE artistID = %s "
+REMOVE_ARTIST_FROM_ARTISTS = "DELETE FROM Artists WHERE artistID = %s "
