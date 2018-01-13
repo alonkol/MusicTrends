@@ -85,14 +85,13 @@ class UpdateSongData extends Component {
                 <h2>Update Song Data</h2>
                 <table>
                     <tr>
-                        <td width="100">Find Song:</td>
-                        <td width={250}>
+                        <td align="center" width={250}>
                             <ArtistsCascader
-                                width={'90%'}
+                                width={'75%'}
                                 handleChange={this.handleArtistChange}
                             />
                         </td>
-                        <td width={250}><Cascader
+                        <td align="center" width={250}><Cascader
                             options={this.state.songs_for_artist}
                             placeholder="Choose Song"
                             showSearch
@@ -105,7 +104,7 @@ class UpdateSongData extends Component {
                         <td><br/></td>
                     </tr>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="2">
                                 <TextArea
                                     rows={6}
                                     disabled={this.state.lyrics_textarea_disabled}
@@ -117,8 +116,7 @@ class UpdateSongData extends Component {
                         <td><br/></td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td>
+                        <td align="right">
                             <Button
                                 type="primary"
                                 htmlType='submit'
@@ -130,7 +128,7 @@ class UpdateSongData extends Component {
                                 Update Youtube Data
                             </Button>
                         </td>
-                        <td>
+                        <td align="center">
                             <Button
                                 type="primary"
                                 htmlType='submit'
