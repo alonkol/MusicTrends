@@ -16,7 +16,8 @@ class Main extends Component {
 
     constructor() {
         super();
-        this.state = {current_page: 'trends'}
+        this.state = {current_page: 'trends',
+        numberOfResults: 5}
     }
 
     handleClick = (e) => {
@@ -26,12 +27,17 @@ class Main extends Component {
         });
     }
 
+    handleSliderChange = (value) => {
+        this.setState({numberOfResults: value});
+    }
+
     render() {
         return (
             <Layout>
                 <Sider
                     breakpoint="lg"
                     collapsedWidth="0"
+                    handleSliderChange={this.handleSliderChange}
                     onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
                 >
                     <div className="logo" />
@@ -88,7 +94,7 @@ class Main extends Component {
                     <FilterSection/>
                     <br/>
                     <br/>
-                    <TrendsChart topSongs={topSongs} numOfResults={5}></TrendsChart>
+                    <TrendsChart topSongs={topSongs} numOfResults={this.state.numberOfResults}></TrendsChart>
                 </div>
             );
         }

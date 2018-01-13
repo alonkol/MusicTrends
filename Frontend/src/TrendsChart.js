@@ -58,14 +58,15 @@ class TrendsChart extends Component {
     }
 
     fetchResults = () => {
-        /*
         // fetch top words
+
         fetch("/api/words/top/" + this.state.numOfResults)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topWords: Object.assign(this.state.topWords,
                         {items: results.results}
                     )})));
+        /*
 
         fetch("/api/words/bottom/" + this.state.numOfResults)
             .then(results => results.json())
@@ -81,6 +82,7 @@ class TrendsChart extends Component {
                 {topLiked: Object.assign(this.state.topLiked,
                         {items: results.results}
                     )})));
+
 
         // fetch top disliked
         fetch("/api/songs/dislikes/top/" + this.state.numOfResults)
@@ -153,7 +155,7 @@ class TrendsChart extends Component {
                         {items: results.results}
                     )})));
 
-        fetch("/api/songs/controversial/top/" + this.state.numOfResults)
+        fetch("/api/artists/controversial/top/" + this.state.numOfResults)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topControversial: Object.assign(this.state.topControversial,

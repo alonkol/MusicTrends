@@ -4,12 +4,22 @@ import IntegerStep from "./IntegerStep";
 import { Cascader } from 'antd';
 import Search from "antd/es/input/Search";
 import Checkbox from "antd/es/checkbox/Checkbox";
+import Switch from "antd/es/switch/index";
 
 class FilterSection extends Component {
 
     constructor() {
         super();
-        this.state = {categories: []}
+        this.state = {categories: [],
+        selectedCategory: null}
+    }
+
+    categoryCascaderOnChange = (value, selectedOptions) => {
+        this.setState({selectedCategory: selectedOptions[0].id});
+    }
+
+    sliderOnChange = (value) => {
+        this.props.handleSliderChange(value);
     }
 
     render() {
@@ -19,25 +29,20 @@ class FilterSection extends Component {
                 <form>
                     <table>
                         <tr>
-                            <td width={250}><Checkbox onChange={checkboxOnChange} />  Category</td>
-                            <td width={250}><Cascader
+                            <td width={80}><Switch onChange={switchOnChange} /></td>
+                            <td width={150}>
+                                Category</td>
+                            <td width={212}><Cascader
                                 options={this.state.categories}
-                                onChange={categoryCascaderOnChange()}
+                                onChange={this.categoryCascaderOnChange}
                                 placeholder="Please select"
                                 showSearch /></td>
                         </tr>
                         <tr>
-                            <td><Checkbox onChange={checkboxOnChange} />  Artist</td>
-                            <td><Search
-                                placeholder="input search text"
-                                onSearch={value => console.log(value)}
-                                enterButton
-                            /></td>
-                        </tr>
-                        <tr>
-                            <td>Number of results</td>
+                            <td></td>
+                            <td>Number of Results</td>
 
-                            <td><IntegerStep /></td>
+                            <td><IntegerStep onChange={this.sliderOnChange} /></td>
                         </tr>
                     </table>
                 </form>
@@ -54,18 +59,15 @@ class FilterSection extends Component {
             .then(results => (this.setState({categories: results.results.map(category =>
                 ({value: category['name'], label: category['name'], id: category['id']}))})));
     }
+
 }
 
 function countryCascaderOnChange(value, selectedOptions) {
     console.log(value, selectedOptions);
 }
 
-function categoryCascaderOnChange(value, selectedOptions) {
-    console.log(value, selectedOptions);
-}
-
-function checkboxOnChange(e) {
-    console.log(`checked = ${e.target.checked}`);
+function switchOnChange(checked) {
+    console.log(`switch to ${checked}`);
 }
 
 export default FilterSection;
