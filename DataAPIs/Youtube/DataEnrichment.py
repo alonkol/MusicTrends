@@ -102,7 +102,7 @@ def populate_videos():
 
 def populate_video(song_id, artist_name, song_name):
     statement = "INSERT INTO Videos " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, Default);"
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
     query = artist_name + " " + song_name
 
     video = youtube_search(query)

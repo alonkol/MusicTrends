@@ -60,7 +60,6 @@ CREATE TABLE Videos (
     dislikeCount int NOT NULL,
     favoriteCount int,
     commentCount int NOT NULL,
-    updatedAt DATETIME ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (videoID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
