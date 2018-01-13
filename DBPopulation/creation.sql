@@ -101,9 +101,10 @@ AND ArtistToCategory.artistID = artists.artistID
 GROUP BY word, artists.artistID, Artists.artistName, categoryID
 ;
 
+CREATE UNIQUE INDEX SongIdInVideos ON Videos (songID);
 
 --TODO consider adding these
---CREATE UNIQUE INDEX SongIdInVideos ON Videos (songID);
+
 
 --CREATE INDEX WordInSongs ON WordsPerSong (word);
 
