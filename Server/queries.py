@@ -281,21 +281,21 @@ TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = "SELECT CONCAT(artist1, ' ~ ', artist2) A
                             "ORDER BY delta ASC " \
                             "LIMIT %s;"
 
-TOP_DAYS_COMMENTS = "SELECT DAYNAME(comments.publishedAt) AS day " \
+TOP_DAYS_COMMENTS = "SELECT DAYNAME(comments.publishedAt) AS day, COUNT(*) AS count " \
                     "FROM comments, videos " \
                     "WHERE comments.videoID = videos.videoID " \
                     "GROUP BY day " \
-                    "ORDER BY COUNT(*) DESC " \
+                    "ORDER BY count DESC " \
                     "LIMIT %s;"
 
 
-TOP_DAYS_COMMENTS_PER_CATEGORY = "SELECT DAYNAME(comments.publishedAt) AS day " \
+TOP_DAYS_COMMENTS_PER_CATEGORY = "SELECT DAYNAME(comments.publishedAt) AS day, COUNT(*) AS count " \
                                  "FROM comments, videos, songToCategory " \
                                  "WHERE comments.videoID = videos.videoID " \
                                  "AND videos.songID = songToCategory.songID " \
                                  "AND songToCategory.categoryID = %s " \
                                  "GROUP BY day " \
-                                 "ORDER BY COUNT(*) DESC " \
+                                 "ORDER BY count DESC " \
                                  "LIMIT %s;"
 
 TOP_CONTROVERSIAL_ARTISTS = "SELECT artists.artistName, AVG(scores.score) AS score " \
