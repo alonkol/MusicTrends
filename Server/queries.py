@@ -265,9 +265,9 @@ TOP_ARTIST_TEXT_COUPLES = "SELECT CONCAT(artist1, ' ~ ', artist2) AS couple, del
                                 "SELECT wc1.artistName AS artist1, wc2.artistName AS artist2, AVG(ABS(wc1.wordCount - wc2.wordCount)) AS delta " \
                                 "FROM artistsWordCount AS wc1, artistsWordCount AS wc2 " \
                                 "WHERE wc1.word = wc2.word " \
-                                "GROUP BY wc1.artistID, wc2.artistID " \
+                                "GROUP BY wc1.artistID, wc2.artistID, wc1.artistName, wc2.artistName " \
+                                "HAVING wc1.artistName < wc2.artistName " \
                             ") AS artistDeltas " \
-                            "WHERE artist1 < artist2 " \
                             "ORDER BY delta ASC " \
                             "LIMIT %s;" \
 
@@ -279,9 +279,9 @@ TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = "SELECT CONCAT(artist1, ' ~ ', artist2) A
                                 "WHERE wc1.word = wc2.word " \
                                 "AND wc1.categoryID = wc2.categoryID " \
                                 "AND wc1.categoryID = %s " \
-                                "GROUP BY wc1.artistID, wc2.artistID " \
+                                "GROUP BY wc1.artistID, wc2.artistID, wc1.artistName, wc2.artistName " \
+                                "HAVING wc1.artistName < wc2.artistName " \
                             ") AS artistDeltas " \
-                            "WHERE artist1 < artist2 " \
                             "ORDER BY delta ASC " \
                             "LIMIT %s;"
 
