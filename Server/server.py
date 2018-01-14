@@ -136,7 +136,7 @@ def blacklist_artist():
 def get_lyrics():
     song_id = request.args.get('song')
     lyrics_result = get_json_result(
-        queries.LYRICS, (song_id,),
+        queries.FIND_LYRICS, (song_id,),
         default_value=json.dumps({"amount": 1, "results": [{"lyrics": ""}]}))
     return lyrics_result
 

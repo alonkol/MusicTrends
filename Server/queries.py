@@ -338,14 +338,14 @@ SONGS_FOR_ARTISTS = "SELECT Songs.songID, Songs.songName FROM SongToArtist, Song
 
 BLACKLIST_ARTIST = "UPDATE Artists SET active=0 WHERE artistID=%s;"
 
-LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
-
-
 FIND_ARTIST_NAME = "SELECT artistName FROM Artists WHERE artistID = %s;"
 
 FIND_LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
 
 UPDATE_LYRICS = "UPDATE Lyrics SET lyrics = %s WHERE songID = %s;"
+
+UPDATE_LYRICS_MY_ISAM = "UPDATE Lyrics_MyISAM SET lyrics = %s WHERE songID = %s;"
+
 
 FIND_SONG_ID = "SELECT Songs.songID " \
                 "FROM Songs, SongToArtist, Artists " \
@@ -367,7 +367,7 @@ UPDATE_VIDEOS_DATA = "UPDATE Videos SET viewCount = %s, likeCount = %s, dislikeC
 FIND_FIVE_MATCHING_SONG_NAMES = "SELECT songName " \
                                 "FROM " \
                                 "Songs, (SELECT songID, MATCH (lyrics) AGAINST (%s IN NATURAL LANGUAGE MODE) " \
-                                "as score FROM Lyrics ORDER BY score DESC LIMIT 5) as BestMatches " \
+                                "as score FROM Lyrics_MyISAM ORDER BY score DESC LIMIT 5) as BestMatches " \
                                 "WHERE BestMatches.songID = Songs.songID;"
 
 VIDEOS_FOR_SONGS = "SELECT videoID FROM Videos WHERE songID IN (%s)"
@@ -381,6 +381,7 @@ REMOVE_SONG_FROM_SONGS = "DELETE FROM Songs WHERE songID = %s "
 REMOVE_SONG_FROM_SONGS_TO_CATEGORY = "DELETE FROM SongToCategory WHERE songID = %s "
 REMOVE_SONG_FROM_SONGS_TO_ARTIST = "DELETE FROM SongToArtist WHERE songID = %s "
 REMOVE_SONG_FROM_LYRICS = "DELETE FROM Lyrics WHERE songID = %s "
+REMOVE_SONG_FROM_LYRICS_MyISAM = "DELETE FROM Lyrics_MyISAM WHERE songID = %s "
 REMOVE_SONG_FROM_WORDS_PER_SONG = "DELETE FROM WordsPerSong WHERE songID = %s "
 
 REMOVE_ARTIST_FROM_ARTIST_TO_CATEGORY = "DELETE FROM ArtistToCategory WHERE artistID = %s "

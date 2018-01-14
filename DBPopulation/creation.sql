@@ -24,7 +24,14 @@ CREATE TABLE Lyrics (
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
 
-ALTER TABLE Lyrics ADD FULLTEXT (lyrics);
+CREATE TABLE Lyrics_MyISAM (
+    songID int,
+    lyrics TEXT(5000),
+    PRIMARY KEY (songID),
+    FOREIGN KEY (songID) REFERENCES Songs(songID)
+) ENGINE = MyISAM;
+
+ALTER TABLE Lyrics_MyISAM ADD FULLTEXT (lyrics);
 
 CREATE TABLE ArtistToCategory (
     artistID int,

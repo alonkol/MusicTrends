@@ -187,6 +187,7 @@ def remove_all_occurrences_of_song_id_in_db(song_id):
         config.cursor.execute(queries.REMOVE_SONG_FROM_WORDS_PER_SONG, (song_id,))
         config.dbconnection.commit()
         config.cursor.execute(queries.REMOVE_SONG_FROM_LYRICS, (song_id,))
+        config.cursor.execute(queries.REMOVE_SONG_FROM_LYRICS_MyISAM, (song_id,))
         config.dbconnection.commit()
         config.cursor.execute(queries.REMOVE_SONG_FROM_SONGS, (song_id,))
         config.dbconnection.commit()
