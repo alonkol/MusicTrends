@@ -11,11 +11,18 @@ class TopList extends Component {
 
     render() {
         return (
-            <div>
+            <div class="singleList">
                 <h2>{this.props.title}</h2>
-                <ol>{this.props.items.slice(0, this.props.numberOfResults).map((item) => <li>{item['value'] + "\t" + item['count']}</li>)}</ol>
+                <h4>{this.props.description}</h4>
+                <ol>{this.props.items.slice(0, this.props.numberOfResults).map(this.formatFunction)}</ol>
             </div>
         );
+    }
+
+    formatFunction(item){
+        const test = item['value']
+
+        return <li>{item['value'] + "\t" + item['count']}</li>;
     }
 }
 

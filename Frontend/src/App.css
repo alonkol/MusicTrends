@@ -63,3 +63,17 @@ h2 {
     padding: 7px 0;
     font-weight: bold;
 }
+
+.singleList{
+    background-color: #d5e3ef;
+    padding: 20px 10px;
+    margin: 10px;
+    width: calc(50% - 20px);
+    float: left;
+    box-shadow: #92969a 1px 3px 3px;
+}
+
+.singleList h4{
+    height: 40px;
+    color: #546d82;
+}

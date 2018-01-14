@@ -11,20 +11,20 @@ class TrendsChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            topWords: {title: 'Top Words', items: []},
-            worstWords: {title: 'Worst Words', items: []},
-            topLiked: {title: 'Top Liked', items: []},
-            topDisliked: {title: 'Top Disliked', items: []},
-            topViews: {title: 'Top Views', items: []},
-            worstViews: {title: 'Worst Views', items: []},
-            topWordScore: {title: 'Top Word Score', items: []},
-            worstWordScore: {title: 'Worst Word Score', items: []},
-            topDiscScore: {title: 'Top Discussed', items: []},
-            topGroupies: {title: 'Top Groupies', items: []},
-            topHeadEaters: {title: 'Top Head Eaters', items: []},
-            topSameTextCouples: {title: 'Top text couples', items: []},
-            topCommentedDays: {title: 'Top Commented Days', items: []},
-            topControversial: {title: 'Top Controversial', items: []},
+            topWords: {title: 'Common Words', description: 'The most commonly used words', items: []},
+            worstWords: {title: 'Rare Words', description: 'The most rarely used words', items: []},
+            topLiked: {title: 'Most Liked', description: 'Songs with the highest amount of likes', items: []},
+            topDisliked: {title: 'Most Disliked', description: 'Songs with the highest amount of dislikes', items: []},
+            topViews: {title: 'Most Viewed', description: 'Songs with the highest amount of views', items: []},
+            worstViews: {title: 'Boutique', description: 'Songs with the lowest amount of views', items: []},
+            topWordScore: {title: 'Sophisticated', description: 'Songs with rich vocabulary in its lyrics', items: []},
+            worstWordScore: {title: 'Dumb', description: 'Songs with poor vocabulary in its lyrics', items: []},
+            topDiscScore: {title: 'Smart Fans', description: 'Songs with rich vocabulary in its Youtube video comments', items: []},
+            topGroupies: {title: 'Groupies', description: 'These people comment on tons of videos by their favorite artist', items: []},
+            topHeadEaters: {title: 'Head Eaters', description: 'Artists who write really long texts', items: []},
+            topSameTextCouples: {title: 'Similar Texts', description: 'Artists with a similar writing style', items: []},
+            topCommentedDays: {title: 'Comment Timing', description: 'Days of the week with most Youtube comments', items: []},
+            topControversial: {title: 'Controversial Artists', description: 'Popular artists who are also disliked by many', items: []},
             numberOfResults: props.numberOfResults,
 
             selectedCategory: props.selectedCategory,
@@ -34,33 +34,21 @@ class TrendsChart extends Component {
 
     render() {
         return (
-            <table>
-                <tr>
-                    <td><TopList title={this.state.topWords.title} items={this.state.topWords.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.worstWords.title} items={this.state.worstWords.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topLiked.title} items={this.state.topLiked.items} numberOfResults={this.props.numberOfResults}/></td>
-                </tr>
-                <tr>
-                    <td><TopList title={this.state.topDisliked.title} items={this.state.topDisliked.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topViews.title} items={this.state.worstViews.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topWordScore.title} items={this.state.topWordScore.items} numberOfResults={this.props.numberOfResults}/></td>
-                </tr>
-                <tr>
-                    <td><TopList title={this.state.worstWordScore.title} items={this.state.worstWordScore.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topDiscScore.title} items={this.state.topDiscScore.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topGroupies.title} items={this.state.topGroupies.items} numberOfResults={this.props.numberOfResults}/></td>
-                </tr>
-                <tr>
-                    <td><TopList title={this.state.topHeadEaters.title} items={this.state.topHeadEaters.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topSameTextCouples.title} items={this.state.topSameTextCouples.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td><TopList title={this.state.topCommentedDays.title} items={this.state.topCommentedDays.items} numberOfResults={this.props.numberOfResults}/></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><TopList title={this.state.topControversial.title} items={this.state.topControversial.items} numberOfResults={this.props.numberOfResults}/></td>
-                    <td></td>
-                </tr>
-            </table>
+        <div>
+            <TopList title={this.state.topWords.title} description={this.state.topWords.description} items={this.state.topWords.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.worstWords.title} description={this.state.worstWords.description} items={this.state.worstWords.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topLiked.title} description={this.state.topLiked.description} items={this.state.topLiked.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topDisliked.title} description={this.state.topDisliked.description} items={this.state.topDisliked.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topViews.title} description={this.state.topViews.description} items={this.state.worstViews.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topWordScore.title} description={this.state.topWordScore.description} items={this.state.topWordScore.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.worstWordScore.title} description={this.state.worstWordScore.description} items={this.state.worstWordScore.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topDiscScore.title} description={this.state.topDiscScore.description} items={this.state.topDiscScore.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topGroupies.title} description={this.state.topGroupies.description} items={this.state.topGroupies.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topHeadEaters.title} description={this.state.topHeadEaters.description} items={this.state.topHeadEaters.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topSameTextCouples.title} description={this.state.topSameTextCouples.description} items={this.state.topSameTextCouples.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topCommentedDays.title} description={this.state.topCommentedDays.description} items={this.state.topCommentedDays.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topControversial.title} description={this.state.topControversial.description} items={this.state.topControversial.items} numberOfResults={this.props.numberOfResults}/>
+        </div>
         );
     }
 
@@ -162,14 +150,13 @@ class TrendsChart extends Component {
                         {items: results.results}
                     )})));
 
-        /*
         fetch("/api/artists/same_text_couples/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
                 {topSameTextCouples: Object.assign(this.state.topSameTextCouples,
                         {items: results.results}
                     )})));
-*/
+
         fetch("/api/songs/days_with_most_comments/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
