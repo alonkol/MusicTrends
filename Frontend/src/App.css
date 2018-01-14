@@ -77,3 +77,11 @@ h2 {
     height: 40px;
     color: #546d82;
 }
+
+.singleList ul{
+  list-style-type: none;
+}
+
+.searchContent {
+    width: 400px;
+}

@@ -14,7 +14,7 @@ class TopList extends Component {
             <div class="singleList">
                 <h2>{this.props.title}</h2>
                 <h4>{this.props.description}</h4>
-                <ol>{this.props.items.slice(0, this.props.numberOfResults).map(this.formatFunction)}</ol>
+                <ul>{this.props.items.slice(0, this.props.numberOfResults).map(this.formatFunction)}</ul>
             </div>
         );
     }

@@ -9,6 +9,7 @@ import Blacklist from "./Blacklist";
 import AddSong from "./AddSong";
 import UpdateSongData from "./UpdateSongData";
 import About from "./About";
+import Search from "./Search";
 import Input from "antd/es/input/Input";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -101,6 +102,10 @@ class Main extends Component {
                                 <Input  id={'secretKey'} placeholder={"Secret Key"} type='password' />
                             </Menu.Item>
                         </SubMenu>
+                        <Menu.Item key="search">
+                            <Icon type="search" />
+                            <span className="nav-text">Find Song</span>
+                        </Menu.Item>
                         <Menu.Item key="about">
                             <Icon type="user" />
                             <span className="nav-text">The Team</span>
@@ -161,6 +166,12 @@ class Main extends Component {
         if (this.state.current_page === 'update-song') {
             return (
                 <UpdateSongData/>
+            );
+        }
+
+        if (this.state.current_page === 'search') {
+            return (
+                <Search/>
             );
         }
 
