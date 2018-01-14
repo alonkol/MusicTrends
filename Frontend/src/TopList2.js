@@ -20,9 +20,7 @@ class TopList extends Component {
     }
 
     formatFunction(item){
-        const test = item['value']
-
-        return <li>{item['value'] + "\t" + item['count']}</li>;
+        return <li>{item['value']}</li>;
     }
 }
 

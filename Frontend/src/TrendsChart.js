@@ -16,7 +16,7 @@ class TrendsChart extends Component {
             topLiked: {title: 'Most Liked', description: 'Songs with the highest amount of likes', items: []},
             topDisliked: {title: 'Most Disliked', description: 'Songs with the highest amount of dislikes', items: []},
             topViews: {title: 'Most Viewed', description: 'Songs with the highest amount of views', items: []},
-            worstViews: {title: 'Boutique', description: 'Songs with the lowest amount of views', items: []},
+            worstViews: {title: 'Least Viewed', description: 'Songs with the lowest amount of views', items: []},
             topWordScore: {title: 'Sophisticated', description: 'Songs with rich vocabulary in its lyrics', items: []},
             worstWordScore: {title: 'Dumb', description: 'Songs with poor vocabulary in its lyrics', items: []},
             topDiscScore: {title: 'Smart Fans', description: 'Songs with rich vocabulary in its Youtube video comments', items: []},
@@ -37,9 +37,6 @@ class TrendsChart extends Component {
         <div>
             <TopList title={this.state.topWords.title} description={this.state.topWords.description} items={this.state.topWords.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.worstWords.title} description={this.state.worstWords.description} items={this.state.worstWords.items} numberOfResults={this.props.numberOfResults}/>
-            <TopList title={this.state.topLiked.title} description={this.state.topLiked.description} items={this.state.topLiked.items} numberOfResults={this.props.numberOfResults}/>
-            <TopList title={this.state.topDisliked.title} description={this.state.topDisliked.description} items={this.state.topDisliked.items} numberOfResults={this.props.numberOfResults}/>
-            <TopList title={this.state.topViews.title} description={this.state.topViews.description} items={this.state.worstViews.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topWordScore.title} description={this.state.topWordScore.description} items={this.state.topWordScore.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.worstWordScore.title} description={this.state.worstWordScore.description} items={this.state.worstWordScore.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topDiscScore.title} description={this.state.topDiscScore.description} items={this.state.topDiscScore.items} numberOfResults={this.props.numberOfResults}/>
@@ -48,6 +45,10 @@ class TrendsChart extends Component {
             <TopList title={this.state.topSameTextCouples.title} description={this.state.topSameTextCouples.description} items={this.state.topSameTextCouples.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topCommentedDays.title} description={this.state.topCommentedDays.description} items={this.state.topCommentedDays.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topControversial.title} description={this.state.topControversial.description} items={this.state.topControversial.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topLiked.title} description={this.state.topLiked.description} items={this.state.topLiked.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topDisliked.title} description={this.state.topDisliked.description} items={this.state.topDisliked.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topViews.title} description={this.state.topViews.description} items={this.state.topViews.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.worstViews.title} description={this.state.worstViews.description} items={this.state.worstViews.items} numberOfResults={this.props.numberOfResults}/>
         </div>
         );
     }
