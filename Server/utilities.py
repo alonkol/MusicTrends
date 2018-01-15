@@ -112,8 +112,7 @@ def find_video_id_based_on_song_id(song_id):
 def update_stats_for_video(video_id):
     s = get_statistics_for_video(video_id)
     return get_update_result(
-        queries.UPDATE_VIDEOS_DATA, (s['viewCount'], s['likeCount'], s['dislikeCount'],
-                                     s['favoriteCount'], s['commentCount'], video_id))
+        queries.UPDATE_VIDEOS_DATA, (s['viewCount'], s['likeCount'], s['dislikeCount'], video_id))
 
 
 def check_if_lyrics_exist(song_id):

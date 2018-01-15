@@ -14,6 +14,10 @@ youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
 
 INSERT_COMMENT_WORDS_PER_VIDEO = "INSERT INTO CommentWordsPerVideo VALUES (%s, %s, %s);"
 
+# Used for fetching in groups
+OFFSET = 20
+LIMIT = 200
+
 
 def youtube_search(queryString):
     search_response = youtube.search().list(
@@ -73,8 +77,6 @@ def get_comments_for_video(video_id):
 
 
 def get_songs_artists_pairs_from_db():
-    offset = 0
-    limit = 8000
 
     statement = "SELECT GROUP_CONCAT(artistName SEPARATOR ' ') AS artistName, Songs.songName, Songs.songID " \
                 "FROM Songs, Artists, SongToArtist " \
@@ -82,7 +84,7 @@ def get_songs_artists_pairs_from_db():
                 "AND Artists.artistID = SongToArtist.artistID " \
                 "GROUP BY songName, Songs.songID " \
                 "ORDER BY Songs.songID ASC " \
-                "LIMIT %d, %d;" % (offset, limit)
+                "LIMIT %d, %d;" % (OFFSET, LIMIT)
 
     config.unsafe_cursor.execute(statement)
     return config.unsafe_cursor.fetchall()
