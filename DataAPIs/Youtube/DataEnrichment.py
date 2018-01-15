@@ -104,7 +104,7 @@ def populate_videos():
 
 def populate_video(song_id, artist_name, song_name):
     statement = "INSERT INTO Videos " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s);"
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
     query = artist_name + " " + song_name
 
     video = youtube_search(query)
@@ -121,7 +121,7 @@ def populate_video(song_id, artist_name, song_name):
     # Populate video table
     s = get_statistics_for_video(videoId)
     inputDataList = [videoId, song_id, publishedAt, title, s["viewCount"], s["likeCount"],
-                     s["dislikeCount"]]
+                     s["dislikeCount"], s["commentCount"]]
 
     try:
         config.cursor.execute(statement, tuple(inputDataList))
@@ -158,7 +158,7 @@ def insert_into_comment_words_per_video_table(video_id, comment_text):
 
 def populate_comment_for_video(video_id):
     statement = "INSERT INTO Comments " \
-                "VALUES (%s, %s, %s, %s, %s);"
+                "VALUES (%s, %s, %s, %s, %s, %s);"
 
     comments = get_comments_for_video(video_id)
     if comments is None:
@@ -177,7 +177,7 @@ def populate_comment_for_video(video_id):
                 continue
 
             inputDataList = [c["id"], s["videoId"], author,
-                             textDisplay, publishedAt]
+                             textDisplay, publishedAt, s["likeCount"]]
 
             config.cursor.execute(statement, tuple(inputDataList))
             # populate CommentWordsPerVideoTable

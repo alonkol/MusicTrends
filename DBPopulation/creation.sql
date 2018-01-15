@@ -66,6 +66,7 @@ CREATE TABLE Videos (
     viewCount bigint NOT NULL,
     likeCount int NOT NULL,
     dislikeCount int NOT NULL,
+    commentCount int NOT NULL,
     PRIMARY KEY (videoID),
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
@@ -76,6 +77,7 @@ CREATE TABLE Comments (
     author varchar(200) NOT NULL,
     commentText TEXT(2000) NOT NULL,
     publishedAt DATE NOT NULL,
+    likeCount int NOT NULL,
     PRIMARY KEY (commentID),
     FOREIGN KEY (videoID) REFERENCES Videos(videoID)
 );
@@ -102,4 +104,6 @@ AND SongToArtist.artistID = Artists.artistID
 AND ArtistToCategory.artistID = Artists.artistID
 GROUP BY word, Artists.artistID, Artists.artistName, categoryID;
 
+CREATE INDEX wordIndex ON WordsPerSong(word);
+CREATE INDEX commentWordIndex ON CommentWordsPerVideo(word);
 CREATE UNIQUE INDEX SongIdInVideos ON Videos(songID);
