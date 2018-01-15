@@ -1,4 +1,3 @@
-drop view if exists  `DbMysql07`.`ArtistsWordCount`;
 drop table if exists `DbMysql07`.`CommentWordsPerVideo`;
 drop table if exists `DbMysql07`.`Lyrics`;
 drop table if exists `DbMysql07`.`Lyrics_MyISAM`;

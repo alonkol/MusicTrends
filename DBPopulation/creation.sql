@@ -96,14 +96,6 @@ CREATE TABLE WordsPerSong (
     FOREIGN KEY (songID) REFERENCES Songs(songID)
 );
 
-CREATE VIEW ArtistsWordCount AS
-SELECT Artists.artistName, Artists.artistID, word, sum(wordCount) as wordCount, ArtistToCategory.categoryID
-FROM WordsPerSong, SongToArtist, Artists, ArtistToCategory
-WHERE WordsPerSong.songID = SongToArtist.songID
-AND SongToArtist.artistID = Artists.artistID
-AND ArtistToCategory.artistID = Artists.artistID
-GROUP BY word, Artists.artistID, Artists.artistName, categoryID;
-
 CREATE INDEX wordIndex ON WordsPerSong(word);
 CREATE INDEX commentWordIndex ON CommentWordsPerVideo(word);
 CREATE UNIQUE INDEX SongIdInVideos ON Videos(songID);
