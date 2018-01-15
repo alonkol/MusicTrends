@@ -22,7 +22,7 @@ class TrendsChart extends Component {
             topDiscScore: {title: 'Smart Fans', description: 'Songs with rich vocabulary in its Youtube video comments', items: []},
             topGroupies: {title: 'Groupies', description: 'These people comment on tons of videos by their favorite artist', items: []},
             topHeadEaters: {title: 'Head Eaters', description: 'Artists who write really long texts', items: []},
-            topSameTextCouples: {title: 'Similar Texts', description: 'Artists with a similar writing style', items: []},
+            topViralSongs: {title: 'Viral Songs', description: 'Songs which their comments are most liked', items: []},
             topCommentedDays: {title: 'Comment Timing', description: 'Days of the week with most Youtube comments', items: []},
             topControversial: {title: 'Controversial Artists', description: 'Popular artists who are also disliked by many', items: []},
             numberOfResults: props.numberOfResults,
@@ -42,7 +42,7 @@ class TrendsChart extends Component {
             <TopList title={this.state.topDiscScore.title} description={this.state.topDiscScore.description} items={this.state.topDiscScore.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topGroupies.title} description={this.state.topGroupies.description} items={this.state.topGroupies.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topHeadEaters.title} description={this.state.topHeadEaters.description} items={this.state.topHeadEaters.items} numberOfResults={this.props.numberOfResults}/>
-            <TopList title={this.state.topSameTextCouples.title} description={this.state.topSameTextCouples.description} items={this.state.topSameTextCouples.items} numberOfResults={this.props.numberOfResults}/>
+            <TopList title={this.state.topViralSongs.title} description={this.state.topViralSongs.description} items={this.state.topViralSongs.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topCommentedDays.title} description={this.state.topCommentedDays.description} items={this.state.topCommentedDays.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topControversial.title} description={this.state.topControversial.description} items={this.state.topControversial.items} numberOfResults={this.props.numberOfResults}/>
             <TopList title={this.state.topLiked.title} description={this.state.topLiked.description} items={this.state.topLiked.items} numberOfResults={this.props.numberOfResults}/>
@@ -151,10 +151,10 @@ class TrendsChart extends Component {
                         {items: results.results}
                     )})));
 
-        fetch("/api/artists/same_text_couples/top/" + MAX_RESULTS_NUM + categoryFilter)
+        fetch("/api/songs/viral_songs/top/" + MAX_RESULTS_NUM + categoryFilter)
             .then(results => results.json())
             .then(results => (this.setState(
-                {topSameTextCouples: Object.assign(this.state.topSameTextCouples,
+                {topViralSongs: Object.assign(this.state.topViralSongs,
                         {items: results.results}
                     )})));
 
