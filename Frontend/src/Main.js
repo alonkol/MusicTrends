@@ -10,7 +10,6 @@ import AddSong from "./AddSong";
 import UpdateSongData from "./UpdateSongData";
 import About from "./About";
 import Search from "./Search";
-import Input from "antd/es/input/Input";
 import { getParam } from './Utils.js';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -88,7 +87,7 @@ class Main extends Component {
                         </SubMenu>
 
         const key = getParam("key");
-        if (!(key && key != undefined && key != "")){
+        if (!(key && key !== undefined && key !== "")){
             this.manageSubMenu = "";
         }
 
