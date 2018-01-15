@@ -89,47 +89,9 @@ def get_all_songs_from_api():
         json.dump(res, outf)
 
 
-def remove_duplicate_songs():
-    res = get_data_from_file('songs.json')
-    seen = set()
-    before = 0
-    after = 0
-    for artist in res.keys():
-        if res[artist] is not None:
-            before += len(res[artist])
-            for song in res[artist]:
-                if song in seen:
-                    res[artist].remove(song)
-                else:
-                    seen.add(song)
-    for artist in res.keys():
-        if res[artist] is not None:
-            after += len(res[artist])
-    print 'before = %d' % before
-    print 'after = %d' % after
-
-    with open('songs_unique.json', 'w') as outf:
-        json.dump(res, outf)
-
-
 def main():
-    # assert API_KEY != 'secret'
+    assert LASTFM_API_KEY != 'secret'
     get_all_songs_from_api()
-
-
-""""
-res = []
-categories = retrieive_all_categories()
-for cat in categories:
-    request_artist_base_url = BASE_URL + '&method=tag.gettopartists'
-    artists = retrieve_artists_per_category(request_artist_base_url, cat)
-    for artist in artists:
-        request_song_base_url = BASE_URL + '&method=artist.gettoptracks'
-        songs = retrieve_songs_per_artist(request_song_base_url, artist)
-        for song in songs:
-            res.append((song,artist))
-
-"""
 
 if __name__ == '__main__':
     main()
