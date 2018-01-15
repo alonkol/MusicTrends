@@ -259,31 +259,21 @@ TOP_HEAD_EATERS_PER_CATEGORY = "SELECT Artists.artistName, AVG(wordCount) AS avg
                 "LIMIT %s;"
 
 
-TOP_ARTIST_TEXT_COUPLES = "SELECT CONCAT(artist1, ' ~ ', artist2) AS couple, delta " \
-                            " FROM " \
-                            "(" \
-                                "SELECT wc1.artistName AS artist1, wc2.artistName AS artist2, AVG(ABS(wc1.wordCount - wc2.wordCount)) AS delta " \
-                                "FROM ArtistsWordCount AS wc1, ArtistsWordCount AS wc2 " \
-                                "WHERE wc1.word = wc2.word " \
-                                "GROUP BY wc1.artistID, wc2.artistID, wc1.artistName, wc2.artistName " \
-                                "HAVING wc1.artistName < wc2.artistName " \
-                            ") AS artistDeltas " \
-                            "ORDER BY delta ASC " \
-                            "LIMIT %s;" \
+TOP_VIRAL_SONGS = "SELECT songName From Songs," \
+                  "(SELECT songID, Videos.videoID, commentCount * avg_like_per_comment as rating From Videos, " \
+                  "(SELECT videoID, AVG(likeCount) as avg_like_per_comment FROM Comments GROUP BY videoID) As A " \
+                  "WHERE A.videoID = Videos.videoID " \
+                  "ORDER BY rating) As likesInComments " \
+                  "WHERE Songs.songID = likesInComments.songID " \
+                  "Limit %s;"
 
-TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY = "SELECT CONCAT(artist1, ' ~ ', artist2) AS couple, delta " \
-                            " FROM " \
-                            "(" \
-                                "SELECT wc1.artistName AS artist1, wc2.artistName AS artist2, AVG(ABS(wc1.wordCount - wc2.wordCount)) AS delta " \
-                                "FROM ArtistsWordCount AS wc1, ArtistsWordCount AS wc2 " \
-                                "WHERE wc1.word = wc2.word " \
-                                "AND wc1.categoryID = wc2.categoryID " \
-                                "AND wc1.categoryID = %s " \
-                                "GROUP BY wc1.artistID, wc2.artistID, wc1.artistName, wc2.artistName " \
-                                "HAVING wc1.artistName < wc2.artistName " \
-                            ") AS artistDeltas " \
-                            "ORDER BY delta ASC " \
-                            "LIMIT %s;"
+TOP_VIRAL_SONGS_PER_CATEGORY = "SELECT songName From Songs, SongToCategory," \
+                                "(SELECT songID, Videos.videoID, commentCount * avg_like_per_comment as rating From Videos, " \
+                                "(SELECT videoID, AVG(likeCount) as avg_like_per_comment FROM Comments GROUP BY videoID) As A " \
+                                "WHERE A.videoID = Videos.videoID " \
+                                "ORDER BY rating) As likesInComments " \
+                                "WHERE Songs.songID = likesInComments.songID AND Songs.songID = SongToCategory.songID " \
+                                "AND SongToCategory.categoryID = %s Limit %s;"
 
 TOP_DAYS_COMMENTS = "SELECT DAYNAME(Comments.publishedAt) AS day, COUNT(*) AS count " \
                     "FROM Comments, Videos " \

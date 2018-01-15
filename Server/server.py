@@ -96,9 +96,9 @@ def top_head_eater_artists(amount):
     return get_result_for_queries(amount, queries.TOP_HEAD_EATERS, queries.TOP_HEAD_EATERS_PER_CATEGORY)
 
 
-@app.route('/api/artists/same_text_couples/top/<int:amount>', methods=['GET'])
-def top_couples_with_same_text_style(amount):
-    return get_result_for_queries(amount, queries.TOP_ARTIST_TEXT_COUPLES, queries.TOP_ARTIST_TEXT_COUPLES_PER_CATEGORY)
+@app.route('/api/songs/viral_songs/top/<int:amount>', methods=['GET'])
+def top_viral_songs(amount):
+    return get_result_for_queries(amount, queries.TOP_VIRAL_SONGS, queries.TOP_VIRAL_SONGS_PER_CATEGORY)
 
 
 @app.route('/api/songs/days_with_most_comments/top/<int:amount>', methods=['GET'])
