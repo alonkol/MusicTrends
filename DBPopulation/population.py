@@ -115,16 +115,22 @@ def main():
     populator = Populator(numOfCategories, artistsPerCategory, songsPerArtist)
 
     # delete old db
+    print('Removing old db')
     populator.run_sql_file(DELETE_DB_PATH)
 
     # create tables
+    print('Creating Table/Views/Indexes')
     populator.run_sql_file(CREATE_DB_PATH)
 
+    print('Populating Songs, Artists, Categories, Lyrics, SongToArtist, ArtistToCategory, SongToCategory TABLES')
     # populate Songs, Artists, Categories, Lyrics, SongToArtist, ArtistToCategory, SongToCategory TABLES
     populator.populate_lastfm_musixmatch_data()
 
     # populate Youtube videos data
+    print('Populating Videos, Comments, CommentPerVideo Tables')
     populate_videos()
+
+    print('Done.')
 
 if __name__ == '__main__':
     main()

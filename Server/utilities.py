@@ -218,4 +218,6 @@ def remove_all_occurrences_of_artist_id_in_db(artist_id):
 def find_songs_and_videos_by_artist_id(artist_id):
     songs = json.loads(get_json_result(queries.SONGS_FOR_ARTISTS, (artist_id,)))['results']
     songs = [song['songID'] for song in songs]
+    if len(songs) == 0:
+        return [], []
     return songs, json.loads(get_json_result(queries.VIDEOS_FOR_SONGS % ', '.join(songs)))['results']

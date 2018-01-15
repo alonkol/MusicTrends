@@ -95,7 +95,7 @@ CREATE TABLE WordsPerSong (
 );
 
 CREATE VIEW ArtistsWordCount AS
-SELECT Artists.artistName, Artists.artistID, word, sum(wordCount), ArtistToCategory.categoryID
+SELECT Artists.artistName, Artists.artistID, word, sum(wordCount) as wordCount, ArtistToCategory.categoryID
 FROM WordsPerSong, SongToArtist, Artists, ArtistToCategory
 WHERE WordsPerSong.songID = SongToArtist.songID
 AND SongToArtist.artistID = Artists.artistID
