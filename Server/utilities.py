@@ -21,14 +21,17 @@ UNAUTHORIZED_ACTION_NOTICE = json.dumps({"success": False, "reason": "Manager ke
 def check_manager_key(manager_key):
     if IGNORE_KEY:
         return True
+    if manager_key is None:
+        return False
     hash_object = hashlib.sha256(manager_key)
     hex_dig = hash_object.hexdigest()
     return hex_dig == HASHED_MANAGER_KEY
 
 
 def get_result_for_queries(amount, query, query_per_category):
+    amount = max(min(amount, 20), 1)
     category = request.args.get('category')
-    if category is not None:
+    if category is not None and isinstance(category, (int, long)):
         return get_json_result(query_per_category, (category, amount), rename_result_columns=True)
 
     return get_json_result(query, (amount,), rename_result_columns=True)

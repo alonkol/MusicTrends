@@ -112,11 +112,13 @@ def top_controversial_artists(amount):
 
 
 ####################################
-# --------- Admin Page ----------- #
+# --------- Admin Pages ----------- #
 ####################################
-@app.route('/api/blacklist_artist', methods=['GET'])
+@app.route('/api/blacklist_artist', methods=['GET', 'POST', 'PUT'])
 def blacklist_artist():
     artist_id = request.args.get('artist')
+    if artist_id is None or not isinstance(artist_id, (int, long)):
+        return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
@@ -135,16 +137,21 @@ def blacklist_artist():
 @app.route('/api/lyrics/get', methods=['GET'])
 def get_lyrics():
     song_id = request.args.get('song')
+    default_answer = json.dumps({"amount": 1, "results": [{"lyrics": "Lyrics not found."}]})
+    if song_id is None or not isinstance(song_id, (int, long)):
+        return default_answer
     lyrics_result = get_json_result(
         queries.FIND_LYRICS, (song_id,),
-        default_value=json.dumps({"amount": 1, "results": [{"lyrics": "Lyrics not found."}]}))
+        default_value=default_answer)
     return lyrics_result
 
 
-@app.route('/api/lyrics/update', methods=['GET'])
+@app.route('/api/lyrics/update', methods=['GET', 'POST', 'PUT'])
 def update_lyrics():
     song_id = request.args.get('song')
     lyrics = request.args.get('lyrics')
+    if song_id is None or not isinstance(song_id, (int, long)) or lyrics is None:
+        return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
@@ -159,9 +166,11 @@ def update_lyrics():
     return JSON_FAIL_NOTICE
 
 
-@app.route('/api/youtube/update', methods=['GET'])
+@app.route('/api/youtube/update', methods=['GET', 'POST', 'PUT'])
 def update_youtube_data():
     song_id = request.args.get('song')
+    if song_id is None or not isinstance(song_id, (int, long)):
+        return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
@@ -171,11 +180,14 @@ def update_youtube_data():
     return update_stats_for_video(video_id)
 
 
-@app.route('/api/songs/add', methods=['GET'])
+@app.route('/api/songs/add', methods=['GET', 'POST', 'PUT'])
 def add_song():
     artist_id = request.args.get('artist')
     song_name = request.args.get('song')
     category_id = request.args.get('category')
+    if artist_id is None or not isinstance(artist_id, (int, long)) or song_name is None or \
+       category_id is None or not isinstance(category_id, (int, long)):
+        return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
