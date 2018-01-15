@@ -103,6 +103,7 @@ def insert_into_lyrics_table(song_id, lyrics):
         cursor = config.cursor
         try:
             cursor.execute(sql_insert, (song_id, lyrics))
+            config.dbconnection.commit()
             cursor.execute(sql_insert_to_my_isam, (song_id, lyrics))
             config.dbconnection.commit()
         except Exception as e:

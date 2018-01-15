@@ -128,8 +128,15 @@ def update_in_lyrics_table(song_id, lyrics):
     return get_update_result(queries.UPDATE_LYRICS, (lyrics, song_id))
 
 
+def update_in_lyrics_my_isam_table(song_id, lyrics):
+    return get_update_result(queries.UPDATE_LYRICS_MY_ISAM, (lyrics, song_id))
+
+
 def update_lyrics_in_db(song_id, lyrics):
     result = update_in_lyrics_table(song_id, lyrics)
+    if result is JSON_FAIL_NOTICE:
+        return JSON_FAIL_NOTICE
+    result = update_in_lyrics_my_isam_table(song_id, lyrics)
     if result is JSON_FAIL_NOTICE:
         return JSON_FAIL_NOTICE
     result = delete_all_words_for_song_id_in_words_per_song_table(song_id)
@@ -187,6 +194,7 @@ def remove_all_occurrences_of_song_id_in_db(song_id):
         config.cursor.execute(queries.REMOVE_SONG_FROM_WORDS_PER_SONG, (song_id,))
         config.dbconnection.commit()
         config.cursor.execute(queries.REMOVE_SONG_FROM_LYRICS, (song_id,))
+        config.dbconnection.commit()
         config.cursor.execute(queries.REMOVE_SONG_FROM_LYRICS_MyISAM, (song_id,))
         config.dbconnection.commit()
         config.cursor.execute(queries.REMOVE_SONG_FROM_SONGS, (song_id,))
