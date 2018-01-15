@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Button from "antd/es/button/button";
 import ArtistsCascader from "./ArtistsCascader";
 import { message } from "antd";
+import { getParam } from './Utils.js';
+
 
 class Blacklist extends Component {
 
@@ -18,14 +20,14 @@ class Blacklist extends Component {
     }
 
     onClick = () => {
-        const secretKey = document.getElementById('secretKey').value;
+        const key = getParam("key");
 
         if (this.state.artist === null) {
             message.error('No artist has been chosen');
         }
 
         else {
-            fetch("/api/blacklist_artist?key=" + secretKey + "&artist=" + this.state.artist)
+            fetch("/api/blacklist_artist?key=" + key + "&artist=" + this.state.artist)
                 .then(result => result.json())
                 .then(result => {
                     if (result['success'] === true) {

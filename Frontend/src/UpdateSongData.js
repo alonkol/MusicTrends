@@ -5,6 +5,8 @@ import TextArea from "antd/es/input/TextArea";
 import Button from "antd/es/button/button";
 import ArtistsCascader from "./ArtistsCascader";
 import { message } from "antd";
+import { getParam } from './Utils.js';
+
 
 class UpdateSongData extends Component {
 
@@ -44,12 +46,11 @@ class UpdateSongData extends Component {
     }
 
     handleUpdateLyricsSubmit = () => {
-        const secretKey = document.getElementById('secretKey').value;
-
+        const key = getParam("key");
         const lyrics = document.getElementById('lyrics').value,
             song_id = this.state.song_id;
 
-        fetch("/api/lyrics/update?key=" + secretKey + "&song=" + song_id + "&lyrics=" + lyrics)
+        fetch("/api/lyrics/update?key=" + key + "&song=" + song_id + "&lyrics=" + lyrics)
             .then(result => result.json())
             .then(result => {
                 if (result['success'] === true) {
@@ -63,10 +64,10 @@ class UpdateSongData extends Component {
     }
 
     handleUpdateYoutubeSubmit = () => {
-        const secretKey = document.getElementById('secretKey').value,
-            song_id = this.state.song_id;
+        const key = getParam("key");
+        const song_id = this.state.song_id;
 
-        fetch("api/youtube/update?key=" + secretKey + "&song=" + song_id)
+        fetch("api/youtube/update?key=" + key + "&song=" + song_id)
             .then(result => result.json())
             .then(result => {
                 if (result['success'] === true) {

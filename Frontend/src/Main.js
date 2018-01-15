@@ -11,6 +11,7 @@ import UpdateSongData from "./UpdateSongData";
 import About from "./About";
 import Search from "./Search";
 import Input from "antd/es/input/Input";
+import { getParam } from './Utils.js';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -67,21 +68,7 @@ class Main extends Component {
     }
 
     render() {
-        return (
-            <Layout>
-                <Sider
-                    breakpoint="lg"
-                    collapsedWidth="0"
-                    handleSliderChange={this.handleSliderChange}
-                    onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
-                >
-                    <div className="logo" />
-                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['trends']} onClick={this.handleClick}>
-                        <Menu.Item key="trends">
-                            <Icon type="area-chart" />
-                            <span className="nav-text">Trends</span>
-                        </Menu.Item>
-                        <SubMenu key="manage" title={<span><Icon type="database" /><span className="nav-text">Manage</span></span>}>
+        this.manageSubMenu = <SubMenu key="manage" title={<span><Icon type="database" /><span className="nav-text">Manage</span></span>}>
                             <Menu.Item key="add-song">
                                 <Icon type="plus-circle-o" />
                                 <span className="nav-text">
@@ -98,10 +85,28 @@ class Main extends Component {
                                     Blacklist Artist
                                 </span>
                             </Menu.Item>
-                            <Menu.Item key="secretKey" disabled={true}>
-                                <Input  id={'secretKey'} placeholder={"Secret Key"} type='password' />
-                            </Menu.Item>
                         </SubMenu>
+
+        const key = getParam("key");
+        if (!(key && key != undefined && key != "")){
+            this.manageSubMenu = "";
+        }
+
+        return (
+            <Layout>
+                <Sider
+                    breakpoint="lg"
+                    collapsedWidth="0"
+                    handleSliderChange={this.handleSliderChange}
+                    onCollapse={(collapsed, type) => { console.log(collapsed, type); }}
+                >
+                    <div className="logo" />
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['trends']} onClick={this.handleClick}>
+                        <Menu.Item key="trends">
+                            <Icon type="area-chart" />
+                            <span className="nav-text">Trends</span>
+                        </Menu.Item>
+                        {this.manageSubMenu}
                         <Menu.Item key="search">
                             <Icon type="search" />
                             <span className="nav-text">Find Song</span>
