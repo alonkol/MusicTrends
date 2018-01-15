@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, send_from_directory
 from flask import render_template
 
@@ -231,6 +232,15 @@ def homepage():
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
+
+###############################
+# --- React Static Fies ----- #
+###############################
+
+
+@app.route('/static/<path:path>')
+def send_js(path):
+    return send_from_directory('static', path)
 
 if __name__ == '__main__':
     app.run(port=config.port, host=config.host, debug=True)
