@@ -248,4 +248,4 @@ def send_js(path):
     return send_from_directory('static', path)
 
 if __name__ == '__main__':
-    app.run(port=config.port, host=config.host, debug=True, threaded=True)
+    app.run(port=config.port, host=config.host, debug=True)
