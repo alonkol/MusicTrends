@@ -259,24 +259,31 @@ TOP_HEAD_EATERS_PER_CATEGORY = "SELECT Artists.artistName, AVG(wordCount) AS avg
                 "LIMIT %s;"
 
 
-TOP_VIRAL_SONGS = "SELECT songName FROM Songs," \
-                  "(SELECT songID, Videos.videoID, commentCount * avg_like_per_comment AS rating FROM Videos, " \
-                  "(SELECT videoID, AVG(likeCount) AS avg_like_per_comment FROM Comments GROUP BY videoID) " \
-                  "AS avgLikeCount " \
-                  "WHERE avgLikeCount.videoID = Videos.videoID " \
-                  "ORDER BY rating) AS totalRating " \
+TOP_VIRAL_SONGS = "SELECT songName, rating " \
+                  "FROM Songs, " \
+                  "(" \
+                        "SELECT songID, commentCount * AVG(Comments.likeCount) AS rating " \
+                        "FROM Videos, Comments " \
+                        "WHERE Comments.videoID = Videos.videoID " \
+                        "GROUP BY Videos.videoID " \
+                    ") AS totalRating " \
                   "WHERE Songs.songID = totalRating.songID " \
+                  "ORDER BY rating DESC " \
                   "LIMIT %s;"
 
-TOP_VIRAL_SONGS_PER_CATEGORY = "SELECT songName From Songs, SongToCategory," \
-                               "(SELECT songID, Videos.videoID, commentCount * avg_like_per_comment " \
-                               "AS rating FROM Videos, " \
-                               "(SELECT videoID, AVG(likeCount) AS avg_like_per_comment FROM Comments GROUP BY videoID)" \
-                               " AS avgLikeCount " \
-                               "WHERE avgLikeCount.videoID = Videos.videoID " \
-                               "ORDER BY rating) AS totalRating " \
-                               "WHERE Songs.songID = totalRating.songID AND Songs.songID = SongToCategory.songID " \
-                               "AND SongToCategory.categoryID = %s LIMIT %s;"
+TOP_VIRAL_SONGS_PER_CATEGORY = "SELECT songName, rating " \
+                               "FROM Songs, SongToCategory, " \
+                    "(" \
+                        "SELECT songID, commentCount * AVG(Comments.likeCount) AS rating " \
+                        "FROM Videos, Comments " \
+                        "WHERE Comments.videoID = Videos.videoID " \
+                        "GROUP BY Videos.videoID " \
+                    ") AS totalRating " \
+                  "WHERE Songs.songID = totalRating.songID " \
+                  "AND Songs.songID = SongToCategory.songID " \
+                  "AND SongToCategory.categoryID = %s " \
+                  "ORDER BY rating DESC " \
+                  "LIMIT %s;"
 
 TOP_DAYS_COMMENTS = "SELECT DAYNAME(Comments.publishedAt) AS day, COUNT(*) AS count " \
                     "FROM Comments, Videos " \
