@@ -149,7 +149,7 @@ BOTTOM_SOPHISTICATED_PER_CATEGORY = "SELECT songName, score " \
                 "FROM " \
                 "(" \
                     "SELECT word, 1/SUM(wordCount) AS uniqueness " \
-                    "FROM WordsPerSong" \
+                    "FROM WordsPerSong " \
                     "GROUP BY word " \
                 ") AS wordUniqueness, WordsPerSong, SongToCategory " \
                 "WHERE wordUniqueness.word = WordsPerSong.word " \

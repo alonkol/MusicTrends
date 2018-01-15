@@ -9,10 +9,10 @@ app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 # show trends of word usage as a function of time (song's air-date)
 # Like in google trends, but for music
 
+
 ###############################
 # -------- REST API --------- #
 ###############################
-
 @app.route('/api')
 def api_welcome():
     return render_template('api.html')
