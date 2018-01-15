@@ -137,7 +137,7 @@ def get_lyrics():
     song_id = request.args.get('song')
     lyrics_result = get_json_result(
         queries.FIND_LYRICS, (song_id,),
-        default_value=json.dumps({"amount": 1, "results": [{"lyrics": ""}]}))
+        default_value=json.dumps({"amount": 1, "results": [{"lyrics": "Lyrics not found."}]}))
     return lyrics_result
 
 
