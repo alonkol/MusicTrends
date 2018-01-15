@@ -367,7 +367,7 @@ UPDATE_VIDEOS_DATA = "UPDATE Videos SET viewCount = %s, likeCount = %s, dislikeC
 
 FIND_FIVE_MATCHING_SONG_NAMES = "SELECT songName " \
                                 "FROM " \
-                                "Songs, (SELECT songID, MATCH (lyrics) AGAINST (%s IN BOOLEAN MODE) " \
+                                "Songs, (SELECT songID, MATCH (lyrics) AGAINST (%s IN NATURAL LANGUAGE MODE) " \
                                 "as score FROM Lyrics_MyISAM ORDER BY score DESC LIMIT 5) as BestMatches " \
                                 "WHERE BestMatches.songID = Songs.songID;"
 
