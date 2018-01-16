@@ -11,9 +11,79 @@ from Server.utilities import *
 
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 
-# general idea:
-# show trends of word usage as a function of time (song's air-date)
-# Like in google trends, but for music
+
+@app.before_request
+def return_cached():
+    if not WORKING_CACHE[0]:
+        return
+    response = cache.get(build_cache_path(request))
+    if response:
+        return response
+
+
+@app.after_request
+def cache_response(response):
+    if not WORKING_CACHE[0] or str(request.path) in DONT_CACHE_PATHS:
+        return response
+    cache_path = build_cache_path(request)
+    if cache.get(cache_path) is None and response.status_code == 200:
+        cache[cache_path] = response
+    return response
+
+
+###############################
+# --------- DEBUG ----------- #
+###############################
+@app.route('/debug/show_cache')
+def show_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    print('Cache content:')
+    print('\n'.join(cache.iterkeys()))
+    return JSON_DEBUG
+
+
+@app.route('/debug/clear_cache')
+def clear_from_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    url = request.args.get('url')
+    if url in cache:
+        del cache[url]
+        print('{} removed from cached.'.format(url))
+    return JSON_DEBUG
+
+
+@app.route('/debug/clear_cache_all')
+def clear_all_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    cache.clear()
+    print('Cache is cleared.')
+    return JSON_DEBUG
+
+
+@app.route('/debug/restart_cache')
+def restart_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    change_cache_status(True)
+    print('Cache restarted, consider using clear_cache.')
+    return JSON_DEBUG
+
+
+@app.route('/debug/stop_cache')
+def stop_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    change_cache_status(False)
+    print('Cache stopped.')
+    return JSON_DEBUG
 
 
 ###############################
@@ -89,7 +159,8 @@ def bottom_sophisticated_songs(amount):
 
 @app.route('/api/songs/discussionscore/top/<int:amount>', methods=['GET'])
 def top_sophisticated_song_discussions(amount):
-    return get_result_for_queries(amount, queries.TOP_SOPHISTICATED_SONG_DISCUSSIONS, queries.TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY)
+    return get_result_for_queries(amount, queries.TOP_SOPHISTICATED_SONG_DISCUSSIONS,
+                                  queries.TOP_SOPHISTICATED_SONG_DISCUSSIONS_PER_CATEGORY)
 
 
 @app.route('/api/groupies/top/<int:amount>', methods=['GET'])
@@ -114,7 +185,8 @@ def days_with_most_comments(amount):
 
 @app.route('/api/artists/controversial/top/<int:amount>', methods=['GET'])
 def top_controversial_artists(amount):
-    return get_result_for_queries(amount, queries.TOP_CONTROVERSIAL_ARTISTS, queries.TOP_CONTROVERSIAL_ARTISTS_PER_CATEGORY)
+    return get_result_for_queries(amount, queries.TOP_CONTROVERSIAL_ARTISTS,
+                                  queries.TOP_CONTROVERSIAL_ARTISTS_PER_CATEGORY)
 
 
 ####################################
@@ -123,7 +195,7 @@ def top_controversial_artists(amount):
 @app.route('/api/blacklist_artist', methods=['GET', 'POST', 'PUT'])
 def blacklist_artist():
     artist_id = request.args.get('artist')
-    if artist_id is None or not isinstance(artist_id, (int, long)):
+    if artist_id is None:
         return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
@@ -137,6 +209,8 @@ def blacklist_artist():
         remove_all_occurrences_of_artist_id_in_db(artist_id)
     except Exception:
         return JSON_FAIL_NOTICE
+
+    invalidate_apis_from_cache_after_blacklist_artist(artist_id)
     return JSON_SUCCESS_NOTICE
 
 
@@ -144,7 +218,7 @@ def blacklist_artist():
 def get_lyrics():
     song_id = request.args.get('song')
     default_answer = json.dumps({"amount": 1, "results": [{"lyrics": "Lyrics not found."}]})
-    if song_id is None or not isinstance(song_id, (int, long)):
+    if song_id is None:
         return default_answer
     lyrics_result = get_json_result(
         queries.FIND_LYRICS, (song_id,),
@@ -156,18 +230,22 @@ def get_lyrics():
 def update_lyrics():
     song_id = request.args.get('song')
     lyrics = request.args.get('lyrics')
-    if song_id is None or not isinstance(song_id, (int, long)) or lyrics is None:
+    if song_id is None or lyrics is None:
         return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
     lyrics_exist = check_if_lyrics_exist(song_id)
     if lyrics_exist:
-        return update_lyrics_in_db(song_id, lyrics)
+        result = update_lyrics_in_db(song_id, lyrics)
+        if result is JSON_SUCCESS_NOTICE:
+            invalidate_apis_from_cache_after_update_lyrics(song_id)
+        return result
 
     # currently supports only lyrics in english
     result = insert_lyrics_into_tables(song_id, lyrics)
-    if result:
+    if result is not None:
+        invalidate_apis_from_cache_after_update_lyrics(song_id)
         return JSON_SUCCESS_NOTICE
     return JSON_FAIL_NOTICE
 
@@ -175,7 +253,7 @@ def update_lyrics():
 @app.route('/api/youtube/update', methods=['GET', 'POST', 'PUT'])
 def update_youtube_data():
     song_id = request.args.get('song')
-    if song_id is None or not isinstance(song_id, (int, long)):
+    if song_id is None:
         return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
@@ -183,7 +261,10 @@ def update_youtube_data():
     video_id = find_video_id_based_on_song_id(song_id)
     if video_id is None:
         return JSON_FAIL_NOTICE
-    return update_stats_for_video(video_id)
+    result = update_stats_for_video(video_id)
+    if result is JSON_SUCCESS_NOTICE:
+        invalidate_apis_from_cache_after_update_youtube_data(song_id)
+    return result
 
 
 @app.route('/api/songs/add', methods=['GET', 'POST', 'PUT'])
@@ -191,15 +272,13 @@ def add_song():
     artist_id = request.args.get('artist')
     song_name = request.args.get('song')
     category_id = request.args.get('category')
-    if artist_id is None or not isinstance(artist_id, (int, long)) or song_name is None or \
-       category_id is None or not isinstance(category_id, (int, long)):
+    if artist_id is None or song_name is None or category_id is None:
         return JSON_FAIL_NOTICE
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
 
     artist_name = find_artist_name_by_id_in_table(artist_id)
-    print(artist_name)
     song_id = add_song_to_db(category_id, artist_id, song_name)
     if song_id is None:
         return JSON_FAIL_NOTICE
@@ -210,7 +289,7 @@ def add_song():
     if lyrics:
         insert_lyrics_into_tables(song_id, lyrics)
     insert_song_youtube_data(song_id, artist_name, song_name)
-
+    invalidate_apis_from_cache_after_add_song(category_id, artist_id)
     return JSON_SUCCESS_NOTICE
 
 
@@ -223,11 +302,10 @@ def find_best_matching_song_to_given_text():
     text = request.args.get('text')
     return get_json_result(queries.FIND_FIVE_MATCHING_SONG_NAMES, (text, ))
 
+
 ###############################
 # --------- Pages ----------- #
 ###############################
-
-
 @app.route('/')
 def homepage():
     return send_from_directory('frontend-build', 'index.html')

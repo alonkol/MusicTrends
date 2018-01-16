@@ -340,6 +340,10 @@ BLACKLIST_ARTIST = "UPDATE Artists SET active=0 WHERE artistID=%s;"
 
 FIND_ARTIST_NAME = "SELECT artistName FROM Artists WHERE artistID = %s;"
 
+FIND_CATEGORIES_FOR_ARTIST = "SELECT categoryID FROM ArtistToCategory WHERE artistID = %s;"
+
+FIND_CATEGORIES_FOR_SONG = "SELECT categoryID FROM SongToCategory WHERE songID = %s;"
+
 FIND_LYRICS = "SELECT lyrics FROM Lyrics WHERE songID = %s;"
 
 UPDATE_LYRICS = "UPDATE Lyrics SET lyrics = %s WHERE songID = %s;"

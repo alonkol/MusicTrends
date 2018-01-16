@@ -16,6 +16,15 @@ MANAGER_KEY = "Wubalubadubdub!"
 JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
 JSON_SUCCESS_NOTICE = json.dumps({"success": True})
 UNAUTHORIZED_ACTION_NOTICE = json.dumps({"success": False, "reason": "Manager key is incorrect"})
+JSON_DEBUG = json.dumps({"debug": True})
+
+DONT_CACHE_PATHS = ['/api/lyrics/search', '/api/blacklist_artist', '/api/lyrics/update', '/api/youtube/update',
+                    '/api/songs/add', '/api/lyrics/get',
+                    '/debug/show_cache', '/debug/clear_cache', '/debug/clear_cache_all', '/debug/restart_cache',
+                    '/debug/stop_cache']
+# This will be used as a cache for our app, refreshed on every call, and invalidated on update calls
+cache = {}
+WORKING_CACHE = [True]
 
 
 def check_manager_key(manager_key):
@@ -223,3 +232,106 @@ def find_songs_and_videos_by_artist_id(artist_id):
     if len(songs) == 0:
         return [], []
     return songs, json.loads(get_json_result(queries.VIDEOS_FOR_SONGS % ', '.join(songs)))['results']
+
+
+def find_categories_id_by_artist_id(artist_id):
+    res = json.loads(get_json_result(queries.FIND_CATEGORIES_FOR_ARTIST, (artist_id,)))
+    return [result['categoryID'] for result in res['results']]
+
+
+def find_categories_id_by_song_id(song_id):
+    res = json.loads(get_json_result(queries.FIND_CATEGORIES_FOR_SONG, (song_id,)))
+    return [result['categoryID'] for result in res['results']]
+
+
+def invalidate_apis_from_cache_after_blacklist_artist(artist_id):
+    apis_to_invalidate = \
+        ['/api/artists', '/api/songs_for_artist/{}'.format(artist_id),
+         '/api/songs/likes/top/20', '/api/songs/dislikes/top/20', '/api/songs/views/top/20',
+         '/api/songs/views/bottom/20',
+         '/api/words/top/20',
+         '/api/words/bottom/20',
+         '/api/songs/wordscore/top/20',
+         '/api/songs/wordscore/bottom/20',
+         '/api/songs/discussionscore/top/20',
+         '/api/groupies/top/20',
+         '/api/artists/head_eaters/top/20',
+         '/api/artists/head_eaters/top/20',
+         '/api/songs/viral_songs/top/20',
+         '/api/songs/days_with_most_comments/top/20',
+         '/api/artists/controversial/top/20']
+
+    categories = find_categories_id_by_artist_id(artist_id)
+    apis_to_invalidate.extend(['/api/artists_for_category/{}'.format(category_id) for category_id in categories])
+    invalidate_cache(apis_to_invalidate, categories=categories)
+
+
+def invalidate_apis_from_cache_after_update_lyrics(song_id):
+    apis_to_invalidate = \
+        [
+         '/api/words/top/20',
+         '/api/words/bottom/20',
+         '/api/songs/wordscore/top/20',
+         '/api/songs/wordscore/bottom/20',
+         '/api/artists/head_eaters/top/20',
+         '/api/artists/head_eaters/top/20']
+    categories = find_categories_id_by_song_id(song_id)
+    invalidate_cache(apis_to_invalidate, categories=categories)
+
+
+def invalidate_apis_from_cache_after_update_youtube_data(song_id):
+    apis_to_invalidate = \
+        [
+         '/api/songs/likes/top/20', '/api/songs/dislikes/top/20',
+         '/api/songs/views/top/20',
+         '/api/songs/views/bottom/20',
+         '/api/songs/discussionscore/top/20',
+         '/api/groupies/top/20',
+         '/api/songs/viral_songs/top/20',
+         '/api/songs/days_with_most_comments/top/20',
+         '/api/artists/controversial/top/20']
+
+    categories = find_categories_id_by_song_id(song_id)
+    invalidate_cache(apis_to_invalidate, categories=categories)
+
+
+def invalidate_apis_from_cache_after_add_song(category_id, artist_id):
+    apis_to_invalidate = \
+        ['/api/songs_for_artist/{}'.format(artist_id),
+         '/api/songs/likes/top/20', '/api/songs/dislikes/top/20',
+         '/api/songs/views/top/20',
+         '/api/songs/views/bottom/20',
+         '/api/words/top/20',
+         '/api/words/bottom/20',
+         '/api/songs/wordscore/top/20',
+         '/api/songs/wordscore/bottom/20',
+         '/api/songs/discussionscore/top/20',
+         '/api/groupies/top/20',
+         '/api/artists/head_eaters/top/20',
+         '/api/artists/head_eaters/top/20',
+         '/api/songs/viral_songs/top/20',
+         '/api/songs/days_with_most_comments/top/20',
+         '/api/artists/controversial/top/20']
+
+    invalidate_cache(apis_to_invalidate, categories=[category_id])
+
+
+def invalidate_cache(paths, categories=None):
+    for path in paths:
+        print(path)
+        if cache.get(path):
+            del cache[path]
+        if categories:
+            for category in categories:
+                path_with_category = '{}?category={}'.format(path, category)
+                print(path_with_category)
+                if cache.get(path_with_category):
+                    del cache[path_with_category]
+
+
+def build_cache_path(request):
+    return '{}?{}'.format(request.path, request.query_string) if request.query_string else str(request.path)
+
+
+def change_cache_status(status):
+    WORKING_CACHE[0] = status
