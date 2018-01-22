@@ -5,7 +5,7 @@ import Icon from "antd/es/icon/index";
 import {message} from "antd/lib/index";
 import Cascader from "antd/es/cascader/index";
 import CategoriesCascader from "./CategoriesCascader";
-
+import { getParam } from './Utils.js';
 
 class AddSong extends Component {
 
@@ -48,7 +48,7 @@ class AddSong extends Component {
             artist = this.state.artist_id,
             category = this.state.category_id;
 
-        const secretKey = document.getElementById('secretKey').value;
+        const key = getParam("key");
 
         if (song === '') {
             message.error("Please enter the song's name");
@@ -61,7 +61,7 @@ class AddSong extends Component {
         }
 
         else {
-            fetch("/api/songs/add?key=" + secretKey + "&song=" + song + "&artist=" + artist + "&category=" + category)
+            fetch("/api/songs/add?key=" + key + "&song=" + song + "&artist=" + artist + "&category=" + category)
                 .then(result => result.json())
                 .then(result => {
                     if (result['success'] === true) {
