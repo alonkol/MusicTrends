@@ -9,3 +9,15 @@ export function getParam(param){
       }
     }
 }
+
+export function handleErrors(response){
+    if (!response){
+        throw Error("Response object is null");
+    }
+
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
+    return response;
+}

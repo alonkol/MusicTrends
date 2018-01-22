@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import TopList from "./TopList2";
+import { handleErrors } from './Utils.js';
 
 const MAX_RESULTS_NUM = 20;
 
@@ -89,28 +90,14 @@ class TrendsChart extends Component {
     fetchAndUpdate = (endpoint, keyName) => {
         const _this = this;
         fetch(endpoint + MAX_RESULTS_NUM + categoryFilter)
-                .then(this.handleErrors)
-                .then(results => {
-                    if (!results){
-                        throw Error("Result object is null");
-                    }
-
-                    return results.json()
-                })
+                .then(handleErrors)
+                .then(results => results.json())
                 .then(resultsJson => {
                     this.dict = {}
                     this.dict[keyName] = Object.assign(_this.state[keyName], {items: resultsJson.results})
                     this.setState(this.dict);
                 })
                 .catch(console.log);
-    }
-
-    handleErrors = response => {
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-
-        return response;
     }
 
     componentDidMount() {
