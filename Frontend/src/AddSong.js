@@ -47,6 +47,8 @@ class AddSong extends Component {
             artist = this.state.artist_id,
             category = this.state.category_id;
 
+        const key = getParam("key");
+
         if (song === '') {
             message.error("Please enter the song's name");
         }
@@ -66,7 +68,7 @@ class AddSong extends Component {
                     }
 
                     else {
-                        message.error('An error occurred.');
+                        message.error(result['message']);
                     }
                 });
         }

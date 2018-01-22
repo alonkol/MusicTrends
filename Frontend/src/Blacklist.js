@@ -35,7 +35,7 @@ class Blacklist extends Component {
                     }
 
                     else {
-                        message.error('An error occurred.');
+                        message.error(result['message']);
                     }
                 });
         }

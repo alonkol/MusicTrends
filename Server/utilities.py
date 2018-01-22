@@ -13,9 +13,9 @@ HASHED_MANAGER_KEY = '4d0fb6ddc0b9a9a7d8d8e33ab46b06de97deea482ec854f0f3fe606452
 IGNORE_KEY = True
 MANAGER_KEY = "Wubalubadubdub!"
 
-JSON_FAIL_NOTICE = json.dumps({"success": False, "reason": "DB Issue"})
+JSON_FAIL_NOTICE = json.dumps({"success": False, "message": "An error has occurred."})
 JSON_SUCCESS_NOTICE = json.dumps({"success": True})
-UNAUTHORIZED_ACTION_NOTICE = json.dumps({"success": False, "reason": "Manager key is incorrect"})
+UNAUTHORIZED_ACTION_NOTICE = json.dumps({"success": False, "message": "Manager key is incorrect."})
 JSON_DEBUG = json.dumps({"debug": True})
 
 DONT_CACHE_PATHS = ['/api/lyrics/search', '/api/blacklist_artist', '/api/lyrics/update', '/api/youtube/update',
