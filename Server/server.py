@@ -12,6 +12,7 @@ from Server.utilities import *
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')
 
 
+# Cache management
 @app.before_request
 def return_cached():
     if not WORKING_CACHE[0]:
@@ -29,61 +30,6 @@ def cache_response(response):
     if cache.get(cache_path) is None and response.status_code == 200:
         cache[cache_path] = response
     return response
-
-
-###############################
-# --------- DEBUG ----------- #
-###############################
-@app.route('/debug/show_cache')
-def show_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    print('Cache content:')
-    print('\n'.join(cache.iterkeys()))
-    return JSON_DEBUG
-
-
-@app.route('/debug/clear_cache')
-def clear_from_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    url = request.args.get('url')
-    if url in cache:
-        del cache[url]
-        print('{} removed from cached.'.format(url))
-    return JSON_DEBUG
-
-
-@app.route('/debug/clear_cache_all')
-def clear_all_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    cache.clear()
-    print('Cache is cleared.')
-    return JSON_DEBUG
-
-
-@app.route('/debug/restart_cache')
-def restart_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    change_cache_status(True)
-    print('Cache restarted, consider using clear_cache.')
-    return JSON_DEBUG
-
-
-@app.route('/debug/stop_cache')
-def stop_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    change_cache_status(False)
-    print('Cache stopped.')
-    return JSON_DEBUG
 
 
 ###############################
@@ -144,9 +90,6 @@ def bottom_words(amount):
     return get_result_for_queries(amount, queries.BOTTOM_WORDS, queries.BOTTOM_WORDS_PER_CATEGORY)
 
 
-# Score = numberOfWords^2 * averageUniqueness / wordCount
-# where uniqueness for a word is calculated as 1/(word frequency)
-# and wordCount is the total count of words (penalty for repetitions)
 @app.route('/api/songs/wordscore/top/<int:amount>', methods=['GET'])
 def top_sophisticated_songs(amount):
     return get_result_for_queries(amount, queries.TOP_SOPHISTICATED, queries.TOP_SOPHISTICATED_PER_CATEGORY)
@@ -301,6 +244,61 @@ def add_song():
 def find_best_matching_song_to_given_text():
     text = request.args.get('text')
     return get_json_result(queries.FIND_FIVE_MATCHING_SONG_NAMES, (text, ))
+
+
+######################################################
+# --------- DEBUGGING - CACHE MANAGEMENT ----------- #
+######################################################
+@app.route('/debug/show_cache')
+def show_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    print('Cache content:')
+    print('\n'.join(cache.iterkeys()))
+    return JSON_DEBUG
+
+
+@app.route('/debug/clear_cache')
+def clear_from_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    url = request.args.get('url')
+    if url in cache:
+        del cache[url]
+        print('{} removed from cached.'.format(url))
+    return JSON_DEBUG
+
+
+@app.route('/debug/clear_cache_all')
+def clear_all_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    cache.clear()
+    print('Cache is cleared.')
+    return JSON_DEBUG
+
+
+@app.route('/debug/restart_cache')
+def restart_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    change_cache_status(True)
+    print('Cache restarted, consider using clear_cache.')
+    return JSON_DEBUG
+
+
+@app.route('/debug/stop_cache')
+def stop_cache():
+    manager_key = request.args.get('key')
+    if not check_manager_key(manager_key):
+        return UNAUTHORIZED_ACTION_NOTICE
+    change_cache_status(False)
+    print('Cache stopped.')
+    return JSON_DEBUG
 
 
 ###############################
