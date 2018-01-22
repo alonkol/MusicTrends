@@ -10,7 +10,7 @@ MusicTrends is an app to find musical trends by multiple filters
 
 ## Main Flow
 
-![alt text](https://github.com/alonkol/MusicTrends/blob/master/Design/appFlow.png)
+![alt text](https://github.com/alonkol/MusicTrends/blob/master/Design/app_flow.png)
 
 ## Authors
 
