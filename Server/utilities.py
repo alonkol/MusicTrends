@@ -24,7 +24,7 @@ DONT_CACHE_PATHS = ['/api/lyrics/search', '/api/blacklist_artist', '/api/lyrics/
                     '/debug/stop_cache']
 # This will be used as a cache for our app, refreshed on every call, and invalidated on update calls
 cache = {}
-WORKING_CACHE = [True]
+WORKING_CACHE = [False]
 
 
 def check_manager_key(manager_key):
@@ -47,10 +47,19 @@ def get_result_for_queries(amount, query, query_per_category):
 
 
 def get_json_result(statement, params=None, default_value=None, rename_result_columns=False):
-    if params is not None:
-        config.cursor.execute(statement, params)
-    else:
-        config.cursor.execute(statement)
+    try:
+        if params is not None:
+            config.cursor.execute(statement, params)
+        else:
+            config.cursor.execute(statement)
+    except:
+        if default_value is not None:
+            return default_value
+
+        return json.dumps({
+            "amount": 0,
+            "results": []
+        })
 
     rows = config.cursor.fetchall()
 

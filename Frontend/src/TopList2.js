@@ -10,6 +10,10 @@ class TopList extends Component {
     }
 
     render() {
+        if (!this.props.items || this.props.items.length === 0){
+            return null;
+        }
+
         return (
             <div class="singleList">
                 <h2>{this.props.title}</h2>

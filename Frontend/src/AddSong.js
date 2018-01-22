@@ -3,6 +3,9 @@ import Button from "antd/es/button/button";
 import Input from "antd/es/input/Input";
 import Icon from "antd/es/icon/index";
 import {message} from "antd/lib/index";
+import Cascader from "antd/es/cascader/index";
+import CategoriesCascader from "./CategoriesCascader";
+
 
 class AddSong extends Component {
 
@@ -115,7 +118,7 @@ class AddSong extends Component {
                                 Song Name:
                             </td>
                             <td width="200">
-                                <Input id={'song'} placeholder="Song Name" disabled=this.state.song_textarea_disabled/>
+                                <Input id={'song'} placeholder="Song Name" disabled={this.state.song_textarea_disabled} />
                             </td>
                             <td colSpan={2} align={'center'}>
                                 <Button
