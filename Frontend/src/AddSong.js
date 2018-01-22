@@ -47,9 +47,6 @@ class AddSong extends Component {
             artist = this.state.artist_id,
             category = this.state.category_id;
 
-        // const key = getParam("key");
-        const secretKey = 'abc';
-
         if (song === '') {
             message.error("Please enter the song's name");
         }
