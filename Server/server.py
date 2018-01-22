@@ -32,11 +32,6 @@ def cache_response(response):
 ###############################
 # -------- REST API --------- #
 ###############################
-@app.route('/api')
-def api_welcome():
-    return render_template('api.html')
-
-
 @app.route('/api/categories')
 def categories():
     return get_json_result(queries.CATEGORIES)
