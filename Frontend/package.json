@@ -16,5 +16,5 @@
     "eject": "react-scripts eject"
   },
 
-  "proxy": "http://localhost:40333"
+  "proxy": "http://localhost:40335"
 }
