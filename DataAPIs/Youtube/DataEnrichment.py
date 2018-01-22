@@ -1,4 +1,4 @@
-from googleapiclient.discovery import build
+from DataAPIs.Youtube.googleapiclient.discovery import build
 
 from DBPopulation.insert_queries import is_valid_ascii
 from DataAPIs.MusixMatch.lyrics_analyzer import create_words_map
