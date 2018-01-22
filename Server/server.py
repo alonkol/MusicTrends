@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, send_from_directory
 from flask import render_template
+from gevent.wsgi import WSGIServer
 
 # fix in order to work on the tomcat server
 import sys
@@ -326,4 +327,5 @@ def send_js(path):
     return send_from_directory('static', path)
 
 if __name__ == '__main__':
-    app.run(port=config.port, host=config.host, debug=True)
+    http_server = WSGIServer(('', config.port), app)
+    http_server.serve_forever()
