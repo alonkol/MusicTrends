@@ -1,12 +1,9 @@
-import os
 from flask import Flask, request, send_from_directory, render_template
 from gevent.wsgi import WSGIServer
-
+from Server.utilities import *
 # fix in order to work on the tomcat server
 import sys
 sys.path.insert(0, "../")
-
-from Server.utilities import *
 
 
 app = Flask(__name__, static_folder='frontend-build', static_url_path='')

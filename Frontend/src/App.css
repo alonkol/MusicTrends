@@ -78,9 +78,15 @@ h2 {
     color: #546d82;
 }
 
-.singleList ul{
+.singleList ul, .songList ul{
   list-style-type: none;
   padding-left: 0;
+}
+
+.songList {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .searchContent {

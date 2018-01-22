@@ -15,12 +15,16 @@ class Search extends Component {
     render() {
         return (
             <div class="searchContent">
-                <h3>Find a song by searching its lyrics!</h3>
-                <Input
+            <table>
+
+            <tr><td><h3>Find a song by searching its lyrics!</h3></td></tr>
+            <tr><td><Input
                     id="searchBox"
                     placeholder={"Search Lyrics..."}
-                />
-                <Button
+                /></td></tr>
+
+                <tr><td><br /></td></tr>
+                <tr><td align="center"><Button
                     onClick={this.handleSearchClick}
                     type="primary"
                     htmlType='submit'
@@ -28,11 +32,12 @@ class Search extends Component {
                 >
                     Find Song
                 </Button>
-
-                <br />
-
-                <div>{this.renderResults()}</div>
-
+                </td></tr>
+                <tr><td><br /></td></tr>
+                <tr><td>
+                <div class="songList">{this.renderResults()}</div>
+                </td></tr>
+            </table>
             </div>
         );
     }
@@ -40,13 +45,14 @@ class Search extends Component {
     renderResults = () => {
         if (!this.state.firstSearch && this.state.results.length === 0){
             return "No results found";
+
         }
 
-        return <ul>this.state.results.map(this.formatFunction)</ul>
+        return <ul>{this.state.results.map(this.formatFunction)}</ul>
     }
 
     formatFunction = (singleResult) => {
-        return <li>singleResult</li>
+        return <li>{singleResult.songName}</li>
     }
 
     handleSearchClick = () => {
@@ -54,8 +60,8 @@ class Search extends Component {
         fetch("/api/lyrics/search?text=" + text)
         .then(handleErrors)
         .then(results => results.json())
-        .then(resultsJson => {
-            this.setState({results: resultsJson.results, firstSearch: false});
+        .then(results => {
+            this.setState({results: results.results.map(song => ({songName: song['songName']})), firstSearch: false});
         })
         .catch(console.log);
     }
