@@ -29,8 +29,8 @@ import logging
 
 from six.moves.urllib.parse import urlencode
 
-from googleapiclient import __version__
-from googleapiclient.errors import HttpError
+from DataAPIs.Youtube.googleapiclient import __version__
+from DataAPIs.Youtube.googleapiclient.errors import HttpError
 
 
 LOGGER = logging.getLogger(__name__)

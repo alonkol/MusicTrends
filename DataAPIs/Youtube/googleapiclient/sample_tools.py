@@ -25,8 +25,8 @@ __all__ = ['init']
 import argparse
 import os
 
-from googleapiclient import discovery
-from googleapiclient.http import build_http
+from DataAPIs.Youtube.googleapiclient import discovery
+from DataAPIs.Youtube.googleapiclient.http import build_http
 from oauth2client import client
 from oauth2client import file
 from oauth2client import tools

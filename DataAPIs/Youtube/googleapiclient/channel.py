@@ -60,7 +60,7 @@ from __future__ import absolute_import
 import datetime
 import uuid
 
-from googleapiclient import errors
+from DataAPIs.Youtube.googleapiclient import errors
 import six
 
 # Oauth2client < 3 has the positional helper in 'util', >= 3 has it

@@ -62,15 +62,15 @@ try:
 except ImportError:
   from oauth2client import _helpers as util
 
-from googleapiclient import _auth
-from googleapiclient import mimeparse
-from googleapiclient.errors import BatchError
-from googleapiclient.errors import HttpError
-from googleapiclient.errors import InvalidChunkSizeError
-from googleapiclient.errors import ResumableUploadError
-from googleapiclient.errors import UnexpectedBodyError
-from googleapiclient.errors import UnexpectedMethodError
-from googleapiclient.model import JsonModel
+from DataAPIs.Youtube.googleapiclient import _auth
+from DataAPIs.Youtube.googleapiclient import mimeparse
+from DataAPIs.Youtube.googleapiclient.errors import BatchError
+from DataAPIs.Youtube.googleapiclient.errors import HttpError
+from DataAPIs.Youtube.googleapiclient.errors import InvalidChunkSizeError
+from DataAPIs.Youtube.googleapiclient.errors import ResumableUploadError
+from DataAPIs.Youtube.googleapiclient.errors import UnexpectedBodyError
+from DataAPIs.Youtube.googleapiclient.errors import UnexpectedMethodError
+from DataAPIs.Youtube.googleapiclient.model import JsonModel
 
 
 LOGGER = logging.getLogger(__name__)

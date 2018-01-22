@@ -53,25 +53,25 @@ import httplib2
 import uritemplate
 
 # Local imports
-from googleapiclient import _auth
-from googleapiclient import mimeparse
-from googleapiclient.errors import HttpError
-from googleapiclient.errors import InvalidJsonError
-from googleapiclient.errors import MediaUploadSizeError
-from googleapiclient.errors import UnacceptableMimeTypeError
-from googleapiclient.errors import UnknownApiNameOrVersion
-from googleapiclient.errors import UnknownFileType
-from googleapiclient.http import build_http
-from googleapiclient.http import BatchHttpRequest
-from googleapiclient.http import HttpMock
-from googleapiclient.http import HttpMockSequence
-from googleapiclient.http import HttpRequest
-from googleapiclient.http import MediaFileUpload
-from googleapiclient.http import MediaUpload
-from googleapiclient.model import JsonModel
-from googleapiclient.model import MediaModel
-from googleapiclient.model import RawModel
-from googleapiclient.schema import Schemas
+from DataAPIs.Youtube.googleapiclient import _auth
+from DataAPIs.Youtube.googleapiclient import mimeparse
+from DataAPIs.Youtube.googleapiclient.errors import HttpError
+from DataAPIs.Youtube.googleapiclient.errors import InvalidJsonError
+from DataAPIs.Youtube.googleapiclient.errors import MediaUploadSizeError
+from DataAPIs.Youtube.googleapiclient.errors import UnacceptableMimeTypeError
+from DataAPIs.Youtube.googleapiclient.errors import UnknownApiNameOrVersion
+from DataAPIs.Youtube.googleapiclient.errors import UnknownFileType
+from DataAPIs.Youtube.googleapiclient.http import build_http
+from DataAPIs.Youtube.googleapiclient.http import BatchHttpRequest
+from DataAPIs.Youtube.googleapiclient.http import HttpMock
+from DataAPIs.Youtube.googleapiclient.http import HttpMockSequence
+from DataAPIs.Youtube.googleapiclient.http import HttpRequest
+from DataAPIs.Youtube.googleapiclient.http import MediaFileUpload
+from DataAPIs.Youtube.googleapiclient.http import MediaUpload
+from DataAPIs.Youtube.googleapiclient.model import JsonModel
+from DataAPIs.Youtube.googleapiclient.model import MediaModel
+from DataAPIs.Youtube.googleapiclient.model import RawModel
+from DataAPIs.Youtube.googleapiclient.schema import Schemas
 from oauth2client.client import GoogleCredentials
 
 # Oauth2client < 3 has the positional helper in 'util', >= 3 has it
