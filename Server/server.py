@@ -25,6 +25,8 @@ def return_cached():
 def cache_response(response):
     if not WORKING_CACHE[0] or str(request.path) in DONT_CACHE_PATHS:
         return response
+    if not str(request.path).startswith('/api'):
+        return response
     cache_path = build_cache_path(request)
     if cache.get(cache_path) is None and response.status_code == 200:
         cache[cache_path] = response
