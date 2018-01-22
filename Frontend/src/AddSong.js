@@ -8,26 +8,53 @@ class AddSong extends Component {
 
     constructor() {
         super();
-        this.state = {}
+        this.state = {
+            category_id: null,
+            artists_cascader_disabled: true,
+            artists_for_category: [],
+            artist_id: null,
+            song_textarea_disabled: true
+        }
     }
+
+    handleCategoryChange = (value) => {
+        this.setState({category_id: value});
+
+        // get artists_for_category
+        fetch("/api/artists_for_category/" + value)
+            .then(results => results.json())
+            .then(results => (this.setState({
+                artists_for_category: results.results.map(artist =>
+                    ({value: artist['artistName'], label: artist['artistName'], id: artist['artistID']}))
+            })));
+
+        this.setState({artists_cascader_disabled: false, song_textarea_disabled:true});
+
+    }
+
+    handleArtistChange = (value, selectedOptions) => {
+        const artist_id = selectedOptions[0]['id'];
+        this.setState({artist_id: artist_id, song_textarea_disabled: true});
+    }
+
 
     handleSubmit = (e) => {
         e.preventDefault();
 
         let song = document.forms["add-song"]["song"].value,
-            artist = document.forms["add-song"]["artist"].value,
-            category = document.forms["add-song"]["category"].value;
+            artist = this.state.artist_id,
+            category = this.state.category_id;
 
         const secretKey = document.getElementById('secretKey').value;
 
-            if (song === '') {
+        if (song === '') {
             message.error("Please enter the song's name");
         }
-        else if (artist=== '') {
-            message.error("Please enter the artist's name");
+        else if (artist=== null) {
+            message.error("No artist was chosen");
         }
-        else if (category === '') {
-            message.error("Please enter the category's name");
+        else if (category === null) {
+            message.error("No category was chosen");
         }
 
         else {
@@ -60,32 +87,35 @@ class AddSong extends Component {
                             <br/>
                         </tr>
                         <tr>
-                            <td width="100">
-                                Song Name:
+                            <td>Category:
                             </td>
-                            <td width="200">
-                                <Input id={'song'} placeholder="Song Name" />
+                            <td >
+                               <CategoriesCascader
+                                width={'75%'}
+                                handleChange={this.handleCategoryChange}
+                                />
                             </td>
                             <td align="center" width="70">
                             Artist:
                             </td>
-                            <td width="200"><Input
-                                id={'artist'}
-                                placeholder="Artist name"
-                                prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            /></td>
+                            <td width="200"><Cascader
+                            options={this.state.artists_for_category}
+                            placeholder="Choose Artist"
+                            showSearch
+                            disabled={this.state.artists_cascader_disabled}
+                            onChange={this.handleArtistChange}
+                            />
+                        </td>
                         </tr>
                         <tr>
                             <br/>
                         </tr>
                         <tr>
-                            <td>Category:
+                            <td width="100">
+                                Song Name:
                             </td>
-                            <td >
-                                <Input
-                                    placeholder="Category"
-                                    id={'category'}
-                                />
+                            <td width="200">
+                                <Input id={'song'} placeholder="Song Name" disabled=this.state.song_textarea_disabled/>
                             </td>
                             <td colSpan={2} align={'center'}>
                                 <Button
