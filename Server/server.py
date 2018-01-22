@@ -240,61 +240,6 @@ def find_best_matching_song_to_given_text():
     return get_json_result(queries.FIND_FIVE_MATCHING_SONG_NAMES, (text, ))
 
 
-######################################################
-# --------- DEBUGGING - CACHE MANAGEMENT ----------- #
-######################################################
-@app.route('/debug/show_cache')
-def show_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    print('Cache content:')
-    print('\n'.join(cache.iterkeys()))
-    return JSON_DEBUG
-
-
-@app.route('/debug/clear_cache')
-def clear_from_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    url = request.args.get('url')
-    if url in cache:
-        del cache[url]
-        print('{} removed from cached.'.format(url))
-    return JSON_DEBUG
-
-
-@app.route('/debug/clear_cache_all')
-def clear_all_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    cache.clear()
-    print('Cache is cleared.')
-    return JSON_DEBUG
-
-
-@app.route('/debug/restart_cache')
-def restart_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    change_cache_status(True)
-    print('Cache restarted, consider using clear_cache.')
-    return JSON_DEBUG
-
-
-@app.route('/debug/stop_cache')
-def stop_cache():
-    manager_key = request.args.get('key')
-    if not check_manager_key(manager_key):
-        return UNAUTHORIZED_ACTION_NOTICE
-    change_cache_status(False)
-    print('Cache stopped.')
-    return JSON_DEBUG
-
-
 ###############################
 # --------- Pages ----------- #
 ###############################

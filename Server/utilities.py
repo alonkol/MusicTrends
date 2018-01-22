@@ -9,9 +9,7 @@ from DataAPIs.Youtube.DataEnrichment import get_statistics_for_video, populate_v
 from Server import config, queries
 
 HASHED_MANAGER_KEY = '4d0fb6ddc0b9a9a7d8d8e33ab46b06de97deea482ec854f0f3fe606452bf1119'
-# TODO OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO REMOVE THIS BEFORE SUBMISSION
-IGNORE_KEY = True
-MANAGER_KEY = "Wubalubadubdub!"
+IGNORE_KEY = False
 
 JSON_FAIL_NOTICE = json.dumps({"success": False, "message": "An error has occurred."})
 JSON_SUCCESS_NOTICE = json.dumps({"success": True})
@@ -19,9 +17,7 @@ UNAUTHORIZED_ACTION_NOTICE = json.dumps({"success": False, "message": "Manager k
 JSON_DEBUG = json.dumps({"debug": True})
 
 DONT_CACHE_PATHS = ['/api/lyrics/search', '/api/blacklist_artist', '/api/lyrics/update', '/api/youtube/update',
-                    '/api/songs/add', '/api/lyrics/get',
-                    '/debug/show_cache', '/debug/clear_cache', '/debug/clear_cache_all', '/debug/restart_cache',
-                    '/debug/stop_cache']
+                    '/api/songs/add', '/api/lyrics/get']
 # This will be used as a cache for our app, refreshed on every call, and invalidated on update calls
 cache = {}
 WORKING_CACHE = [True]
@@ -341,6 +337,3 @@ def invalidate_cache(paths, categories=None):
 def build_cache_path(request):
     return '{}?{}'.format(request.path, request.query_string) if request.query_string else str(request.path)
 
-
-def change_cache_status(status):
-    WORKING_CACHE[0] = status

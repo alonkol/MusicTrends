@@ -15,8 +15,8 @@ youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
 INSERT_COMMENT_WORDS_PER_VIDEO = "INSERT INTO CommentWordsPerVideo VALUES (%s, %s, %s);"
 
 # Used for fetching in groups
-OFFSET = 20
-LIMIT = 200
+OFFSET = 0
+LIMIT = 2000
 
 
 def youtube_search(queryString):

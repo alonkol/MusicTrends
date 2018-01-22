@@ -109,8 +109,8 @@ class Populator():
 
 def main():
     numOfCategories = 2
-    artistsPerCategory = 2
-    songsPerArtist = 2
+    artistsPerCategory = 5
+    songsPerArtist = 5
 
     populator = Populator(numOfCategories, artistsPerCategory, songsPerArtist)
 

@@ -23,7 +23,6 @@ class FilterSection extends Component {
     render() {
         return (
             <div>
-                <h2>Filters</h2>
                 <form>
                     <table>
                     <tbody>
