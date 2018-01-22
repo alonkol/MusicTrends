@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Button from "antd/es/button/button";
 import Input from "antd/es/input/Input";
-import Icon from "antd/es/icon/index";
 import {message} from "antd/lib/index";
 import Cascader from "antd/es/cascader/index";
 import CategoriesCascader from "./CategoriesCascader";
@@ -31,13 +30,13 @@ class AddSong extends Component {
                     ({value: artist['artistName'], label: artist['artistName'], id: artist['artistID']}))
             })));
 
-        this.setState({artists_cascader_disabled: false, song_textarea_disabled:true});
+        this.setState({artists_cascader_disabled: false, song_textarea_disabled:true, artist_id: null});
 
     }
 
     handleArtistChange = (value, selectedOptions) => {
         const artist_id = selectedOptions[0]['id'];
-        this.setState({artist_id: artist_id, song_textarea_disabled: true});
+        this.setState({artist_id: artist_id, song_textarea_disabled: false});
     }
 
 
@@ -48,7 +47,8 @@ class AddSong extends Component {
             artist = this.state.artist_id,
             category = this.state.category_id;
 
-        const key = getParam("key");
+        // const key = getParam("key");
+        const secretKey = 'abc';
 
         if (song === '') {
             message.error("Please enter the song's name");
@@ -81,13 +81,14 @@ class AddSong extends Component {
                 <h2>Add Song to Our Dataset</h2>
                 <form name="add-song" onSubmit={this.handleSubmit}>
                     <table>
+                    <tbody>
                         <tr>
                             <td align="center" colSpan={4}>
                                 Adding a new song is done by fetching data from <strong>Youtube</strong> and <strong>MusicMatch</strong>.
                             </td>
                         </tr>
                         <tr>
-                            <br/>
+                            <td><br /></td>
                         </tr>
                         <tr>
                             <td>Category:
@@ -111,14 +112,14 @@ class AddSong extends Component {
                         </td>
                         </tr>
                         <tr>
-                            <br/>
+                            <td><br /></td>
                         </tr>
                         <tr>
                             <td width="100">
                                 Song Name:
                             </td>
                             <td width="200">
-                                <Input id={'song'} placeholder="Song Name" disabled={this.state.song_textarea_disabled} />
+                                <Input id={'song'} placeholder="Song Name" disabled={this.state.song_textarea_disabled}/>
                             </td>
                             <td colSpan={2} align={'center'}>
                                 <Button
@@ -129,6 +130,7 @@ class AddSong extends Component {
                                 >Add Song</Button>
                             </td>
                         </tr>
+                     </tbody>
                     </table>
                 </form>
             </div>

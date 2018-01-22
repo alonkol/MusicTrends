@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import IntegerStep from "./IntegerStep";
 import { Cascader } from 'antd';
-import Switch from "antd/es/switch/index";
 
 class FilterSection extends Component {
 
     constructor() {
         super();
-        this.state = {categories: [],
-        selectedCategory: null}
+        this.state = {categories: [], selectedCategory: 0}
     }
 
     categoryCascaderOnChange = (value, selectedOptions) => {
@@ -22,18 +20,14 @@ class FilterSection extends Component {
         this.props.handleSliderChange(value);
     }
 
-    switchOnChange = (value) => {
-        this.props.handleSwitchChange(value);
-    }
-
     render() {
         return (
             <div>
                 <h2>Filters</h2>
                 <form>
                     <table>
+                    <tbody>
                         <tr>
-                            <td width={80}><Switch onChange={this.switchOnChange} /></td>
                             <td width={150}>
                                 Category</td>
                             <td width={212}><Cascader
@@ -43,11 +37,10 @@ class FilterSection extends Component {
                                 showSearch /></td>
                         </tr>
                         <tr>
-                            <td></td>
                             <td>Number of Results</td>
-
                             <td><IntegerStep onChange={this.sliderOnChange} /></td>
                         </tr>
+                        </tbody>
                     </table>
                 </form>
             </div>
@@ -57,11 +50,15 @@ class FilterSection extends Component {
     componentDidMount() {
 
         // fetch categories
-
         fetch("/api/categories")
             .then(results => results.json())
-            .then(results => (this.setState({categories: results.results.map(category =>
-                ({value: category['name'], label: category['name'], id: category['id']}))})));
+            .then(results => {
+                var result_array = [({value: 'All', label: 'All', id: 0})]
+                results.results.forEach(function(category) {
+                    result_array.push({value: category['categoryName'], label: category['categoryName'], id: category['categoryID']});
+                });
+                this.setState({categories: result_array});
+            });
     }
 }
 

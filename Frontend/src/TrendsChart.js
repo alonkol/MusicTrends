@@ -4,7 +4,7 @@ import TopList from "./TopList2";
 
 const MAX_RESULTS_NUM = 20;
 
-var categoryFilter = "";
+var categoryFilter = "?category=0";
 
 class TrendsChart extends Component {
 

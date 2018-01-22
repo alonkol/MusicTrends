@@ -28,7 +28,7 @@ class CategoriesCascader extends Component {
     componentDidMount() {
         fetch("/api/categories")
             .then(results => results.json())
-            .then(results => (this.setState({artists: results.results.map(category =>
+            .then(results => (this.setState({categories: results.results.map(category =>
                 ({value: category['categoryName'], label: category['categoryName'], id: category['categoryID']}))})));
     }
 

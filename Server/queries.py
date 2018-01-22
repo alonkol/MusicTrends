@@ -1,5 +1,5 @@
 
-CATEGORIES = "SELECT categoryID as id, categoryName as name FROM Categories;"
+CATEGORIES = "SELECT categoryID, categoryName FROM Categories;"
 
 TOP_SONG_LIKES = "SELECT songName, likeCount " \
                     "FROM Songs, Videos " \

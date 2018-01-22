@@ -20,9 +20,8 @@ class Main extends Component {
         super();
         this.state = {current_page: 'trends',
             numberOfResults: 5,
-            selectedCategory: null,
-            selectedCategoryFilter: "",
-            filterSwitchOn: false
+            selectedCategory: 0,
+            selectedCategoryFilter: "?category=0"
         }
     }
 
@@ -40,30 +39,7 @@ class Main extends Component {
 
     handleCategoryChange = (value) => {
         this.setState({selectedCategory: value});
-
-        if (this.state.filterSwitchOn) {
-            if (value != null) {
-                this.setState({selectedCategoryFilter: "?category=" + value})
-            }
-        }
-
-        else {
-            this.setState({selectedCategoryFilter: ""});
-        }
-    }
-
-    handleSwitchChange = (value) => {
-        this.setState({filterSwitchOn: value});
-
-        if (value) {
-            if (this.state.selectedCategory != null) {
-                this.setState({selectedCategoryFilter: "?category=" + this.state.selectedCategory})
-            }
-        }
-
-        else {
-            this.setState({selectedCategoryFilter: ""});
-        }
+        this.setState({selectedCategoryFilter: "?category=" + value})
     }
 
     render() {
@@ -140,7 +116,6 @@ class Main extends Component {
                     <FilterSection
                         handleCategoryChange={this.handleCategoryChange}
                         handleSliderChange={this.handleSliderChange}
-                        handleSwitchChange={this.handleSwitchChange}
                     />
                     <br/>
                     <br/>

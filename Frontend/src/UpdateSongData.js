@@ -85,6 +85,7 @@ class UpdateSongData extends Component {
             <div>
                 <h2>Update Song Data</h2>
                 <table>
+                <tbody>
                     <tr>
                         <td align="center" width={250}>
                             <ArtistsCascader
@@ -105,7 +106,7 @@ class UpdateSongData extends Component {
                         <td><br/></td>
                     </tr>
                     <tr>
-                        <td colspan="2">
+                        <td colSpan="2">
                                 <TextArea
                                     rows={6}
                                     disabled={this.state.lyrics_textarea_disabled}
@@ -142,6 +143,7 @@ class UpdateSongData extends Component {
                             </Button>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
         );
