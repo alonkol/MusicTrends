@@ -76,15 +76,14 @@ class TrendsChart extends Component {
         this.fetchAndUpdate("/api/songs/dislikes/top/", "topDisliked");
         this.fetchAndUpdate("/api/songs/views/top/", "topViews");
         this.fetchAndUpdate("/api/songs/views/bottom/", "worstViews");
-        this.fetchAndUpdate("/api/songs/wordscore/top/", "topWordScore");
-        this.fetchAndUpdate("/api/songs/wordscore/bottom/", "worstWordScore");
-        this.fetchAndUpdate("/api/songs/discussionscore/top/", "topDiscScore");
         this.fetchAndUpdate("/api/songs/viral_songs/top/", "topViralSongs");
         this.fetchAndUpdate("/api/songs/days_with_most_comments/top/", "topCommentedDays");
         this.fetchAndUpdate("/api/groupies/top/", "topGroupies");
         this.fetchAndUpdate("/api/artists/head_eaters/top/", "topHeadEaters");
         this.fetchAndUpdate("/api/artists/controversial/top/", "topControversial");
-
+        this.fetchAndUpdate("/api/songs/wordscore/top/", "topWordScore");
+        this.fetchAndUpdate("/api/songs/wordscore/bottom/", "worstWordScore");
+        this.fetchAndUpdate("/api/songs/discussionscore/top/", "topDiscScore");
     }
 
     fetchAndUpdate = (endpoint, keyName) => {
