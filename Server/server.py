@@ -126,6 +126,28 @@ def top_controversial_artists(amount):
                                   queries.TOP_CONTROVERSIAL_ARTISTS_PER_CATEGORY)
 
 
+@app.route('/api/lyrics/get', methods=['GET'])
+def get_lyrics():
+    song_id = request.args.get('song')
+    default_answer = json.dumps({"amount": 1, "results": [{"lyrics": "Lyrics not found."}]})
+    if song_id is None:
+        return default_answer
+    lyrics_result = get_json_result(
+        queries.FIND_LYRICS, (song_id,),
+        default_value=default_answer)
+    return lyrics_result
+
+
+####################################
+# ----- FULL TEXT SEARCH --------- #
+####################################
+
+@app.route('/api/lyrics/search', methods=['GET'])
+def find_best_matching_song_to_given_text():
+    text = request.args.get('text')
+    return get_json_result(queries.FIND_FIVE_MATCHING_SONG_NAMES, (text, ))
+
+
 ####################################
 # --------- Admin Pages ----------- #
 ####################################
@@ -149,18 +171,6 @@ def blacklist_artist():
         return JSON_FAIL_NOTICE
 
     return JSON_SUCCESS_NOTICE
-
-
-@app.route('/api/lyrics/get', methods=['GET'])
-def get_lyrics():
-    song_id = request.args.get('song')
-    default_answer = json.dumps({"amount": 1, "results": [{"lyrics": "Lyrics not found."}]})
-    if song_id is None:
-        return default_answer
-    lyrics_result = get_json_result(
-        queries.FIND_LYRICS, (song_id,),
-        default_value=default_answer)
-    return lyrics_result
 
 
 @app.route('/api/lyrics/update', methods=['GET', 'POST', 'PUT'])
@@ -228,16 +238,6 @@ def add_song():
     insert_song_youtube_data(song_id, artist_name, song_name)
     invalidate_apis_from_cache_after_add_song(category_id, artist_id)
     return JSON_SUCCESS_NOTICE
-
-
-####################################
-# ----- FULL TEXT SEARCH --------- #
-####################################
-
-@app.route('/api/lyrics/search', methods=['GET'])
-def find_best_matching_song_to_given_text():
-    text = request.args.get('text')
-    return get_json_result(queries.FIND_FIVE_MATCHING_SONG_NAMES, (text, ))
 
 
 ###############################
