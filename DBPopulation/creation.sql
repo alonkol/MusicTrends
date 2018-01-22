@@ -98,4 +98,3 @@ CREATE TABLE WordsPerSong (
 
 CREATE INDEX wordIndex ON WordsPerSong(word);
 CREATE INDEX commentWordIndex ON CommentWordsPerVideo(word);
-CREATE UNIQUE INDEX SongIdInVideos ON Videos(songID);

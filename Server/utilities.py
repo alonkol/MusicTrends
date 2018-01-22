@@ -24,7 +24,7 @@ DONT_CACHE_PATHS = ['/api/lyrics/search', '/api/blacklist_artist', '/api/lyrics/
                     '/debug/stop_cache']
 # This will be used as a cache for our app, refreshed on every call, and invalidated on update calls
 cache = {}
-WORKING_CACHE = [False]
+WORKING_CACHE = [True]
 
 
 def check_manager_key(manager_key):
@@ -326,14 +326,14 @@ def invalidate_apis_from_cache_after_add_song(category_id, artist_id):
 
 
 def invalidate_cache(paths, categories=None):
+    categories = [] if categories is None else categories
+    categories.append(0)
     for path in paths:
-        print(path)
         if cache.get(path):
             del cache[path]
         if categories:
             for category in categories:
                 path_with_category = '{}?category={}'.format(path, category)
-                print(path_with_category)
                 if cache.get(path_with_category):
                     del cache[path_with_category]
 

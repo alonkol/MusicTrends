@@ -135,6 +135,7 @@ def blacklist_artist():
     manager_key = request.args.get('key')
     if not check_manager_key(manager_key):
         return UNAUTHORIZED_ACTION_NOTICE
+    invalidate_apis_from_cache_after_blacklist_artist(artist_id)
     songs, videos = find_songs_and_videos_by_artist_id(artist_id)
     try:
         for video in videos:
@@ -145,7 +146,6 @@ def blacklist_artist():
     except Exception:
         return JSON_FAIL_NOTICE
 
-    invalidate_apis_from_cache_after_blacklist_artist(artist_id)
     return JSON_SUCCESS_NOTICE
 
 
